@@ -1,3 +1,9 @@
 /Debug
 /*.user
 /Release
+/config_pub.h
+/.deps
+/.libs
+/Makefile
+/Makefile.in
+/stamp-h2
