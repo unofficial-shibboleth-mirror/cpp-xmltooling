@@ -43,3 +43,5 @@
 /x64
 /Portfile
 /*.gz
+/*.opensdf
+/*.sdf
