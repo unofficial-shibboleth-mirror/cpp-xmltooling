@@ -537,7 +537,12 @@ void CURLSOAPTransport::send(istream* in)
 
     m_useragent = XMLToolingConfig::getConfig().user_agent;
     if (!m_useragent.empty()) {
-        m_useragent = m_useragent + " libcurl/" + LIBCURL_VERSION + ' ' + OPENSSL_VERSION_TEXT;
+        curl_version_info_data* curlver = curl_version_info(CURLVERSION_NOW);
+        m_useragent += " libcurl/";
+        if (curlver)
+            m_useragent = m_useragent + curlver->version + ' ' + curlver->ssl_version;
+        else
+            m_useragent = m_useragent + LIBCURL_VERSION + ' ' + OPENSSL_VERSION_TEXT;
         curl_easy_setopt(m_handle, CURLOPT_USERAGENT, m_useragent.c_str());
     }
 

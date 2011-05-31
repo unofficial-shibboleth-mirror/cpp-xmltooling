@@ -359,7 +359,16 @@ bool XMLToolingInternalConfig::init()
             log.fatal("failed to initialize libcurl, OpenSSL, or Winsock");
             return false;
         }
-        log.debug("libcurl %s initialization complete", LIBCURL_VERSION);
+        curl_version_info_data* curlver = curl_version_info(CURLVERSION_NOW);
+        if (curlver) {
+            log.debug("libcurl %s initialization complete", curlver->version);
+            if (!(curlver->features & CURL_VERSION_SSL)) {
+                log.warn("libcurl lacks TLS/SSL support, this will greatly limit functionality");
+            }
+        }
+        else {
+            log.debug("libcurl %s initialization complete", LIBCURL_VERSION);
+        }
 #endif
 
         XMLPlatformUtils::Initialize();

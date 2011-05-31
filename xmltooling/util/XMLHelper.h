@@ -23,7 +23,7 @@
 #ifndef __xmltooling_xmlhelper_h__
 #define __xmltooling_xmlhelper_h__
 
-#include <xmltooling/base.h>
+#include <xmltooling/unicode.h>
 
 #include <map>
 #include <iostream>

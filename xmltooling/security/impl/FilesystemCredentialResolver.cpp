@@ -348,6 +348,10 @@ FilesystemCredentialResolver::FilesystemCredentialResolver(const DOMElement* e)
             if (e->hasAttributeNS(nullptr, extractNames))
                 child->setAttributeNS(nullptr, extractNames, e->getAttributeNS(nullptr, extractNames));
         }
+        if (e->hasAttributeNS(nullptr, _use)) {
+            dummy->setAttributeNS(nullptr, _use, e->getAttributeNS(nullptr, _use));
+        }
+
         e = dummy;  // reset "root" to the dummy config element
     }
 
