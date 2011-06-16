@@ -32,7 +32,7 @@ else
 fi
 
 AC_CONFIG_HEADERS([config.h xmltooling/config_pub.h])
-AC_CONFIG_FILES([xmltooling.spec pkginfo Portfile])
+AC_CONFIG_FILES([xmltooling.spec])
 AC_CONFIG_FILES([Makefile xmltooling/Makefile xmltoolingtest/Makefile schemas/Makefile doc/Makefile])
 
 AC_PROG_CC([gcc gcc3 cc])
