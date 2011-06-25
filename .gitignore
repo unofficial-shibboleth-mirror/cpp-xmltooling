@@ -46,3 +46,6 @@
 /*.opensdf
 /*.sdf
 /ipch
+/.project
+/.cproject
+/.autotools
