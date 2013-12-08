@@ -380,7 +380,5 @@ AM_CONDITIONAL(BUILD_UNITTEST,test -f ${CXXTEST})
 
 AX_CREATE_PKGCONFIG_INFO(,,[$XMLSEC_LIBS -lxmltooling],[OpenSAML XMLTooling-C library])
 
-LIBTOOL="$LIBTOOL --silent"
-
 # output packaging and makefiles
 AC_OUTPUT
