@@ -64,8 +64,9 @@ void HTTPResponse::sanitizeURL(const char* url)
     if (!ch)
         throw IOException("URL is malformed.");
     string s(url, ch - url);
+    std::locale loc;
     vector<string>::const_iterator i =
-        find_if(m_allowedSchemes.begin(), m_allowedSchemes.end(), boost::bind(fn, boost::cref(s), _1, boost::cref(std::locale())));
+        find_if(m_allowedSchemes.begin(), m_allowedSchemes.end(), boost::bind(fn, boost::cref(s), _1, boost::cref(loc)));
     if (i != m_allowedSchemes.end())
         return;
 
