@@ -95,14 +95,18 @@ void HTTPResponse::setCookie(const char* name, const char* value)
 
 void HTTPResponse::setResponseHeader(const char* name, const char* value)
 {
-    for (const char* ch=name; *ch; ++ch) {
-        if (iscntrl(*ch))
-            throw IOException("Response header name contained a control character.");
+    if (name) {
+        for (const char* ch=name; *ch; ++ch) {
+            if (iscntrl(*ch))
+                throw IOException("Response header name contained a control character.");
+        }
     }
 
-    for (const char* ch=value; *ch; ++ch) {
-        if (iscntrl(*ch))
-            throw IOException("Value for response header ($1) contained a control character.", params(1,name));
+    if (value) {
+        for (const char* ch=value; *ch; ++ch) {
+            if (iscntrl(*ch))
+                throw IOException("Value for response header ($1) contained a control character.", params(1,name));
+        }
     }
 }
 
