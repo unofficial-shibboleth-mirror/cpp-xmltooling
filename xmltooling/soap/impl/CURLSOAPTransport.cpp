@@ -76,7 +76,7 @@ namespace xmltooling {
 #ifndef XMLTOOLING_NO_XMLSEC
                     m_cred(nullptr), m_trustEngine(nullptr), m_peerResolver(nullptr), m_mandatory(false),
 #endif
-                    m_openssl_ops(SSL_OP_ALL|SSL_OP_NO_SSLv2), m_ssl_callback(nullptr), m_ssl_userptr(nullptr),
+                    m_openssl_ops(SSL_OP_ALL|SSL_OP_NO_SSLv2|SSL_OP_NO_SSLv3), m_ssl_callback(nullptr), m_ssl_userptr(nullptr),
                     m_chunked(true), m_authenticated(false), m_cacheTag(nullptr) {
             m_handle = g_CURLPool->get(addr);
             curl_easy_setopt(m_handle,CURLOPT_URL,addr.m_endpoint);
@@ -315,7 +315,7 @@ CURL* CURLPool::get(const SOAPTransport::Address& addr)
     curl_easy_setopt(handle,CURLOPT_FAILONERROR,1);
     // This may (but probably won't) help with < 7.20 bug in DNS caching.
     curl_easy_setopt(handle,CURLOPT_DNS_CACHE_TIMEOUT,120);
-    curl_easy_setopt(handle,CURLOPT_SSL_CIPHER_LIST,"ALL:!aNULL:!LOW:!EXPORT:!SSLv2");
+    curl_easy_setopt(handle,CURLOPT_SSL_CIPHER_LIST,"ALL:!aNULL:!LOW:!EXPORT:!SSLv2:!SSLv3");
     // Verification of the peer is via TrustEngine only.
     curl_easy_setopt(handle,CURLOPT_SSL_VERIFYPEER,0);
     curl_easy_setopt(handle,CURLOPT_CAINFO,nullptr);
@@ -709,9 +709,9 @@ CURLcode xmltooling::xml_ssl_ctx_callback(CURL* curl, SSL_CTX* ssl_ctx, void* us
 {
     CURLSOAPTransport* conf = reinterpret_cast<CURLSOAPTransport*>(userptr);
 
-    // Default flags manually disable SSLv2 so we're not dependent on libcurl to do it.
-    // Also disable the ticket option where implemented, since this breaks a variety
-    // of servers. Newer libcurl also does this for us.
+    // Default flags manually disable SSLv2 and SSLv3 so we're not dependent on libcurl
+    // to do it. Also disable the ticket option where implemented, since this breaks a
+    // variety of servers. Newer libcurl also does this for us.
 #ifdef SSL_OP_NO_TICKET
     SSL_CTX_set_options(ssl_ctx, conf->m_openssl_ops|SSL_OP_NO_TICKET);
 #else
