@@ -255,6 +255,7 @@ bool ParserPool::loadSchema(const XMLCh* nsURI, const XMLCh* pathname)
 bool ParserPool::loadCatalogs(const char* pathnames)
 {
     string temp(pathnames);
+    trim(temp);
     vector<string> catpaths;
     split(catpaths, temp, is_any_of(PATH_SEPARATOR_STR), algorithm::token_compress_on);
     static bool (ParserPool::* lc)(const char*) = &ParserPool::loadCatalog;
