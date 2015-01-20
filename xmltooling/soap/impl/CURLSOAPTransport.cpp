@@ -315,7 +315,7 @@ CURL* CURLPool::get(const SOAPTransport::Address& addr)
     curl_easy_setopt(handle,CURLOPT_FAILONERROR,1);
     // This may (but probably won't) help with < 7.20 bug in DNS caching.
     curl_easy_setopt(handle,CURLOPT_DNS_CACHE_TIMEOUT,120);
-    curl_easy_setopt(handle,CURLOPT_SSL_CIPHER_LIST,"ALL:!aNULL:!LOW:!EXPORT:!SSLv2:!SSLv3");
+    curl_easy_setopt(handle,CURLOPT_SSL_CIPHER_LIST,"ALL:!aNULL:!LOW:!EXPORT:!SSLv2");
     // Verification of the peer is via TrustEngine only.
     curl_easy_setopt(handle,CURLOPT_SSL_VERIFYPEER,0);
     curl_easy_setopt(handle,CURLOPT_CAINFO,nullptr);
