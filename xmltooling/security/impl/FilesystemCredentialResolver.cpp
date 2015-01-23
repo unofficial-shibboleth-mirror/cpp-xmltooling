@@ -577,7 +577,7 @@ Lockable* FilesystemCredentialResolver::lock()
 #ifdef _DEBUG
     NDC ndc("lock");
 #endif
-    Category& log=Category::getInstance(XMLTOOLING_LOGCAT ".CredentialResolver."FILESYSTEM_CREDENTIAL_RESOLVER);
+    Category& log=Category::getInstance(XMLTOOLING_LOGCAT ".CredentialResolver." FILESYSTEM_CREDENTIAL_RESOLVER);
 
     m_lock->rdlock();
 
