@@ -366,7 +366,7 @@ bool InlineCredential::resolveKey(const KeyInfo* keyInfo, bool followRefs)
 
 bool InlineCredential::resolveCerts(const KeyInfo* keyInfo, bool followRefs)
 {
-    Category& log = Category::getInstance(XMLTOOLING_LOGCAT ".KeyInfoResolver."INLINE_KEYINFO_RESOLVER);
+    Category& log = Category::getInstance(XMLTOOLING_LOGCAT ".KeyInfoResolver." INLINE_KEYINFO_RESOLVER);
 
     // Check for ds:X509Data
     const vector<X509Data*>& x509Datas=keyInfo->getX509Datas();
@@ -430,7 +430,7 @@ bool InlineCredential::resolveCerts(const KeyInfo* keyInfo, bool followRefs)
 
 bool InlineCredential::resolveCRLs(const KeyInfo* keyInfo, bool followRefs)
 {
-    Category& log = Category::getInstance(XMLTOOLING_LOGCAT ".KeyInfoResolver."INLINE_KEYINFO_RESOLVER);
+    Category& log = Category::getInstance(XMLTOOLING_LOGCAT ".KeyInfoResolver." INLINE_KEYINFO_RESOLVER);
 
     // Check for ds:X509Data
     const vector<X509Data*>& x509Datas=keyInfo->getX509Datas();
@@ -506,10 +506,12 @@ void InlineCredential::resolve(DSIGKeyInfoList* keyInfo, int types, bool followR
         }
         catch(XSECException& e) {
             auto_ptr_char temp(e.getMsg());
-            Category::getInstance(XMLTOOLING_LOGCAT ".KeyResolver."INLINE_KEYINFO_RESOLVER).error("caught XML-Security exception loading certificate: %s", temp.get());
+            Category::getInstance(XMLTOOLING_LOGCAT ".KeyResolver." INLINE_KEYINFO_RESOLVER).error(
+                "caught XML-Security exception loading certificate: %s", temp.get());
         }
         catch(XSECCryptoException& e) {
-            Category::getInstance(XMLTOOLING_LOGCAT ".KeyResolver."INLINE_KEYINFO_RESOLVER).error("caught XML-Security exception loading certificate: %s", e.getMsg());
+            Category::getInstance(XMLTOOLING_LOGCAT ".KeyResolver." INLINE_KEYINFO_RESOLVER).error(
+                "caught XML-Security exception loading certificate: %s", e.getMsg());
         }
     }
 
@@ -545,10 +547,12 @@ void InlineCredential::resolve(DSIGKeyInfoList* keyInfo, int types, bool followR
                         }
                         catch(XSECException& e) {
                             auto_ptr_char temp(e.getMsg());
-                            Category::getInstance(XMLTOOLING_LOGCAT ".KeyResolver."INLINE_KEYINFO_RESOLVER).error("caught XML-Security exception loading CRL: %s", temp.get());
+                            Category::getInstance(XMLTOOLING_LOGCAT ".KeyResolver." INLINE_KEYINFO_RESOLVER).error(
+                                "caught XML-Security exception loading CRL: %s", temp.get());
                         }
                         catch(XSECCryptoException& e) {
-                            Category::getInstance(XMLTOOLING_LOGCAT ".KeyResolver."INLINE_KEYINFO_RESOLVER).error("caught XML-Security exception loading CRL: %s", e.getMsg());
+                            Category::getInstance(XMLTOOLING_LOGCAT ".KeyResolver." INLINE_KEYINFO_RESOLVER).error(
+                                "caught XML-Security exception loading CRL: %s", e.getMsg());
                         }
                     }
                 }
@@ -568,10 +572,12 @@ void InlineCredential::resolve(DSIGKeyInfoList* keyInfo, int types, bool followR
                             }
                             catch(XSECException& e) {
                                 auto_ptr_char temp(e.getMsg());
-                                Category::getInstance(XMLTOOLING_LOGCAT ".KeyResolver."INLINE_KEYINFO_RESOLVER).error("caught XML-Security exception loading CRL: %s", temp.get());
+                                Category::getInstance(XMLTOOLING_LOGCAT ".KeyResolver." INLINE_KEYINFO_RESOLVER).error(
+                                    "caught XML-Security exception loading CRL: %s", temp.get());
                             }
                             catch(XSECCryptoException& e) {
-                                Category::getInstance(XMLTOOLING_LOGCAT ".KeyResolver."INLINE_KEYINFO_RESOLVER).error("caught XML-Security exception loading CRL: %s", e.getMsg());
+                                Category::getInstance(XMLTOOLING_LOGCAT ".KeyResolver." INLINE_KEYINFO_RESOLVER).error(
+                                    "caught XML-Security exception loading CRL: %s", e.getMsg());
                             }
                         }
                     }
