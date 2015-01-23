@@ -136,7 +136,7 @@ namespace {
 }
 
 CurlURLInputStream::CurlURLInputStream(const char* url, string* cacheTag)
-    : fLog(logging::Category::getInstance(XMLTOOLING_LOGCAT".libcurl.InputStream"))
+    : fLog(logging::Category::getInstance(XMLTOOLING_LOGCAT ".libcurl.InputStream"))
     , fCacheTag(cacheTag)
     , fURL(url ? url : "")
     , fOpenSSLOps(SSL_OP_ALL|SSL_OP_NO_SSLv2)
@@ -161,7 +161,7 @@ CurlURLInputStream::CurlURLInputStream(const char* url, string* cacheTag)
 }
 
 CurlURLInputStream::CurlURLInputStream(const XMLCh* url, string* cacheTag)
-    : fLog(logging::Category::getInstance(XMLTOOLING_LOGCAT".libcurl.InputStream"))
+    : fLog(logging::Category::getInstance(XMLTOOLING_LOGCAT ".libcurl.InputStream"))
     , fCacheTag(cacheTag)
     , fOpenSSLOps(SSL_OP_ALL|SSL_OP_NO_SSLv2)
     , fMulti(0)
@@ -189,7 +189,7 @@ CurlURLInputStream::CurlURLInputStream(const XMLCh* url, string* cacheTag)
 }
 
 CurlURLInputStream::CurlURLInputStream(const DOMElement* e, string* cacheTag)
-    : fLog(logging::Category::getInstance(XMLTOOLING_LOGCAT".libcurl.InputStream"))
+    : fLog(logging::Category::getInstance(XMLTOOLING_LOGCAT ".libcurl.InputStream"))
     , fCacheTag(cacheTag)
     , fOpenSSLOps(SSL_OP_ALL|SSL_OP_NO_SSLv2)
     , fMulti(0)

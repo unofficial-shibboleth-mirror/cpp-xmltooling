@@ -93,7 +93,7 @@ namespace xmltooling {
                 }
             }
             catch (exception& ex) {
-                logging::Category::getInstance(XMLTOOLING_LOGCAT".TrustEngine.StaticPKIX").error(ex.what());
+                logging::Category::getInstance(XMLTOOLING_LOGCAT ".TrustEngine.StaticPKIX").error(ex.what());
             }
         }
 

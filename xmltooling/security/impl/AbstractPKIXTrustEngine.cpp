@@ -129,7 +129,7 @@ AbstractPKIXTrustEngine::AbstractPKIXTrustEngine(const xercesc::DOMElement* e)
 		m_anyPolicyInhibit(XMLHelper::getAttrBool(e, false, anyPolicyInhibit))
 {
     if (m_fullCRLChain) {
-        Category::getInstance(XMLTOOLING_LOGCAT".TrustEngine.PKIX").warn(
+        Category::getInstance(XMLTOOLING_LOGCAT ".TrustEngine.PKIX").warn(
             "fullCRLChain option is deprecated, setting checkRevocation to \"fullChain\""
             );
         m_checkRevocation = "fullChain";
@@ -153,7 +153,7 @@ AbstractPKIXTrustEngine::AbstractPKIXTrustEngine(const xercesc::DOMElement* e)
             try {
                 string t = XMLHelper::getAttrString(c, nullptr, type);
                 if (!t.empty()) {
-                    Category::getInstance(XMLTOOLING_LOGCAT".TrustEngine.PKIX").info(
+                    Category::getInstance(XMLTOOLING_LOGCAT ".TrustEngine.PKIX").info(
                         "building PathValidator of type %s", t.c_str()
                         );
                     PathValidator* pv = XMLToolingConfig::getConfig().PathValidatorManager.newPlugin(t.c_str(), c);
@@ -166,7 +166,7 @@ AbstractPKIXTrustEngine::AbstractPKIXTrustEngine(const xercesc::DOMElement* e)
                 }
             }
             catch (exception& ex) {
-                Category::getInstance(XMLTOOLING_LOGCAT".TrustEngine.PKIX").error(
+                Category::getInstance(XMLTOOLING_LOGCAT ".TrustEngine.PKIX").error(
                     "error building PathValidator: %s", ex.what()
                     );
             }
@@ -191,7 +191,7 @@ bool AbstractPKIXTrustEngine::checkEntityNames(
     X509* certEE, const CredentialResolver& credResolver, const CredentialCriteria& criteria
     ) const
 {
-    Category& log=Category::getInstance(XMLTOOLING_LOGCAT".TrustEngine.PKIX");
+    Category& log=Category::getInstance(XMLTOOLING_LOGCAT ".TrustEngine.PKIX");
 
     // We resolve to a set of trusted credentials.
     vector<const Credential*> creds;
@@ -346,7 +346,7 @@ bool AbstractPKIXTrustEngine::validateWithCRLs(
 #ifdef _DEBUG
     NDC ndc("validateWithCRLs");
 #endif
-    Category& log=Category::getInstance(XMLTOOLING_LOGCAT".TrustEngine.PKIX");
+    Category& log=Category::getInstance(XMLTOOLING_LOGCAT ".TrustEngine.PKIX");
 
     if (!certEE) {
         log.error("X.509 credential was NULL, unable to perform validation");
@@ -409,11 +409,11 @@ bool AbstractPKIXTrustEngine::validate(
         NDC ndc("validate");
 #endif
     if (!certEE) {
-        Category::getInstance(XMLTOOLING_LOGCAT".TrustEngine.PKIX").error("X.509 credential was NULL, unable to perform validation");
+        Category::getInstance(XMLTOOLING_LOGCAT ".TrustEngine.PKIX").error("X.509 credential was NULL, unable to perform validation");
         return false;
     }
     else if (certEE->getProviderName()!=DSIGConstants::s_unicodeStrPROVOpenSSL) {
-        Category::getInstance(XMLTOOLING_LOGCAT".TrustEngine.PKIX").error("only the OpenSSL XSEC provider is supported");
+        Category::getInstance(XMLTOOLING_LOGCAT ".TrustEngine.PKIX").error("only the OpenSSL XSEC provider is supported");
         return false;
     }
 
@@ -435,7 +435,7 @@ bool AbstractPKIXTrustEngine::validate(
 #ifdef _DEBUG
     NDC ndc("validate");
 #endif
-    Category& log=Category::getInstance(XMLTOOLING_LOGCAT".TrustEngine.PKIX");
+    Category& log=Category::getInstance(XMLTOOLING_LOGCAT ".TrustEngine.PKIX");
 
     const KeyInfoResolver* inlineResolver = m_keyInfoResolver;
     if (!inlineResolver)
@@ -508,7 +508,7 @@ bool AbstractPKIXTrustEngine::validate(
 #ifdef _DEBUG
     NDC ndc("validate");
 #endif
-    Category& log=Category::getInstance(XMLTOOLING_LOGCAT".TrustEngine.PKIX");
+    Category& log=Category::getInstance(XMLTOOLING_LOGCAT ".TrustEngine.PKIX");
 
     if (!keyInfo) {
         log.error("unable to perform PKIX validation, KeyInfo not present");

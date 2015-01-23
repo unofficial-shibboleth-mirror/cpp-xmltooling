@@ -57,7 +57,7 @@ void UnknownElementImpl::releaseDOM() const
 #ifdef _DEBUG
     xmltooling::NDC ndc("releaseDOM");
 #endif
-    Category& log=Category::getInstance(XMLTOOLING_LOGCAT".XMLObject");
+    Category& log=Category::getInstance(XMLTOOLING_LOGCAT ".XMLObject");
     log.debug("releasing DOM for unknown content, preserving current DOM in XML form");
 
     // We're losing our DOM, so assuming we have one, we preserve it.
@@ -118,7 +118,7 @@ DOMElement* UnknownElementImpl::marshall(
     xmltooling::NDC ndc("marshall");
 #endif
     
-    Category& log=Category::getInstance(XMLTOOLING_LOGCAT".XMLObject");
+    Category& log=Category::getInstance(XMLTOOLING_LOGCAT ".XMLObject");
     log.debug("marshalling unknown content");
 
     DOMElement* cachedDOM=getDOM();
@@ -203,7 +203,7 @@ DOMElement* UnknownElementImpl::marshall(
     xmltooling::NDC ndc("marshall");
 #endif
     
-    Category& log=Category::getInstance(XMLTOOLING_LOGCAT".XMLObject");
+    Category& log=Category::getInstance(XMLTOOLING_LOGCAT ".XMLObject");
     log.debug("marshalling unknown content");
 
     DOMElement* cachedDOM=getDOM();

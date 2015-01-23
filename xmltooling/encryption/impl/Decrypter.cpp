@@ -153,7 +153,7 @@ DOMDocumentFragment* Decrypter::decryptData(const EncryptedData& encryptedData, 
             return decryptData(encryptedData, key);
         }
         catch(DecryptionException& ex) {
-            logging::Category::getInstance(XMLTOOLING_LOGCAT".Decrypter").warn(ex.what());
+            logging::Category::getInstance(XMLTOOLING_LOGCAT ".Decrypter").warn(ex.what());
         }
     }
 
@@ -258,7 +258,7 @@ void Decrypter::decryptData(ostream& out, const EncryptedData& encryptedData, co
             return decryptData(out, encryptedData, key);
         }
         catch(DecryptionException& ex) {
-            logging::Category::getInstance(XMLTOOLING_LOGCAT".Decrypter").warn(ex.what());
+            logging::Category::getInstance(XMLTOOLING_LOGCAT ".Decrypter").warn(ex.what());
         }
     }
 
@@ -366,13 +366,13 @@ XSECCryptoKey* Decrypter::decryptKey(const EncryptedKey& encryptedKey, const XML
             }
         }
         catch(DecryptionException& ex) {
-            logging::Category::getInstance(XMLTOOLING_LOGCAT".Decrypter").warn(ex.what());
+            logging::Category::getInstance(XMLTOOLING_LOGCAT ".Decrypter").warn(ex.what());
         }
     }
     
     // Some algorithms are vulnerable to chosen ciphertext attacks, so we generate a random key
     // to prevent discovery of the validity of the original candidate.
-    logging::Category::getInstance(XMLTOOLING_LOGCAT".Decrypter").warn(
+    logging::Category::getInstance(XMLTOOLING_LOGCAT ".Decrypter").warn(
         "unable to decrypt key, generating random key for defensive purposes"
         );
     pair<const char*,unsigned int> mapped = XMLToolingConfig::getConfig().mapXMLAlgorithmToKeyAlgorithm(algorithm);

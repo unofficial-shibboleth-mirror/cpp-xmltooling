@@ -87,7 +87,7 @@ void XMLObject::setNil(const XMLCh* value)
 }
 
 AbstractXMLObject::AbstractXMLObject(const XMLCh* nsURI, const XMLCh* localName, const XMLCh* prefix, const QName* schemaType)
-    : m_log(logging::Category::getInstance(XMLTOOLING_LOGCAT".XMLObject")),
+    : m_log(logging::Category::getInstance(XMLTOOLING_LOGCAT ".XMLObject")),
     	m_schemaLocation(nullptr), m_noNamespaceSchemaLocation(nullptr), m_nil(xmlconstants::XML_BOOL_NULL),
         m_parent(nullptr), m_elementQname(nsURI, localName, prefix)
 {

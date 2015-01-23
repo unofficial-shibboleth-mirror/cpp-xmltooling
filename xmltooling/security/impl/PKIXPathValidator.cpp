@@ -113,8 +113,8 @@ namespace xmltooling {
     {
     public:
         PKIXPathValidator(const xercesc::DOMElement* e)
-            : m_log(Category::getInstance(XMLTOOLING_LOGCAT".PathValidator.PKIX")),
-              m_lock(XMLToolingConfig::getConfig().getNamedMutex(XMLTOOLING_LOGCAT".PathValidator.PKIX")),
+            : m_log(Category::getInstance(XMLTOOLING_LOGCAT ".PathValidator.PKIX")),
+              m_lock(XMLToolingConfig::getConfig().getNamedMutex(XMLTOOLING_LOGCAT ".PathValidator.PKIX")),
               m_minRefreshDelay(XMLHelper::getAttrInt(e, 60, minRefreshDelay)),
               m_minSecondsRemaining(XMLHelper::getAttrInt(e, 86400, minSecondsRemaining)),
               m_minPercentRemaining(XMLHelper::getAttrInt(e, 10, minPercentRemaining)) {

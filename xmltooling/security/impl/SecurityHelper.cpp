@@ -125,7 +125,7 @@ XSECCryptoKey* SecurityHelper::loadKeyFromFile(const char* pathname, const char*
 #ifdef _DEBUG
     NDC ndc("loadKeyFromFile");
 #endif
-    Category& log = Category::getInstance(XMLTOOLING_LOGCAT".SecurityHelper");
+    Category& log = Category::getInstance(XMLTOOLING_LOGCAT ".SecurityHelper");
     log.info("loading private key from file (%s)", pathname);
 
     // Native objects.
@@ -238,7 +238,7 @@ vector<XSECCryptoX509*>::size_type SecurityHelper::loadCertificatesFromFile(
 #ifdef _DEBUG
     NDC ndc("loadCertificatesFromFile");
 #endif
-    Category& log = Category::getInstance(XMLTOOLING_LOGCAT".SecurityHelper");
+    Category& log = Category::getInstance(XMLTOOLING_LOGCAT ".SecurityHelper");
     log.info("loading certificate(s) from file (%s)", pathname);
 
     vector<XSECCryptoX509*>::size_type count = certs.size();
@@ -347,7 +347,7 @@ vector<XSECCryptoX509CRL*>::size_type SecurityHelper::loadCRLsFromFile(
 #ifdef _DEBUG
     NDC ndc("loadCRLsFromFile");
 #endif
-    Category& log = Category::getInstance(XMLTOOLING_LOGCAT".SecurityHelper");
+    Category& log = Category::getInstance(XMLTOOLING_LOGCAT ".SecurityHelper");
     log.info("loading CRL(s) from file (%s)", pathname);
 
     vector<XSECCryptoX509CRL*>::size_type count = crls.size();
@@ -476,7 +476,7 @@ bool SecurityHelper::matches(const XSECCryptoKey& key1, const XSECCryptoKey& key
 {
     if (key1.getProviderName()!=DSIGConstants::s_unicodeStrPROVOpenSSL ||
         key2.getProviderName()!=DSIGConstants::s_unicodeStrPROVOpenSSL) {
-        Category::getInstance(XMLTOOLING_LOGCAT".SecurityHelper").warn("comparison of non-OpenSSL keys not supported");
+        Category::getInstance(XMLTOOLING_LOGCAT ".SecurityHelper").warn("comparison of non-OpenSSL keys not supported");
         return false;
     }
 
@@ -540,7 +540,7 @@ bool SecurityHelper::matches(const XSECCryptoKey& key1, const XSECCryptoKey& key
     }
 #endif
 
-    Category::getInstance(XMLTOOLING_LOGCAT".SecurityHelper").warn("unsupported key type for comparison");
+    Category::getInstance(XMLTOOLING_LOGCAT ".SecurityHelper").warn("unsupported key type for comparison");
     return false;
 }
 
@@ -551,7 +551,7 @@ string SecurityHelper::doHash(const char* hashAlg, const char* buf, unsigned lon
 
     const EVP_MD* md = EVP_get_digestbyname(hashAlg);
     if (!md) {
-        Category::getInstance(XMLTOOLING_LOGCAT".SecurityHelper").error("hash algorithm (%s) not available", hashAlg);
+        Category::getInstance(XMLTOOLING_LOGCAT ".SecurityHelper").error("hash algorithm (%s) not available", hashAlg);
         return ret;
     }
 
@@ -566,7 +566,7 @@ string SecurityHelper::doHash(const char* hashAlg, const char* buf, unsigned lon
     int len = BIO_gets(chain, digest, EVP_MD_size(md));
     BIO_free_all(chain);
     if (len != EVP_MD_size(md)) {
-        Category::getInstance(XMLTOOLING_LOGCAT".SecurityHelper").error(
+        Category::getInstance(XMLTOOLING_LOGCAT ".SecurityHelper").error(
             "hash result length (%d) did not match expected value (%d)", len, EVP_MD_size(md)
             );
         return ret;
@@ -590,7 +590,7 @@ string SecurityHelper::getDEREncoding(const XSECCryptoKey& key, const char* hash
     string ret;
 
     if (key.getProviderName()!=DSIGConstants::s_unicodeStrPROVOpenSSL) {
-        Category::getInstance(XMLTOOLING_LOGCAT".SecurityHelper").warn("encoding of non-OpenSSL keys not supported");
+        Category::getInstance(XMLTOOLING_LOGCAT ".SecurityHelper").warn("encoding of non-OpenSSL keys not supported");
         return ret;
     }
 
@@ -603,14 +603,14 @@ string SecurityHelper::getDEREncoding(const XSECCryptoKey& key, const char* hash
     if (key.getKeyType() == XSECCryptoKey::KEY_RSA_PUBLIC || key.getKeyType() == XSECCryptoKey::KEY_RSA_PAIR) {
         rsa = static_cast<const OpenSSLCryptoKeyRSA&>(key).getOpenSSLRSA();
         if (!rsa) {
-            Category::getInstance(XMLTOOLING_LOGCAT".SecurityHelper").warn("key was not populated");
+            Category::getInstance(XMLTOOLING_LOGCAT ".SecurityHelper").warn("key was not populated");
             return ret;
         }
     }
     else if (key.getKeyType() == XSECCryptoKey::KEY_DSA_PUBLIC || key.getKeyType() == XSECCryptoKey::KEY_DSA_PAIR) {
         dsa = static_cast<const OpenSSLCryptoKeyDSA&>(key).getOpenSSLDSA();
         if (!dsa) {
-            Category::getInstance(XMLTOOLING_LOGCAT".SecurityHelper").warn("key was not populated");
+            Category::getInstance(XMLTOOLING_LOGCAT ".SecurityHelper").warn("key was not populated");
             return ret;
         }
     }
@@ -618,13 +618,13 @@ string SecurityHelper::getDEREncoding(const XSECCryptoKey& key, const char* hash
     else if (key.getKeyType() == XSECCryptoKey::KEY_EC_PUBLIC || key.getKeyType() == XSECCryptoKey::KEY_EC_PAIR) {
         ec = static_cast<const OpenSSLCryptoKeyEC&>(key).getOpenSSLEC();
         if (!ec) {
-            Category::getInstance(XMLTOOLING_LOGCAT".SecurityHelper").warn("key was not populated");
+            Category::getInstance(XMLTOOLING_LOGCAT ".SecurityHelper").warn("key was not populated");
             return ret;
         }
     }
 #endif
     else {
-        Category::getInstance(XMLTOOLING_LOGCAT".SecurityHelper").warn("public key type not supported");
+        Category::getInstance(XMLTOOLING_LOGCAT ".SecurityHelper").warn("public key type not supported");
         return ret;
     }
 
@@ -632,7 +632,7 @@ string SecurityHelper::getDEREncoding(const XSECCryptoKey& key, const char* hash
     if (hash) {
         md = EVP_get_digestbyname(hash);
         if (!md) {
-            Category::getInstance(XMLTOOLING_LOGCAT".SecurityHelper").error("hash algorithm (%s) not available", hash);
+            Category::getInstance(XMLTOOLING_LOGCAT ".SecurityHelper").error("hash algorithm (%s) not available", hash);
             return ret;
         }
     }
@@ -686,7 +686,7 @@ string SecurityHelper::getDEREncoding(const XSECCryptoX509& cert, const char* ha
     string ret;
 
     if (cert.getProviderName()!=DSIGConstants::s_unicodeStrPROVOpenSSL) {
-        Category::getInstance(XMLTOOLING_LOGCAT".SecurityHelper").warn("encoding of non-OpenSSL keys not supported");
+        Category::getInstance(XMLTOOLING_LOGCAT ".SecurityHelper").warn("encoding of non-OpenSSL keys not supported");
         return ret;
     }
 
@@ -694,7 +694,7 @@ string SecurityHelper::getDEREncoding(const XSECCryptoX509& cert, const char* ha
     if (hash) {
         md = EVP_get_digestbyname(hash);
         if (!md) {
-            Category::getInstance(XMLTOOLING_LOGCAT".SecurityHelper").error("hash algorithm (%s) not available", hash);
+            Category::getInstance(XMLTOOLING_LOGCAT ".SecurityHelper").error("hash algorithm (%s) not available", hash);
             return ret;
         }
     }
@@ -769,7 +769,7 @@ XSECCryptoKey* SecurityHelper::fromDEREncoding(const char* buf, unsigned long bu
     if (base64) {
         decoded = xercesc::Base64::decode(reinterpret_cast<const XMLByte*>(buf), &x);
         if (!decoded) {
-            Category::getInstance(XMLTOOLING_LOGCAT".SecurityHelper").error("base64 decode failed");
+            Category::getInstance(XMLTOOLING_LOGCAT ".SecurityHelper").error("base64 decode failed");
             return nullptr;
         }
     }
@@ -804,11 +804,11 @@ XSECCryptoKey* SecurityHelper::fromDEREncoding(const char* buf, unsigned long bu
                     break;
 #endif
                 default:
-                    Category::getInstance(XMLTOOLING_LOGCAT".SecurityHelper").error("unsupported public key type");
+                    Category::getInstance(XMLTOOLING_LOGCAT ".SecurityHelper").error("unsupported public key type");
             }
         }
         catch (XSECCryptoException& ex) {
-            Category::getInstance(XMLTOOLING_LOGCAT".SecurityHelper").error(ex.getMsg());
+            Category::getInstance(XMLTOOLING_LOGCAT ".SecurityHelper").error(ex.getMsg());
         }
         EVP_PKEY_free(pkey);
         return ret;
@@ -822,7 +822,7 @@ XSECCryptoKey* SecurityHelper::fromDEREncoding(const XMLCh* buf)
     xsecsize_t x;
     XMLByte* decoded = xercesc::Base64::decodeToXMLByte(buf, &x);
     if (!decoded) {
-        Category::getInstance(XMLTOOLING_LOGCAT".SecurityHelper").error("base64 decode failed");
+        Category::getInstance(XMLTOOLING_LOGCAT ".SecurityHelper").error("base64 decode failed");
         return nullptr;
     }
     XSECCryptoKey* ret = fromDEREncoding((const char*)decoded, x, false);

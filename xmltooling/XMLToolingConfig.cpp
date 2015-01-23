@@ -132,7 +132,7 @@ namespace {
     class TXFMOutputLog : public TXFMBase {
 	    TXFMOutputLog();
     public:
-        TXFMOutputLog(DOMDocument* doc) : TXFMBase(doc), m_log(Category::getInstance(XMLTOOLING_LOGCAT".Signature.Debugger")) {
+        TXFMOutputLog(DOMDocument* doc) : TXFMBase(doc), m_log(Category::getInstance(XMLTOOLING_LOGCAT ".Signature.Debugger")) {
             input = nullptr;
         }
         ~TXFMOutputLog() {
@@ -178,7 +178,7 @@ namespace {
     };
 
     TXFMBase* TXFMOutputLogFactory(DOMDocument* doc) {
-        if (Category::getInstance(XMLTOOLING_LOGCAT".Signature.Debugger").isDebugEnabled())
+        if (Category::getInstance(XMLTOOLING_LOGCAT ".Signature.Debugger").isDebugEnabled())
             return new TXFMOutputLog(doc);
         return nullptr;
     }
@@ -351,12 +351,12 @@ bool XMLToolingInternalConfig::log_config(const char* config)
         }
 
 #ifndef XMLTOOLING_NO_XMLSEC
-        Category::getInstance(XMLTOOLING_LOGCAT".Signature.Debugger").setAdditivity(false);
+        Category::getInstance(XMLTOOLING_LOGCAT ".Signature.Debugger").setAdditivity(false);
 #endif
 	}
     catch (const ConfigureFailure& e) {
         string msg = string("error in file permissions or logging configuration: ") + e.what();
-        Category::getInstance(XMLTOOLING_LOGCAT".Logging").crit(msg);
+        Category::getInstance(XMLTOOLING_LOGCAT ".Logging").crit(msg);
 #ifdef WIN32
         LogEvent(nullptr, EVENTLOG_ERROR_TYPE, 2100, nullptr, msg.c_str());
 #endif
@@ -371,7 +371,7 @@ bool XMLToolingInternalConfig::init()
 #ifdef _DEBUG
     xmltooling::NDC ndc("init");
 #endif
-    Category& log=Category::getInstance(XMLTOOLING_LOGCAT".Config");
+    Category& log=Category::getInstance(XMLTOOLING_LOGCAT ".Config");
 
     Lock initLock(m_lock);
 
@@ -502,7 +502,7 @@ void XMLToolingInternalConfig::term()
 
     Lock initLock(m_lock);
     if (m_initCount == 0) {
-        Category::getInstance(XMLTOOLING_LOGCAT".Config").crit("term without corresponding init");
+        Category::getInstance(XMLTOOLING_LOGCAT ".Config").crit("term without corresponding init");
         return;
     }
     else if (--m_initCount > 0) {
@@ -584,7 +584,7 @@ void XMLToolingInternalConfig::term()
 #ifndef XMLTOOLING_NO_XMLSEC
     curl_global_cleanup();
 #endif
-   Category::getInstance(XMLTOOLING_LOGCAT".Config").info("%s library shutdown complete", PACKAGE_STRING);
+   Category::getInstance(XMLTOOLING_LOGCAT ".Config").info("%s library shutdown complete", PACKAGE_STRING);
 }
 
 Lockable* XMLToolingInternalConfig::lock()
@@ -614,7 +614,7 @@ bool XMLToolingInternalConfig::load_library(const char* path, void* context)
 #ifdef _DEBUG
     xmltooling::NDC ndc("LoadLibrary");
 #endif
-    Category& log=Category::getInstance(XMLTOOLING_LOGCAT".Config");
+    Category& log=Category::getInstance(XMLTOOLING_LOGCAT ".Config");
     log.info("loading extension: %s", path);
 
     Locker locker(this);

@@ -322,7 +322,7 @@ FilesystemCredentialResolver::FilesystemCredentialResolver(const DOMElement* e)
 #ifdef _DEBUG
     NDC ndc("FilesystemCredentialResolver");
 #endif
-    Category& log=Category::getInstance(XMLTOOLING_LOGCAT".CredentialResolver."FILESYSTEM_CREDENTIAL_RESOLVER);
+    Category& log=Category::getInstance(XMLTOOLING_LOGCAT ".CredentialResolver." FILESYSTEM_CREDENTIAL_RESOLVER);
 
     if (e && (e->hasAttributeNS(nullptr,_certificate) || e->hasAttributeNS(nullptr,_key))) {
         // Dummy up a simple file resolver config using these attributes.
@@ -577,7 +577,7 @@ Lockable* FilesystemCredentialResolver::lock()
 #ifdef _DEBUG
     NDC ndc("lock");
 #endif
-    Category& log=Category::getInstance(XMLTOOLING_LOGCAT".CredentialResolver."FILESYSTEM_CREDENTIAL_RESOLVER);
+    Category& log=Category::getInstance(XMLTOOLING_LOGCAT ".CredentialResolver."FILESYSTEM_CREDENTIAL_RESOLVER);
 
     m_lock->rdlock();
 

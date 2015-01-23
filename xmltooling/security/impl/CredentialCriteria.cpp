@@ -217,7 +217,7 @@ void CredentialCriteria::reset()
 
 bool CredentialCriteria::matches(const Credential& credential) const
 {
-    Category& log = Category::getInstance(XMLTOOLING_LOGCAT".CredentialCriteria");
+    Category& log = Category::getInstance(XMLTOOLING_LOGCAT ".CredentialCriteria");
 
     // Usage check, if specified and we have one, compare masks.
     if (getUsage() != Credential::UNSPECIFIED_CREDENTIAL) {

@@ -50,7 +50,7 @@ bool ReplayCache::check(const char* context, const char* s, time_t expires)
 {
     if (strlen(context) > m_storageCaps.getContextSize()) {
         // This is a design/coding failure.
-        Category::getInstance(XMLTOOLING_LOGCAT".ReplayCache").error(
+        Category::getInstance(XMLTOOLING_LOGCAT ".ReplayCache").error(
             "context (%s) too long for StorageService (limit %u)", context, m_storageCaps.getContextSize()
             );
         return false;
@@ -65,7 +65,7 @@ bool ReplayCache::check(const char* context, const char* s, time_t expires)
         m_storage->createString(context, h.c_str(), "x", expires);
         return true;
 #else
-        Category::getInstance(XMLTOOLING_LOGCAT".ReplayCache").error(
+        Category::getInstance(XMLTOOLING_LOGCAT ".ReplayCache").error(
             "key (%s) too long for StorageService (limit %u)", s, m_storageCaps.getKeySize()
             );
         return false;

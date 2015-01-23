@@ -47,7 +47,7 @@ using namespace std;
 static int XMLTOOL_DLLLOCAL map_windows_error_status_to_pthreads(int rc=0) {
     if(rc!=0)  // success?
         return 0;
-    Category::getInstance(XMLTOOLING_LOGCAT".Threads").error("error from thread operation (%d)", GetLastError());
+    Category::getInstance(XMLTOOLING_LOGCAT ".Threads").error("error from thread operation (%d)", GetLastError());
     return THREAD_ERROR;
 }
 

@@ -95,7 +95,7 @@ namespace xmltooling {
 ChainingCredentialResolver::ChainingCredentialResolver(const DOMElement* e)
 {
     XMLToolingConfig& conf = XMLToolingConfig::getConfig();
-    Category& log=Category::getInstance(XMLTOOLING_LOGCAT".CredentialResolver."CHAINING_CREDENTIAL_RESOLVER);
+    Category& log=Category::getInstance(XMLTOOLING_LOGCAT ".CredentialResolver." CHAINING_CREDENTIAL_RESOLVER);
 
     // Load up the chain of resolvers.
     e = e ? XMLHelper::getFirstChildElement(e, _CredentialResolver) : nullptr;

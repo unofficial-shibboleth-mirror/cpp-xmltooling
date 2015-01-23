@@ -151,7 +151,7 @@ void SOAPClient::send(const Envelope& env, const SOAPTransport::Address& addr)
     m_transport = XMLToolingConfig::getConfig().SOAPTransportManager.newPlugin(scheme.c_str(), addr);
     prepareTransport(*m_transport);
     
-    Category& log = Category::getInstance(XMLTOOLING_LOGCAT".SOAPClient");
+    Category& log = Category::getInstance(XMLTOOLING_LOGCAT ".SOAPClient");
     if (log.isDebugEnabled())
         log.debugStream() << "marshalled envelope:\n" << env << logging::eol;
     
@@ -183,7 +183,7 @@ Envelope* SOAPClient::receive()
         : XMLToolingConfig::getConfig().getParser()).parse(out); 
     XercesJanitor<DOMDocument> janitor(doc);
 
-    Category& log = Category::getInstance(XMLTOOLING_LOGCAT".SOAPClient");
+    Category& log = Category::getInstance(XMLTOOLING_LOGCAT ".SOAPClient");
     if (log.isDebugEnabled()) {
         string buf;
         XMLHelper::serialize(doc->getDocumentElement(), buf);
@@ -219,7 +219,7 @@ bool SOAPClient::handleFault(const Fault& fault)
 {
     const xmltooling::QName* code = (fault.getFaultcode() ? fault.getFaultcode()->getCode() : nullptr);
     auto_ptr_char str((fault.getFaultstring() ? fault.getFaultstring()->getString() : nullptr));
-    Category::getInstance(XMLTOOLING_LOGCAT".SOAPClient").error(
+    Category::getInstance(XMLTOOLING_LOGCAT ".SOAPClient").error(
         "SOAP client detected a Fault: (%s) (%s)",
         (code ? code->toString().c_str() : "no code"),
         (str.get() ? str.get() : "no message")

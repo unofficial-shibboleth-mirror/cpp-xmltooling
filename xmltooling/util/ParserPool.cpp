@@ -66,7 +66,7 @@ namespace {
 #ifdef _DEBUG
             xmltooling::NDC ndc("handleError");
 #endif
-            Category& log=Category::getInstance(XMLTOOLING_LOGCAT".ParserPool");
+            Category& log=Category::getInstance(XMLTOOLING_LOGCAT ".ParserPool");
 
             DOMLocator* locator=e.getLocation();
             auto_ptr_char temp(e.getMessage());
@@ -233,7 +233,7 @@ bool ParserPool::loadSchema(const XMLCh* nsURI, const XMLCh* pathname)
 #if _DEBUG
         xmltooling::NDC ndc("loadSchema");
 #endif
-        Category& log=Category::getInstance(XMLTOOLING_LOGCAT".ParserPool");
+        Category& log=Category::getInstance(XMLTOOLING_LOGCAT ".ParserPool");
         auto_ptr_char n(nsURI);
         log.error("failed to load schema for (%s), file not found (%s)",n.get(),p.get());
         return false;
@@ -276,7 +276,7 @@ bool ParserPool::loadCatalog(const XMLCh* pathname)
 #if _DEBUG
     xmltooling::NDC ndc("loadCatalog");
 #endif
-    Category& log=Category::getInstance(XMLTOOLING_LOGCAT".ParserPool");
+    Category& log=Category::getInstance(XMLTOOLING_LOGCAT ".ParserPool");
 
     // XML constants
     static const XMLCh catalog[] =  UNICODE_LITERAL_7(c,a,t,a,l,o,g);
@@ -363,7 +363,7 @@ DOMInputSource* ParserPool::resolveEntity(
         return nullptr;
     xstring sysId(systemId);
 
-    Category& log=Category::getInstance(XMLTOOLING_LOGCAT".ParserPool");
+    Category& log=Category::getInstance(XMLTOOLING_LOGCAT ".ParserPool");
     if (log.isDebugEnabled()) {
         auto_ptr_char sysId(systemId);
         auto_ptr_char base(baseURI);
@@ -534,7 +534,7 @@ xsecsize_t StreamInputSource::StreamBinInputStream::readBytes(XMLByte* const toF
             bytes_read+=m_is.gcount();
         }
         catch(ios_base::failure& e) {
-            Category::getInstance(XMLTOOLING_LOGCAT".StreamInputSource").critStream()
+            Category::getInstance(XMLTOOLING_LOGCAT ".StreamInputSource").critStream()
                 << "XML::StreamInputSource::StreamBinInputStream::readBytes caught an exception: " << e.what()
                 << logging::eol;
             *toFill=0;

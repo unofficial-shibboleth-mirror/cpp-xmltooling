@@ -50,7 +50,7 @@ namespace xmltooling {
     {
     public:
         CURLPool() : m_size(0), m_lock(Mutex::create()),
-            m_log(Category::getInstance(XMLTOOLING_LOGCAT".SOAPTransport.CURL")) {}
+            m_log(Category::getInstance(XMLTOOLING_LOGCAT ".SOAPTransport.CURL")) {}
         ~CURLPool();
 
         CURL* get(const SOAPTransport::Address& addr);
@@ -481,8 +481,8 @@ void CURLSOAPTransport::send(istream* in)
 #ifdef _DEBUG
     xmltooling::NDC ndc("send");
 #endif
-    Category& log=Category::getInstance(XMLTOOLING_LOGCAT".SOAPTransport.CURL");
-    Category& log_curl=Category::getInstance(XMLTOOLING_LOGCAT".libcurl");
+    Category& log=Category::getInstance(XMLTOOLING_LOGCAT ".SOAPTransport.CURL");
+    Category& log_curl=Category::getInstance(XMLTOOLING_LOGCAT ".libcurl");
 
     // For this implementation, it's sufficient to check for https as a sign of transport security.
     if (m_mandatory && !isConfidential())
@@ -647,7 +647,7 @@ int xmltooling::curl_debug_hook(CURL* handle, curl_infotype type, char* data, si
 #ifndef XMLTOOLING_NO_XMLSEC
 int xmltooling::verify_callback(X509_STORE_CTX* x509_ctx, void* arg)
 {
-    Category& log=Category::getInstance(XMLTOOLING_LOGCAT".SOAPTransport.CURL");
+    Category& log=Category::getInstance(XMLTOOLING_LOGCAT ".SOAPTransport.CURL");
     log.debug("invoking custom X.509 verify callback");
 #if (OPENSSL_VERSION_NUMBER >= 0x00907000L)
     CURLSOAPTransport* ctx = reinterpret_cast<CURLSOAPTransport*>(arg);

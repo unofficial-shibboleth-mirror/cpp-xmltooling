@@ -97,7 +97,7 @@ bool ExplicitKeyTrustEngine::validate(
 #ifdef _DEBUG
     NDC ndc("validate");
 #endif
-    Category& log=Category::getInstance(XMLTOOLING_LOGCAT".TrustEngine."EXPLICIT_KEY_TRUSTENGINE);
+    Category& log=Category::getInstance(XMLTOOLING_LOGCAT ".TrustEngine." EXPLICIT_KEY_TRUSTENGINE);
 
     vector<const Credential*> credentials;
     if (criteria) {
@@ -147,7 +147,7 @@ bool ExplicitKeyTrustEngine::validate(
 #ifdef _DEBUG
     NDC ndc("validate");
 #endif
-    Category& log=Category::getInstance(XMLTOOLING_LOGCAT".TrustEngine."EXPLICIT_KEY_TRUSTENGINE);
+    Category& log=Category::getInstance(XMLTOOLING_LOGCAT ".TrustEngine."EXPLICIT_KEY_TRUSTENGINE);
     
     vector<const Credential*> credentials;
     if (criteria) {
@@ -200,11 +200,11 @@ bool ExplicitKeyTrustEngine::validate(
         NDC ndc("validate");
 #endif
     if (!certEE) {
-        Category::getInstance(XMLTOOLING_LOGCAT".TrustEngine."EXPLICIT_KEY_TRUSTENGINE).error("unable to validate, end-entity certificate was null");
+        Category::getInstance(XMLTOOLING_LOGCAT ".TrustEngine."EXPLICIT_KEY_TRUSTENGINE).error("unable to validate, end-entity certificate was null");
         return false;
     }
     else if (certEE->getProviderName()!=DSIGConstants::s_unicodeStrPROVOpenSSL) {
-        Category::getInstance(XMLTOOLING_LOGCAT".TrustEngine."EXPLICIT_KEY_TRUSTENGINE).error("only the OpenSSL XSEC provider is supported");
+        Category::getInstance(XMLTOOLING_LOGCAT ".TrustEngine."EXPLICIT_KEY_TRUSTENGINE).error("only the OpenSSL XSEC provider is supported");
         return false;
     }
 
@@ -221,7 +221,7 @@ bool ExplicitKeyTrustEngine::validate(
 #ifdef _DEBUG
     NDC ndc("validate");
 #endif
-    Category& log=Category::getInstance(XMLTOOLING_LOGCAT".TrustEngine."EXPLICIT_KEY_TRUSTENGINE);
+    Category& log=Category::getInstance(XMLTOOLING_LOGCAT ".TrustEngine."EXPLICIT_KEY_TRUSTENGINE);
     
     if (!certEE) {
         log.error("unable to validate, end-entity certificate was null");
