@@ -452,5 +452,11 @@ ostream& xmltooling::operator<<(ostream& ostr, const DOMNode& node)
 
 ostream& xmltooling::operator<<(ostream& ostr, const XMLObject& obj)
 {
-    return ostr << *(obj.marshall());
+    try {
+        return ostr << *(obj.marshall());
+    }
+    catch (DOMException& ex) {
+        auto_ptr_char msg(ex.getMessage());
+        throw XMLParserException(msg.get());
+    }
 }
