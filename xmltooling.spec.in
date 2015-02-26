@@ -8,14 +8,10 @@ License:	Apache 2.0
 URL:		http://www.opensaml.org/
 Source:		%{name}-%{version}.tar.gz
 BuildRoot:	%{_tmppath}/%{name}-%{version}-root
-%if 0%{?suse_version} > 1030 && 0%{?suse_version} < 1130
-BuildRequires:  libXerces-c-devel >= 2.8.0
-%else
 %if 0%{?rhel} >= 7 || 0%{?centos_version} >= 700
-BuildRequires:  xerces-c-devel >= 2.8
+BuildRequires:  xerces-c-devel >= 3.1
 %else
-BuildRequires:  libxerces-c-devel >= 2.8.0
-%endif
+BuildRequires:  libxerces-c-devel >= 3.1
 %endif
 BuildRequires:  libxml-security-c-devel >= 1.4.0
 %{?_with_log4cpp:BuildRequires: liblog4cpp-devel >= 1.0}
@@ -78,14 +74,10 @@ Group:		Development/Libraries/C and C++
 Requires:	lib@PACKAGE_NAME@6 = %{version}-%{release}
 Provides:	@PACKAGE_NAME@-devel = %{version}-%{release}
 Obsoletes:	@PACKAGE_NAME@-devel < %{version}-%{release}
-%if 0%{?suse_version} > 1030 && 0%{?suse_version} < 1130
-Requires:  libXerces-c-devel >= 2.8.0
-%else
 %if 0%{?rhel} >= 7 || 0%{?centos_version} >= 700
-Requires:  xerces-c-devel >= 2.8
+Requires:  xerces-c-devel >= 3.1
 %else
-Requires:  libxerces-c-devel >= 2.8.0
-%endif
+Requires:  libxerces-c-devel >= 3.1
 %endif
 Requires: libxml-security-c-devel >= 1.4.0
 %{?_with_log4cpp:Requires: liblog4cpp-devel >= 1.0}
@@ -166,6 +158,9 @@ This package includes XML schemas and related files.
 %doc %{pkgdocdir}
 
 %changelog
+* Thu Feb 26 2015 Scott Cantor <cantor.2@osu.edu> - 1.5.4-1
+- Require Xerces 3.1 even on older platforms
+
 * Tue May 13 2014 Ian Young <ian@iay.org.uk> - 1.5.3-1.2
 - Update package dependencies for RHEL/CentOS 7
 
