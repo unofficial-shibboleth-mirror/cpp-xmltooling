@@ -6,7 +6,7 @@ Group:		Development/Libraries/C and C++
 Vendor:		Shibboleth Consortium
 License:	Apache 2.0
 URL:		http://www.opensaml.org/
-Source:		%{name}-%{version}.tar.gz
+Source:		%{name}-%{version}.tar.bz2
 BuildRoot:	%{_tmppath}/%{name}-%{version}-root
 %if 0%{?rhel} >= 7 || 0%{?centos_version} >= 700
 BuildRequires:  xerces-c-devel >= 3.1
@@ -160,6 +160,7 @@ This package includes XML schemas and related files.
 %changelog
 * Thu Feb 26 2015 Scott Cantor <cantor.2@osu.edu> - 1.5.4-1
 - Require Xerces 3.1 even on older platforms
+- Switch to bz2 source to avoid future SuSE issues
 
 * Tue May 13 2014 Ian Young <ian@iay.org.uk> - 1.5.3-1.2
 - Update package dependencies for RHEL/CentOS 7
