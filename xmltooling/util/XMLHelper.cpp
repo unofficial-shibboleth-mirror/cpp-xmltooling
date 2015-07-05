@@ -338,9 +338,11 @@ int XMLHelper::getAttrInt(const DOMElement* e, int defValue, const XMLCh* localN
     if (e) {
         const XMLCh* val = e->getAttributeNS(ns, localName);
         if (val && *val) {
-            int i = XMLString::parseInt(val);
-            if (i)
-                return i;
+            try {
+                return XMLString::parseInt(val);
+            }
+            catch (XMLException&) {
+            }
         }
     }
     return defValue;

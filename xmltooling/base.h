@@ -811,7 +811,16 @@
         XMLCh* m_##proper; \
     public: \
         pair<bool,int> get##proper() const { \
-            return make_pair((m_##proper!=nullptr),(m_##proper!=nullptr ? xercesc::XMLString::parseInt(m_##proper): 0)); \
+            if (m_##proper) { \
+                try { \
+                    return std::make_pair(true, xercesc::XMLString::parseInt(m_##proper)); \
+                } \
+                catch (...) { \
+                    return std::make_pair(true, 0); \
+                } \
+            } else { \
+                return std::make_pair(false, 0); \
+            } \
         } \
         void set##proper(const XMLCh* proper) { \
             m_##proper = prepareForAssignment(m_##proper,proper); \
@@ -1369,7 +1378,16 @@
 #define DECL_INTEGER_CONTENT(proper) \
     XMLTOOLING_DOXYGEN(Returns proper in integer form after a NULL indicator.) \
     std::pair<bool,int> get##proper() const { \
-        return std::make_pair((getTextContent()!=nullptr), (getTextContent()!=nullptr ? xercesc::XMLString::parseInt(getTextContent()) : 0)); \
+        if (getTextContent()) { \
+            try { \
+                return std::make_pair(true, xercesc::XMLString::parseInt(getTextContent())); \
+            } \
+            catch (...) { \
+                return std::make_pair(true, 0); \
+            } \
+        } else { \
+            return std::make_pair(false, 0); \
+        } \
     } \
     XMLTOOLING_DOXYGEN(Sets proper.) \
     void set##proper(int proper) { \
