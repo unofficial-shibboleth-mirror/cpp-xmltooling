@@ -13,7 +13,7 @@ BuildRequires:  xerces-c-devel >= 3.1
 %else
 BuildRequires:  libxerces-c-devel >= 3.1
 %endif
-BuildRequires:  libxml-security-c-devel >= 1.4.0
+BuildRequires:  libxml-security-c-devel >= 1.7.3
 %{?_with_log4cpp:BuildRequires: liblog4cpp-devel >= 1.0}
 %{!?_with_log4cpp:BuildRequires: liblog4shib-devel >= 1.0.4}
 BuildRequires: gcc-c++, openssl-devel, boost-devel >= 1.32.0
@@ -79,7 +79,7 @@ Requires:  xerces-c-devel >= 3.1
 %else
 Requires:  libxerces-c-devel >= 3.1
 %endif
-Requires: libxml-security-c-devel >= 1.4.0
+Requires: libxml-security-c-devel >= 1.7.3
 %{?_with_log4cpp:Requires: liblog4cpp-devel >= 1.0}
 %{!?_with_log4cpp:Requires: liblog4shib-devel >= 1.0.4}
 Requires: openssl-devel, boost-devel >= 1.32.0
