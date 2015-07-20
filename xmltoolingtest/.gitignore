@@ -1,4 +1,6 @@
 /Debug
+/*.lo
+/*.la
 /*.user
 /*.cpp
 /Release
