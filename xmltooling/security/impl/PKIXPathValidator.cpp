@@ -291,7 +291,7 @@ bool PKIXPathValidator::validate(X509* EE, STACK_OF(X509)* untrusted, const Path
 
     // AFAICT, EE and untrusted are passed in but not owned by the ctx.
 #if (OPENSSL_VERSION_NUMBER >= 0x00907000L)
-    if (X509_STORE_CTX_init(&ctx,store,EE,untrusted)!=1) {
+    if (X509_STORE_CTX_init(&ctx,store,EE,untrusted) != 1) {
         log_openssl();
         m_log.error("unable to initialize X509_STORE_CTX");
         X509_STORE_free(store);
@@ -317,8 +317,8 @@ bool PKIXPathValidator::validate(X509* EE, STACK_OF(X509)* untrusted, const Path
     X509_STORE_CTX_set_verify_cb(&ctx,error_callback);
 
     // Do a first pass verify. If CRLs aren't used, this is the only pass.
-    int ret=X509_verify_cert(&ctx);
-    if (ret==1) {
+    int ret = X509_verify_cert(&ctx);
+    if (ret == 1) {
         // Now see if the depth was acceptable by counting the number of intermediates.
         int depth=sk_X509_num(ctx.chain)-2;
         if (pkixParams->getVerificationDepth() < depth) {
@@ -327,13 +327,18 @@ bool PKIXPathValidator::validate(X509* EE, STACK_OF(X509)* untrusted, const Path
                 (depth==-1) ? 0 : depth,
                 pkixParams->getVerificationDepth()
                 );
-            ret=0;
+            ret = 0;
         }
     }
 
-    if (pkixParams->getRevocationChecking() != PKIXPathValidatorParams::REVOCATION_OFF) {
+    // If the first pass succeeded, check to see if we need a second with CRLs.
+    if (ret == 1 && pkixParams->getRevocationChecking() != PKIXPathValidatorParams::REVOCATION_OFF) {
 #if (OPENSSL_VERSION_NUMBER >= 0x00907000L)
-        // When we add CRLs, we have to be sure the nextUpdate hasn't passed, because OpenSSL won't accept
+        // After the first X509_verify_cert call, the ctx can no longer be used
+        // (subsequent calls will fail with OpenSSL 1.0.1p / 1.0.2d or later).
+        X509_STORE_CTX_cleanup(&ctx);
+
+    	// When we add CRLs, we have to be sure the nextUpdate hasn't passed, because OpenSSL won't accept
         // the CRL in that case. If we end up not adding a CRL for a particular link in the chain, the
         // validation will fail (if the fullChain option was set).
         set<string> crlissuers;
@@ -391,12 +396,27 @@ bool PKIXPathValidator::validate(X509* EE, STACK_OF(X509)* untrusted, const Path
             }
         }
 
-        // Do a second pass verify with CRLs in place.
-        if (pkixParams->getRevocationChecking() == PKIXPathValidatorParams::REVOCATION_FULLCHAIN)
-            X509_STORE_CTX_set_flags(&ctx, X509_V_FLAG_CRL_CHECK|X509_V_FLAG_CRL_CHECK_ALL);
-        else
-            X509_STORE_CTX_set_flags(&ctx, X509_V_FLAG_CRL_CHECK);
-        ret=X509_verify_cert(&ctx);
+        // Do a second pass verify with CRLs in place. Reinitialize ctx, see
+        // https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=aae41f8c54257d9fa6904d3a9aa09c5db6cefd0d
+#if (OPENSSL_VERSION_NUMBER >= 0x00907000L)
+		if (X509_STORE_CTX_init(&ctx,store,EE,untrusted) != 1) {
+			log_openssl();
+			m_log.error("unable to initialize X509_STORE_CTX");
+			ret = 0;
+		}
+#else
+    	X509_STORE_CTX_init(&ctx,store,EE,untrusted);
+#endif
+    	if (ret != 0) {
+			X509_STORE_CTX_trusted_stack(&ctx,CAstack);
+			X509_STORE_CTX_set_depth(&ctx,100);  // already checked above
+			X509_STORE_CTX_set_verify_cb(&ctx,error_callback);
+			if (pkixParams->getRevocationChecking() == PKIXPathValidatorParams::REVOCATION_FULLCHAIN)
+				X509_STORE_CTX_set_flags(&ctx, X509_V_FLAG_CRL_CHECK|X509_V_FLAG_CRL_CHECK_ALL);
+			else
+				X509_STORE_CTX_set_flags(&ctx, X509_V_FLAG_CRL_CHECK);
+			ret = X509_verify_cert(&ctx);
+    	}
 #else
         m_log.warn("CRL checking is enabled, but OpenSSL version is too old");
         ret = 0;
