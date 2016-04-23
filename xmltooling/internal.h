@@ -34,6 +34,9 @@
 // Export public APIs.
 #define XMLTOOLING_EXPORTS
 
+// Force XMLSEC to assume OpenSSL
+#define XSEC_HAVE_OPENSSL 1
+
 // eventually we might be able to support autoconf via cygwin...
 #if defined (_MSC_VER) || defined(__BORLANDC__)
 # include "config_win32.h"
