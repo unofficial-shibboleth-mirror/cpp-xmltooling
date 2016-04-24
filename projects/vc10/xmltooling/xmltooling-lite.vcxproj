@@ -58,18 +58,20 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <Import Project="..\..\BuildPath.props" />
+  <Import Project="..\..\..\..\BuildPath.props" />
   <Import Project="$(ParentRoot)\Versions.props" />
   <Import Project="$(ParentRoot)\Includes.props" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectName)-$(Configuration)\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)..\..\Build\VC10\$(Configuration)\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)..\..\Build\VC10\$(Platform)\$(Configuration)\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(ProjectName)-$(Configuration)\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectName)-$(Configuration)\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)..\..\Build\VC10\$(Configuration)\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)..\..\Build\VC10\$(Platform)\$(Configuration)\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(ProjectName)-$(Configuration)\</IntDir>
     <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
@@ -91,7 +93,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(SolutionDir);$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\..\;$(ProjectDir)..\..\..\XMLTooling;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;XMLTOOLING_LITE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -121,7 +123,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(SolutionDir);$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\..\;$(ProjectDir)..\..\..\XMLTooling;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;XMLTOOLING_LITE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -145,7 +147,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir);$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\..\;$(ProjectDir)..\..\..\XMLTooling;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;XMLTOOLING_LITE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <PrecompiledHeaderFile>
@@ -174,7 +176,7 @@
       <TargetEnvironment>X64</TargetEnvironment>
     </Midl>
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir);$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\..\;$(ProjectDir)..\..\..\XMLTooling;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;XMLTOOLING_LITE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <PrecompiledHeaderFile>
@@ -197,93 +199,93 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="AbstractAttributeExtensibleXMLObject.cpp" />
-    <ClCompile Include="AbstractComplexElement.cpp" />
-    <ClCompile Include="AbstractDOMCachingXMLObject.cpp" />
-    <ClCompile Include="AbstractSimpleElement.cpp" />
-    <ClCompile Include="AbstractXMLObject.cpp" />
-    <ClCompile Include="exceptions.cpp" />
-    <ClCompile Include="Lockable.cpp" />
-    <ClCompile Include="Namespace.cpp" />
-    <ClCompile Include="QName.cpp" />
-    <ClCompile Include="unicode.cpp" />
-    <ClCompile Include="version.cpp" />
-    <ClCompile Include="XMLObjectBuilder.cpp" />
-    <ClCompile Include="XMLToolingConfig.cpp" />
-    <ClCompile Include="util\DateTime.cpp" />
-    <ClCompile Include="util\NDC.cpp" />
-    <ClCompile Include="util\ParserPool.cpp" />
-    <ClCompile Include="util\PathResolver.cpp" />
-    <ClCompile Include="util\ReloadableXMLFile.cpp" />
-    <ClCompile Include="util\TemplateEngine.cpp" />
-    <ClCompile Include="util\URLEncoder.cpp" />
-    <ClCompile Include="util\Win32Threads.cpp" />
-    <ClCompile Include="util\XMLConstants.cpp" />
-    <ClCompile Include="util\XMLHelper.cpp" />
-    <ClCompile Include="io\AbstractXMLObjectMarshaller.cpp" />
-    <ClCompile Include="io\AbstractXMLObjectUnmarshaller.cpp" />
-    <ClCompile Include="io\HTTPRequest.cpp" />
-    <ClCompile Include="io\HTTPResponse.cpp" />
-    <ClCompile Include="impl\AnyElement.cpp" />
-    <ClCompile Include="impl\UnknownElement.cpp" />
-    <ClCompile Include="validation\ValidatorSuite.cpp" />
-    <ClCompile Include="soap\impl\SOAPClient.cpp" />
-    <ClCompile Include="soap\impl\SOAPImpl.cpp" />
-    <ClCompile Include="soap\impl\SOAPSchemaValidators.cpp" />
+    <ClCompile Include="..\..\..\XMLTooling\AbstractAttributeExtensibleXMLObject.cpp" />
+    <ClCompile Include="..\..\..\XMLTooling\AbstractComplexElement.cpp" />
+    <ClCompile Include="..\..\..\XMLTooling\AbstractDOMCachingXMLObject.cpp" />
+    <ClCompile Include="..\..\..\XMLTooling\AbstractSimpleElement.cpp" />
+    <ClCompile Include="..\..\..\XMLTooling\AbstractXMLObject.cpp" />
+    <ClCompile Include="..\..\..\XMLTooling\exceptions.cpp" />
+    <ClCompile Include="..\..\..\XMLTooling\Lockable.cpp" />
+    <ClCompile Include="..\..\..\XMLTooling\Namespace.cpp" />
+    <ClCompile Include="..\..\..\XMLTooling\QName.cpp" />
+    <ClCompile Include="..\..\..\XMLTooling\unicode.cpp" />
+    <ClCompile Include="..\..\..\XMLTooling\version.cpp" />
+    <ClCompile Include="..\..\..\XMLTooling\XMLObjectBuilder.cpp" />
+    <ClCompile Include="..\..\..\XMLTooling\XMLToolingConfig.cpp" />
+    <ClCompile Include="..\..\..\XMLTooling\util\DateTime.cpp" />
+    <ClCompile Include="..\..\..\XMLTooling\util\NDC.cpp" />
+    <ClCompile Include="..\..\..\XMLTooling\util\ParserPool.cpp" />
+    <ClCompile Include="..\..\..\XMLTooling\util\PathResolver.cpp" />
+    <ClCompile Include="..\..\..\XMLTooling\util\ReloadableXMLFile.cpp" />
+    <ClCompile Include="..\..\..\XMLTooling\util\TemplateEngine.cpp" />
+    <ClCompile Include="..\..\..\XMLTooling\util\URLEncoder.cpp" />
+    <ClCompile Include="..\..\..\XMLTooling\util\Win32Threads.cpp" />
+    <ClCompile Include="..\..\..\XMLTooling\util\XMLConstants.cpp" />
+    <ClCompile Include="..\..\..\XMLTooling\util\XMLHelper.cpp" />
+    <ClCompile Include="..\..\..\XMLTooling\io\AbstractXMLObjectMarshaller.cpp" />
+    <ClCompile Include="..\..\..\XMLTooling\io\AbstractXMLObjectUnmarshaller.cpp" />
+    <ClCompile Include="..\..\..\XMLTooling\io\HTTPRequest.cpp" />
+    <ClCompile Include="..\..\..\XMLTooling\io\HTTPResponse.cpp" />
+    <ClCompile Include="..\..\..\XMLTooling\impl\AnyElement.cpp" />
+    <ClCompile Include="..\..\..\XMLTooling\impl\UnknownElement.cpp" />
+    <ClCompile Include="..\..\..\XMLTooling\validation\ValidatorSuite.cpp" />
+    <ClCompile Include="..\..\..\XMLTooling\soap\impl\SOAPClient.cpp" />
+    <ClCompile Include="..\..\..\XMLTooling\soap\impl\SOAPImpl.cpp" />
+    <ClCompile Include="..\..\..\XMLTooling\soap\impl\SOAPSchemaValidators.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AbstractAttributeExtensibleXMLObject.h" />
-    <ClInclude Include="AbstractComplexElement.h" />
-    <ClInclude Include="AbstractDOMCachingXMLObject.h" />
-    <ClInclude Include="AbstractSimpleElement.h" />
-    <ClInclude Include="AbstractXMLObject.h" />
-    <ClInclude Include="AttributeExtensibleXMLObject.h" />
-    <ClInclude Include="base.h" />
-    <ClInclude Include="ConcreteXMLObjectBuilder.h" />
-    <ClInclude Include="config_pub_win32.h" />
-    <ClInclude Include="ElementExtensibleXMLObject.h" />
-    <ClInclude Include="ElementProxy.h" />
-    <ClInclude Include="exceptions.h" />
-    <ClInclude Include="internal.h" />
-    <ClInclude Include="Lockable.h" />
-    <ClInclude Include="logging.h" />
-    <ClInclude Include="Namespace.h" />
-    <ClInclude Include="PluginManager.h" />
-    <ClInclude Include="QName.h" />
-    <ClInclude Include="unicode.h" />
-    <ClInclude Include="version.h" />
-    <ClInclude Include="XMLObject.h" />
-    <ClInclude Include="XMLObjectBuilder.h" />
-    <ClInclude Include="XMLToolingConfig.h" />
-    <ClInclude Include="util\DateTime.h" />
-    <ClInclude Include="util\NDC.h" />
-    <ClInclude Include="util\ParserPool.h" />
-    <ClInclude Include="util\PathResolver.h" />
-    <ClInclude Include="util\Predicates.h" />
-    <ClInclude Include="util\ReloadableXMLFile.h" />
-    <ClInclude Include="util\TemplateEngine.h" />
-    <ClInclude Include="util\Threads.h" />
-    <ClInclude Include="util\URLEncoder.h" />
-    <ClInclude Include="util\XMLConstants.h" />
-    <ClInclude Include="util\XMLHelper.h" />
-    <ClInclude Include="util\XMLObjectChildrenList.h" />
-    <ClInclude Include="io\AbstractXMLObjectMarshaller.h" />
-    <ClInclude Include="io\AbstractXMLObjectUnmarshaller.h" />
-    <ClInclude Include="impl\AnyElement.h" />
-    <ClInclude Include="impl\UnknownElement.h" />
-    <ClInclude Include="validation\Validator.h" />
-    <ClInclude Include="validation\ValidatorSuite.h" />
-    <ClInclude Include="soap\HTTPSOAPTransport.h" />
-    <ClInclude Include="soap\SOAP.h" />
-    <ClInclude Include="soap\SOAPClient.h" />
-    <ClInclude Include="soap\SOAPTransport.h" />
+    <ClInclude Include="..\..\..\XMLTooling\AbstractAttributeExtensibleXMLObject.h" />
+    <ClInclude Include="..\..\..\XMLTooling\AbstractComplexElement.h" />
+    <ClInclude Include="..\..\..\XMLTooling\AbstractDOMCachingXMLObject.h" />
+    <ClInclude Include="..\..\..\XMLTooling\AbstractSimpleElement.h" />
+    <ClInclude Include="..\..\..\XMLTooling\AbstractXMLObject.h" />
+    <ClInclude Include="..\..\..\XMLTooling\AttributeExtensibleXMLObject.h" />
+    <ClInclude Include="..\..\..\XMLTooling\base.h" />
+    <ClInclude Include="..\..\..\XMLTooling\ConcreteXMLObjectBuilder.h" />
+    <ClInclude Include="..\..\..\XMLTooling\config_pub_win32.h" />
+    <ClInclude Include="..\..\..\XMLTooling\ElementExtensibleXMLObject.h" />
+    <ClInclude Include="..\..\..\XMLTooling\ElementProxy.h" />
+    <ClInclude Include="..\..\..\XMLTooling\exceptions.h" />
+    <ClInclude Include="..\..\..\XMLTooling\internal.h" />
+    <ClInclude Include="..\..\..\XMLTooling\Lockable.h" />
+    <ClInclude Include="..\..\..\XMLTooling\logging.h" />
+    <ClInclude Include="..\..\..\XMLTooling\Namespace.h" />
+    <ClInclude Include="..\..\..\XMLTooling\PluginManager.h" />
+    <ClInclude Include="..\..\..\XMLTooling\QName.h" />
+    <ClInclude Include="..\..\..\XMLTooling\unicode.h" />
+    <ClInclude Include="..\..\..\XMLTooling\version.h" />
+    <ClInclude Include="..\..\..\XMLTooling\XMLObject.h" />
+    <ClInclude Include="..\..\..\XMLTooling\XMLObjectBuilder.h" />
+    <ClInclude Include="..\..\..\XMLTooling\XMLToolingConfig.h" />
+    <ClInclude Include="..\..\..\XMLTooling\util\DateTime.h" />
+    <ClInclude Include="..\..\..\XMLTooling\util\NDC.h" />
+    <ClInclude Include="..\..\..\XMLTooling\util\ParserPool.h" />
+    <ClInclude Include="..\..\..\XMLTooling\util\PathResolver.h" />
+    <ClInclude Include="..\..\..\XMLTooling\util\Predicates.h" />
+    <ClInclude Include="..\..\..\XMLTooling\util\ReloadableXMLFile.h" />
+    <ClInclude Include="..\..\..\XMLTooling\util\TemplateEngine.h" />
+    <ClInclude Include="..\..\..\XMLTooling\util\Threads.h" />
+    <ClInclude Include="..\..\..\XMLTooling\util\URLEncoder.h" />
+    <ClInclude Include="..\..\..\XMLTooling\util\XMLConstants.h" />
+    <ClInclude Include="..\..\..\XMLTooling\util\XMLHelper.h" />
+    <ClInclude Include="..\..\..\XMLTooling\util\XMLObjectChildrenList.h" />
+    <ClInclude Include="..\..\..\XMLTooling\io\AbstractXMLObjectMarshaller.h" />
+    <ClInclude Include="..\..\..\XMLTooling\io\AbstractXMLObjectUnmarshaller.h" />
+    <ClInclude Include="..\..\..\XMLTooling\impl\AnyElement.h" />
+    <ClInclude Include="..\..\..\XMLTooling\impl\UnknownElement.h" />
+    <ClInclude Include="..\..\..\XMLTooling\validation\Validator.h" />
+    <ClInclude Include="..\..\..\XMLTooling\validation\ValidatorSuite.h" />
+    <ClInclude Include="..\..\..\XMLTooling\soap\HTTPSOAPTransport.h" />
+    <ClInclude Include="..\..\..\XMLTooling\soap\SOAP.h" />
+    <ClInclude Include="..\..\..\XMLTooling\soap\SOAPClient.h" />
+    <ClInclude Include="..\..\..\XMLTooling\soap\SOAPTransport.h" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="xmltooling.rc" />
+    <ResourceCompile Include="..\..\..\XMLTooling\xmltooling.rc" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="config_pub.h.in" />
-    <None Include="Makefile.am" />
+    <None Include="..\..\..\XMLTooling\config_pub.h.in" />
+    <None Include="..\..\..\XMLTooling\Makefile.am" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,0 +1,13 @@
+/Debug
+/*.lo
+/*.la
+/*.user
+/*.cpp
+/Release
+/.deps
+/.libs
+/Makefile
+/Makefile.in
+/xmltoolingtest
+/x64
+/ipch

@@ -21,7 +21,7 @@
 # The contents of the svn:ignore property on the branch root.
 /Debug
 /*.ncb
-/*.suo
+*.suo
 /Release
 /aclocal.m4
 /autom4te.cache
@@ -49,8 +49,8 @@
 /x64
 /Portfile
 /*.gz
-/*.opensdf
-/*.sdf
+*.opensdf
+*.sdf
 /ipch
 /build-aux
 /build
