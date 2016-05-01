@@ -47,7 +47,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "openssl", "openssl", "{F284
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "xerces", "xerces", "{06F58C02-6110-4D42-9981-B326910B3E2D}"
 	ProjectSection(SolutionItems) = preProject
-		..\..\dependencies\xerces\pkginfo = dependencies\xerces\pkginfo
+		..\..\dependencies\xerces\pkginfo = ..\..\dependencies\xerces\pkginfo
 		..\..\dependencies\xerces\Portfile = ..\..\dependencies\xerces\Portfile
 		..\..\dependencies\xerces\xerces-c.spec = ..\..\dependencies\xerces\xerces-c.spec
 	EndProjectSection
