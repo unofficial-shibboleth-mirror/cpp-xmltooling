@@ -15,14 +15,20 @@
 *~
 *.#*
 .*.swp
+*.vcxproj.user
+Projects/vc??/xmltoolingtest/*.cpp
+Projects/vc10/ipch/
+Projects/vc14/cpp-xmltooling.VC.opendb
+Projects/vc??/xmltoolingtest/Debug/
+Projects/vc??/xmltoolingtest/x64/
+Projects/vc??/xmltoolingtest/Release/
+
 .DS_store
 # Simulated Subversion default ignores end here
 /xmltooling-uninstalled.sh
 # The contents of the svn:ignore property on the branch root.
-/Debug
 /*.ncb
 *.suo
-/Release
 /aclocal.m4
 /autom4te.cache
 /config.guess
@@ -46,7 +52,6 @@
 /.project
 /.cproject
 /doxyfile
-/x64
 /Portfile
 /*.gz
 *.opensdf

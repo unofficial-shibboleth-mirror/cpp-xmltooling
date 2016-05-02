@@ -1,12 +1,8 @@
-/Debug
 /*.lo
 /*.la
 /*.user
 /*.cpp
-/Release
 /.deps
 /.libs
 /Makefile
 /Makefile.in
-/x64
-/ipch
