@@ -39,7 +39,9 @@ using xercesc::DOMElement;
 
 namespace xmltooling {
     XMLTOOL_DLLLOCAL PluginManager<TrustEngine,string,const DOMElement*>::Factory ExplicitKeyTrustEngineFactory;
+#ifndef CPPXT_107_VC16
     XMLTOOL_DLLLOCAL PluginManager<TrustEngine,string,const DOMElement*>::Factory StaticPKIXTrustEngineFactory;
+#endif
     XMLTOOL_DLLLOCAL PluginManager<TrustEngine,string,const DOMElement*>::Factory ChainingTrustEngineFactory;
 };
 
@@ -47,7 +49,9 @@ void XMLTOOL_API xmltooling::registerTrustEngines()
 {
     XMLToolingConfig& conf=XMLToolingConfig::getConfig();
     conf.TrustEngineManager.registerFactory(EXPLICIT_KEY_TRUSTENGINE, ExplicitKeyTrustEngineFactory);
+#ifndef CPPXT_107_VC16
     conf.TrustEngineManager.registerFactory(STATIC_PKIX_TRUSTENGINE, StaticPKIXTrustEngineFactory);
+#endif
     conf.TrustEngineManager.registerFactory(CHAINING_TRUSTENGINE, ChainingTrustEngineFactory);
 }
 
