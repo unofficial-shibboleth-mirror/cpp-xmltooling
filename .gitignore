@@ -23,6 +23,7 @@
 .DS_store
 Makefile
 Makefile.in
+stamp-h1
 stamp-h2
 Debug
 Release
