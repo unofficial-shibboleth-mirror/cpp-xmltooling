@@ -546,8 +546,11 @@ time_t DateTime::getEpoch(bool duration) const
         t.tm_isdst=0;
 #if defined(HAVE_TIMEGM)
         return timegm(&t);
+#elif defined(WIN32)
+        // Windows
+        return mktime(&t) - _timezone;
 #else
-        // Windows, and hopefully most others...?
+        // Hopefully most others...?
         return mktime(&t) - timezone;
 #endif
     }

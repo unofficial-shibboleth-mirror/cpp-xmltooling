@@ -38,6 +38,7 @@
 #include <memory>
 #include <algorithm>
 #include <fstream>
+#include <time.h>
 #include <openssl/x509_vfy.h>
 #include <openssl/x509v3.h>
 #include <xsec/enc/OpenSSL/OpenSSLCryptoX509.hpp>
@@ -94,8 +95,11 @@ namespace {
             t.tm_mon--;
 #if defined(HAVE_TIMEGM)
             return timegm(&t);
+#elif defined(WIN32)
+            // Windows
+            return mktime(&t) - _timezone;
 #else
-            // Windows, and hopefully most others...?
+            // Hopefully most others...?
             return mktime(&t) - timezone;
 #endif
         }
