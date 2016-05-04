@@ -25,6 +25,8 @@ Makefile
 Makefile.in
 stamp-h1
 stamp-h2
+.deps
+.dirstamp
 Debug
 Release
 x64
@@ -67,6 +69,4 @@ xmltooling-lite-Release
 /m4/ltversion.m4
 /schemas/catalog.xml
 /xmltooling/config_pub.h
-/xmltooling/.deps
 /xmltoolingtest/xmltoolingtest
-/xmltoolingtest/.deps
