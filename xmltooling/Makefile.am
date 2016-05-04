@@ -1,4 +1,4 @@
-AUTOMAKE_OPTIONS = foreign
+AUTOMAKE_OPTIONS = foreign subdir-objects
 
 if BUILD_XMLSEC
 lib_LTLIBRARIES = libxmltooling-lite.la libxmltooling.la
