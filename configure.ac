@@ -114,7 +114,7 @@ AC_LINK_IFELSE(
 
 # is nullptr supported?
 AC_COMPILE_IFELSE(
-    [AC_LANG_PROGRAM([[]],[[const char* ptr = nullptr;]])],
+    [AC_LANG_PROGRAM([[#include <cstddef>]],[[const char* ptr = nullptr;]])],
     [AC_DEFINE([HAVE_NULLPTR],[1],[Define to 1 if C++ compiler supports nullptr keyword.])])
 
 # log4shib settings (favor this version over the log4cpp code)

@@ -83,7 +83,7 @@ namespace xmltooling {
             curl_easy_setopt(m_handle,CURLOPT_CONNECTTIMEOUT,15);
             curl_easy_setopt(m_handle,CURLOPT_TIMEOUT,30);
             curl_easy_setopt(m_handle,CURLOPT_HTTPAUTH,0);
-            curl_easy_setopt(m_handle,CURLOPT_USERPWD,nullptr);
+            curl_easy_setopt(m_handle,CURLOPT_USERPWD,0);
             curl_easy_setopt(m_handle,CURLOPT_SSL_VERIFYHOST,2);
             curl_easy_setopt(m_handle,CURLOPT_HEADERDATA,this);
             m_headers=curl_slist_append(m_headers,"Content-Type: text/xml");
@@ -92,9 +92,9 @@ namespace xmltooling {
         virtual ~CURLSOAPTransport() {
             curl_slist_free_all(m_headers);
             if (m_keepHandle) {
-                curl_easy_setopt(m_handle, CURLOPT_USERAGENT, nullptr);
-                curl_easy_setopt(m_handle, CURLOPT_ERRORBUFFER, nullptr);
-                curl_easy_setopt(m_handle, CURLOPT_PRIVATE, m_authenticated ? "secure" : nullptr); // Save off security "state".
+                curl_easy_setopt(m_handle, CURLOPT_USERAGENT, 0);
+                curl_easy_setopt(m_handle, CURLOPT_ERRORBUFFER, 0);
+                curl_easy_setopt(m_handle, CURLOPT_PRIVATE, m_authenticated ? "secure" : 0); // Save off security "state".
                 g_CURLPool->put(m_sender.c_str(), m_peerName.c_str(), m_endpoint.c_str(), m_handle);
             }
             else {
@@ -318,7 +318,7 @@ CURL* CURLPool::get(const SOAPTransport::Address& addr)
     curl_easy_setopt(handle,CURLOPT_SSL_CIPHER_LIST,"ALL:!aNULL:!LOW:!EXPORT:!RC4:!SSLv2");
     // Verification of the peer is via TrustEngine only.
     curl_easy_setopt(handle,CURLOPT_SSL_VERIFYPEER,0);
-    curl_easy_setopt(handle,CURLOPT_CAINFO,nullptr);
+    curl_easy_setopt(handle,CURLOPT_CAINFO,0);
     curl_easy_setopt(handle,CURLOPT_HEADERFUNCTION,&curl_header_hook);
     curl_easy_setopt(handle,CURLOPT_WRITEFUNCTION,&curl_write_hook);
     curl_easy_setopt(handle,CURLOPT_DEBUGFUNCTION,&curl_debug_hook);
@@ -371,7 +371,7 @@ bool CURLSOAPTransport::setAuth(transport_auth_t authType, const char* username,
     if (authType==transport_auth_none) {
         if (curl_easy_setopt(m_handle,CURLOPT_HTTPAUTH,0)!=CURLE_OK)
             return false;
-        return (curl_easy_setopt(m_handle,CURLOPT_USERPWD,nullptr)==CURLE_OK);
+        return (curl_easy_setopt(m_handle,CURLOPT_USERPWD,0)==CURLE_OK);
     }
     long flag=0;
     switch (authType) {
@@ -422,7 +422,7 @@ bool CURLSOAPTransport::setProviderOption(const char* provider, const char* opti
     else if (opt < CURLOPTTYPE_OFF_T) {
         if (value)
             m_saved_options.push_back(value);
-        return (curl_easy_setopt(m_handle, opt, value ? m_saved_options.back().c_str() : nullptr) == CURLE_OK);
+        return (curl_easy_setopt(m_handle, opt, value ? m_saved_options.back().c_str() : 0) == CURLE_OK);
     }
 # ifdef HAVE_CURL_OFF_T
     else if (sizeof(curl_off_t) == sizeof(long))
@@ -436,7 +436,7 @@ bool CURLSOAPTransport::setProviderOption(const char* provider, const char* opti
     else {
         if (value)
             m_saved_options.push_back(value);
-        return (curl_easy_setopt(m_handle, opt, value ? m_saved_options.back().c_str() : nullptr) == CURLE_OK);
+        return (curl_easy_setopt(m_handle, opt, value ? m_saved_options.back().c_str() : 0) == CURLE_OK);
     }
 #endif
 }
@@ -509,7 +509,7 @@ void CURLSOAPTransport::send(istream* in)
             msg.append(buf,in->gcount());
         }
         curl_easy_setopt(m_handle,CURLOPT_POST,1);
-        curl_easy_setopt(m_handle,CURLOPT_READFUNCTION,nullptr);
+        curl_easy_setopt(m_handle,CURLOPT_READFUNCTION,0);
         curl_easy_setopt(m_handle,CURLOPT_POSTFIELDS,msg.c_str());
         curl_easy_setopt(m_handle,CURLOPT_POSTFIELDSIZE,msg.length());
     }
@@ -562,8 +562,8 @@ void CURLSOAPTransport::send(istream* in)
             m_authenticated=true;
     }
     else {
-        curl_easy_setopt(m_handle,CURLOPT_SSL_CTX_FUNCTION,nullptr);
-        curl_easy_setopt(m_handle,CURLOPT_SSL_CTX_DATA,nullptr);
+        curl_easy_setopt(m_handle,CURLOPT_SSL_CTX_FUNCTION,0);
+        curl_easy_setopt(m_handle,CURLOPT_SSL_CTX_DATA,0);
     }
 
     // Make the call.
