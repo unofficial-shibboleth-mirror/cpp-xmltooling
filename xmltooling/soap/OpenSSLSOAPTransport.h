@@ -47,7 +47,7 @@ namespace xmltooling {
         typedef bool (*ssl_ctx_callback_fn)(OpenSSLSOAPTransport* transport, SSL_CTX* ssl_ctx, void* userptr);
 
         /**
-         * Sets a callback function to invoke against the SSL_CTX before the handshake.
+         * Set a callback function to invoke against the SSL_CTX before the handshake.
          * 
          * @param fn        callback function
          * @param userptr   a caller-supplied value to pass to the callback function
@@ -56,7 +56,15 @@ namespace xmltooling {
         virtual bool setSSLCallback(ssl_ctx_callback_fn fn, void* userptr=nullptr)=0;
         
         /**
-         * Sets indicator that the transport peer has been authenticated.
+         * Set an expression identifying the cipher suites to enable using OpenSSL syntax.
+         *
+         * @param cipherlist cipher suite expression/list
+         * @return true iff the ciphers were set
+         */
+        virtual bool setCipherSuites(const char* cipherlist)=0;
+
+        /**
+         * Set indicator that the transport peer has been authenticated.
          * 
          * @param auth    flag to set
          */

@@ -1,6 +1,6 @@
 # Process this file with autoreconf
 AC_PREREQ([2.50])
-AC_INIT([xmltooling],[1.5.6],[https://issues.shibboleth.net/],[xmltooling])
+AC_INIT([xmltooling],[1.6.0],[https://issues.shibboleth.net/],[xmltooling])
 AC_CONFIG_SRCDIR(xmltooling)
 AC_CONFIG_AUX_DIR(build-aux)
 AC_CONFIG_MACRO_DIR(m4)
@@ -388,6 +388,9 @@ int i = 0;
         [AC_MSG_RESULT(yes)],
         [AC_MSG_ERROR([need libcurl that supports CURLOPT_SSL_CTX_FUNCTION])])
     AC_CHECK_TYPE([curl_off_t],[AC_DEFINE([HAVE_CURL_OFF_T],[1],[Define to 1 if you have the 'curl_off_t' type.])],,[[#include <curl/curl.h>]])
+    AC_MSG_CHECKING([for CURLINFO_TLS_SSL_PTR in curl.h])
+    AC_EGREP_HEADER([CURLINFO_TLS_SSL_PTR], [curl/curl.h],
+        [AC_DEFINE([HAVE_CURLINFO_TLS_SSL_PTR],[1],[Define to 1 if you have support for the CURLINFO_TLS_SSL_PTR feature.])])
     
     # restore master libs
     LIBS="$save_LIBS"

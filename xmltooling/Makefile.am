@@ -177,7 +177,7 @@ common_sources = \
 	Namespace.cpp \
 	QName.cpp \
 	unicode.cpp \
-    version.cpp \
+	version.cpp \
 	XMLObjectBuilder.cpp \
 	XMLToolingConfig.cpp \
 	impl/AnyElement.cpp \
@@ -204,13 +204,13 @@ common_sources = \
 libxmltooling_lite_la_SOURCES = \
 	${common_sources}
 libxmltooling_lite_la_CPPFLAGS = -DXMLTOOLING_LITE
-libxmltooling_lite_la_LDFLAGS = -version-info 6:6:0
+libxmltooling_lite_la_LDFLAGS = -version-info 7:0:0
 
 if BUILD_XMLSEC
 libxmltooling_la_SOURCES = \
 	${common_sources} \
 	${xmlsec_sources}
-libxmltooling_la_LDFLAGS = $(XMLSEC_LIBS) -version-info 6:6:0
+libxmltooling_la_LDFLAGS = $(XMLSEC_LIBS) -version-info 7:0:0
 endif
 
 install-exec-hook:

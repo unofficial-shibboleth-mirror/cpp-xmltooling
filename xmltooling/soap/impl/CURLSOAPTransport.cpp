@@ -73,6 +73,9 @@ namespace xmltooling {
         CURLSOAPTransport(const Address& addr)
             : m_sender(addr.m_from ? addr.m_from : ""), m_peerName(addr.m_to ? addr.m_to : ""), m_endpoint(addr.m_endpoint),
                 m_handle(nullptr), m_keepHandle(false), m_headers(nullptr),
+#ifdef HAVE_CURLINFO_TLS_SSL_PTR
+                    m_cipherLogged(false),
+#endif
 #ifndef XMLTOOLING_NO_XMLSEC
                     m_cred(nullptr), m_trustEngine(nullptr), m_peerResolver(nullptr), m_mandatory(false),
 #endif
@@ -208,6 +211,10 @@ namespace xmltooling {
             return true;
         }
 
+        bool setCipherSuites(const char* cipherlist) {
+            return (curl_easy_setopt(m_handle,CURLOPT_SSL_CIPHER_LIST,cipherlist)==CURLE_OK);
+        }
+
     private:
         // per-call state
         string m_sender,m_peerName,m_endpoint,m_simplecreds;
@@ -218,6 +225,9 @@ namespace xmltooling {
 		string m_useragent;
         map<string,vector<string> > m_response_headers;
         vector<string> m_saved_options;
+#ifdef HAVE_CURLINFO_TLS_SSL_PTR
+        bool m_cipherLogged;
+#endif
 #ifndef XMLTOOLING_NO_XMLSEC
         const OpenSSLCredential* m_cred;
         const OpenSSLTrustEngine* m_trustEngine;
@@ -569,6 +579,7 @@ void CURLSOAPTransport::send(istream* in)
     // Make the call.
     log.debug("sending SOAP message to %s", m_endpoint.c_str());
     CURLcode code = curl_easy_perform(m_handle);
+
     if (code != CURLE_OK) {
         if (code == CURLE_SSL_CIPHER) {
             log.error("on Red Hat 6+, make sure libcurl used is built with OpenSSL");
@@ -592,10 +603,27 @@ void CURLSOAPTransport::send(istream* in)
 // callback to buffer headers from server
 size_t xmltooling::curl_header_hook(void* ptr, size_t size, size_t nmemb, void* stream)
 {
+    CURLSOAPTransport* ctx = reinterpret_cast<CURLSOAPTransport*>(stream);
+
+#ifdef HAVE_CURLINFO_TLS_SSL_PTR
+    if (!ctx->m_cipherLogged) {
+        Category& log = Category::getInstance(XMLTOOLING_LOGCAT ".SOAPTransport.CURL");
+        if (log.isDebugEnabled()) {
+            struct curl_tlssessioninfo* tlsinfo = nullptr;
+            CURLcode infocode = curl_easy_getinfo(ctx->m_handle, CURLINFO_TLS_SSL_PTR, &tlsinfo);
+            if (infocode == CURLE_OK && tlsinfo && tlsinfo->backend == CURLSSLBACKEND_OPENSSL && tlsinfo->internals) {
+                SSL* ssl = reinterpret_cast<SSL*>(tlsinfo->internals);
+                const SSL_CIPHER* cipher = SSL_get_current_cipher(ssl);
+                log.debug("SSL version: %s, cipher: %s", SSL_get_version(ssl), cipher ? SSL_CIPHER_get_name(cipher) : "unknown");
+            }
+        }
+        ctx->m_cipherLogged = true;
+#endif
+    }
+
     // only handle single-byte data
     if (size!=1)
         return 0;
-    CURLSOAPTransport* ctx = reinterpret_cast<CURLSOAPTransport*>(stream);
     char* buf = (char*)malloc(nmemb + 1);
     if (buf) {
         memset(buf,0,nmemb + 1);
@@ -648,7 +676,22 @@ int xmltooling::curl_debug_hook(CURL* handle, curl_infotype type, char* data, si
 int xmltooling::verify_callback(X509_STORE_CTX* x509_ctx, void* arg)
 {
     Category& log=Category::getInstance(XMLTOOLING_LOGCAT ".SOAPTransport.CURL");
-    log.debug("invoking custom X.509 verify callback");
+    if (log.isDebugEnabled()) {
+        log.debug("invoking custom X.509 verify callback");
+        SSL* ssl = reinterpret_cast<SSL*>(X509_STORE_CTX_get_ex_data(x509_ctx, SSL_get_ex_data_X509_STORE_CTX_idx()));
+        if (ssl) {
+            CategoryStream logstr = log.debugStream();
+            logstr << "ciphers offered by client";
+            for (int i = 0;; ++i) {
+                const char* p = SSL_get_cipher_list(ssl, i);
+                if (!p)
+                    break;
+                logstr << ':' << p;
+            }
+            logstr << eol;
+        }
+    }
+
 #if (OPENSSL_VERSION_NUMBER >= 0x00907000L)
     CURLSOAPTransport* ctx = reinterpret_cast<CURLSOAPTransport*>(arg);
 #else
