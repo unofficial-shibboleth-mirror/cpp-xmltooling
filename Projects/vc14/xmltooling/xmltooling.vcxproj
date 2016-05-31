@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -204,6 +204,7 @@
     <ClCompile Include="..\..\..\XMLTooling\QName.cpp" />
     <ClCompile Include="..\..\..\XMLTooling\security\impl\PKIXPathValidator.cpp" />
     <ClCompile Include="..\..\..\XMLTooling\unicode.cpp" />
+    <ClCompile Include="..\..\..\XMLTooling\util\CloneInputStream.cpp" />
     <ClCompile Include="..\..\..\XMLTooling\version.cpp" />
     <ClCompile Include="..\..\..\XMLTooling\XMLObjectBuilder.cpp" />
     <ClCompile Include="..\..\..\XMLTooling\XMLToolingConfig.cpp" />
@@ -291,6 +292,7 @@
     <ClInclude Include="..\..\..\XMLTooling\security\PathValidator.h" />
     <ClInclude Include="..\..\..\XMLTooling\security\PKIXPathValidatorParams.h" />
     <ClInclude Include="..\..\..\XMLTooling\unicode.h" />
+    <ClInclude Include="..\..\..\XMLTooling\util\CloneInputStream.h" />
     <ClInclude Include="..\..\..\XMLTooling\version.h" />
     <ClInclude Include="..\..\..\XMLTooling\XMLObject.h" />
     <ClInclude Include="..\..\..\XMLTooling\XMLObjectBuilder.h" />

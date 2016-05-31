@@ -267,6 +267,9 @@
     <ClCompile Include="..\..\..\XMLTooling\security\impl\PKIXPathValidator.cpp">
       <Filter>Source Files\security\impl</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\XMLTooling\util\CloneInputStream.cpp">
+      <Filter>Source Files\util</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\XMLTooling\AbstractAttributeExtensibleXMLObject.h">
@@ -515,14 +518,17 @@
     <ClInclude Include="..\..\..\XMLTooling\security\PKIXPathValidatorParams.h">
       <Filter>Header Files\security</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\XMLTooling\util\CloneInputStream.h">
+      <Filter>Header Files\util</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="xmltooling.rc">
+    <ResourceCompile Include="..\..\..\XMLTooling\xmltooling.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="config_pub.h.in" />
-    <None Include="Makefile.am" />
+    <None Include="..\..\..\XMLTooling\config_pub.h.in" />
+    <None Include="..\..\..\XMLTooling\Makefile.am" />
   </ItemGroup>
 </Project>
