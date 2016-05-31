@@ -118,6 +118,7 @@ namespace xmltooling {
          * @param pvalue        location in which to return the record value
          * @param pexpiration   location in which to return the expiration timestamp
          * @param version       if > 0, only copy back data if newer than supplied version
+         *                      (the expiration time is copied back regardless)
          * @return  the version of the record read back, or 0 if no record exists
          * 
          * @throws IOException  raised if errors occur in the read process 
