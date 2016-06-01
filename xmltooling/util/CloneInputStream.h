@@ -44,21 +44,21 @@ namespace xmltooling {
          * @param TBD
          * @param TBD
          */
-        CloneInputStream(xercesc::BinInputStream* stream, std::string backingFile);
+        CloneInputStream(xercesc::BinInputStream &stream, std::string backingFile);
 
         virtual ~CloneInputStream();
 
         virtual XMLSize_t readBytes(XMLByte* const toFill, const XMLSize_t maxToRead);
 
-        virtual XMLFilePos curPos() const  {return m_input->curPos();};
+        virtual XMLFilePos curPos() const  {return m_input.curPos();};
 
-        virtual const XMLCh* getContentType() const {return m_input->getContentType();};
+        virtual const XMLCh* getContentType() const {return m_input.getContentType();};
 
 
     private :
         std::ofstream            m_backingStream;
         logging::Category&       m_log;
-	    xercesc::BinInputStream* m_input;
+	    xercesc::BinInputStream& m_input;
     };
 };
 

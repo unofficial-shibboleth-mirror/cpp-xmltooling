@@ -34,7 +34,7 @@ using namespace xmltooling;
 using namespace xercesc;
 using namespace std;
 
-CloneInputStream::CloneInputStream(BinInputStream* stream, std::string backingFile)
+CloneInputStream::CloneInputStream(BinInputStream& stream, std::string backingFile)
 	: m_log(logging::Category::getInstance(XMLTOOLING_LOGCAT ".util.CloneInputStream"))
 	, m_input(stream)
 	, m_backingStream(backingFile.c_str(), ofstream::binary)
@@ -50,7 +50,7 @@ CloneInputStream::~CloneInputStream()
 
 XMLSize_t CloneInputStream::readBytes(XMLByte* const toFill, const XMLSize_t maxToRead)
 {
-    auto bytesRead = m_input->readBytes(toFill, maxToRead);
+    auto bytesRead = m_input.readBytes(toFill, maxToRead);
 
     if (bytesRead) m_backingStream.write((char*)toFill, bytesRead);
 

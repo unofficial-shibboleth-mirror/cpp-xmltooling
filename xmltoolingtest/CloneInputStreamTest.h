@@ -39,7 +39,7 @@ public:
             xercesc::LocalFileInputSource src(widenitSrc.get());
             BinInputStream* srcStream = src.makeStream();
 
-            CloneInputStream clone(srcStream, data_path + "clonedfile.xml");
+            CloneInputStream clone(*srcStream, data_path + "clonedfile.xml");
             XMLByte buffer[1024];
             XMLSize_t sz;
 
