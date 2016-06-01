@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Source Files">
@@ -147,6 +147,9 @@
     <ClCompile Include="..\..\..\XMLTooling\version.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\xmltooling\util\CloneInputStream.cpp">
+      <Filter>Source Files\util</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\XMLTooling\AbstractAttributeExtensibleXMLObject.h">
@@ -283,6 +286,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\XMLTooling\soap\SOAPTransport.h">
       <Filter>Header Files\soap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\xmltooling\util\CloneInputStream.h">
+      <Filter>Header Files\util</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
