@@ -255,8 +255,9 @@ namespace xmltooling {
          * @param url       source of input
          * @param systemId  optional system identifier to attach to the source
          * @param cacheTag  optional pointer to string used for cache management
+         * @param backingFile optional name of file to save inout stream to.
          */
-        URLInputSource(const XMLCh* url, const char* systemId=nullptr, std::string* cacheTag=nullptr);
+        URLInputSource(const XMLCh* url, const char* systemId=nullptr, std::string* cacheTag=nullptr, std::string backingFile="");
 
         /**
          * Constructor taking a DOM element supporting the following content:
@@ -273,8 +274,9 @@ namespace xmltooling {
          * @param e         DOM to supply configuration
          * @param systemId  optional system identifier to attach to the source
          * @param cacheTag  optional pointer to string used for cache management
+         * @param backingFile optional name of file to save inout stream to.
          */
-        URLInputSource(const xercesc::DOMElement* e, const char* systemId=nullptr, std::string* cacheTag=nullptr);
+        URLInputSource(const xercesc::DOMElement* e, const char* systemId=nullptr, std::string* cacheTag=nullptr, std::string backingFile="");
 
         /// @cond off
         virtual xercesc::BinInputStream* makeStream() const;
@@ -286,12 +288,14 @@ namespace xmltooling {
         /** Element name used to signal a non-successful response when fetching a remote document. */
         static const XMLCh utf16StatusCodeElementName[];
     private:
+        std::string  m_backingFile;
 #ifdef XMLTOOLING_LITE
         xercesc::XMLURL m_url;
 #else
         std::string* m_cacheTag;
         xmltooling::auto_ptr_char m_url;
         const xercesc::DOMElement* m_root;
+
 #endif
     };
 };

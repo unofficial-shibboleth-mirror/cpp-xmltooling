@@ -41,24 +41,25 @@ namespace xmltooling {
         /**
          * Constructor.
          *
-         * @param TBD
-         * @param TBD
+         * @param stream a stream that we will read from
+         * @param backingFele the name of a file to write every byte we read, as we read it.
+         *        we take ownership of this, arranging to delete it in our destructor.
          */
-        CloneInputStream(xercesc::BinInputStream &stream, std::string backingFile);
+        CloneInputStream(xercesc::BinInputStream *stream, std::string backingFile);
 
         virtual ~CloneInputStream();
 
         virtual XMLSize_t readBytes(XMLByte* const toFill, const XMLSize_t maxToRead);
 
-        virtual XMLFilePos curPos() const  {return m_input.curPos();};
+        virtual XMLFilePos curPos() const  {return m_input->curPos();};
 
-        virtual const XMLCh* getContentType() const {return m_input.getContentType();};
+        virtual const XMLCh* getContentType() const {return m_input->getContentType();};
 
 
     private :
         std::ofstream            m_backingStream;
         logging::Category&       m_log;
-	    xercesc::BinInputStream& m_input;
+	xercesc::BinInputStream* m_input;
     };
 };
 

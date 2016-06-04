@@ -63,7 +63,7 @@
       <Filter>Generated Code</Filter>
     </ClCompile>
     <ClCompile Include="CloneInputStreamTest.cpp">
-      <Filter>Unit Tests</Filter>
+      <Filter>Generated Code</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

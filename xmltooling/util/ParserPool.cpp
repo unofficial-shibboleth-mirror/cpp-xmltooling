@@ -27,6 +27,7 @@
 #include "internal.h"
 #include "exceptions.h"
 #include "logging.h"
+#include "util/CloneInputStream.h"
 #include "util/CurlURLInputStream.h"
 #include "util/NDC.h"
 #include "util/PathResolver.h"
@@ -546,11 +547,11 @@ xsecsize_t StreamInputSource::StreamBinInputStream::readBytes(XMLByte* const toF
 
 #ifdef XMLTOOLING_LITE
 
-URLInputSource::URLInputSource(const XMLCh* url, const char* systemId, string* cacheTag) : InputSource(systemId), m_url(url)
+URLInputSource::URLInputSource(const XMLCh* url, const char* systemId, string* cacheTag, std::string backingFile) : InputSource(systemId), m_url(url), m_backingFile(backingFile)
 {
 }
 
-URLInputSource::URLInputSource(const DOMElement* e, const char* systemId, string* cacheTag) : InputSource(systemId)
+URLInputSource::URLInputSource(const DOMElement* e, const char* systemId, string* cacheTag, std::string backingFile) : InputSource(systemId), m_backingFile(backingFile)
 {
     static const XMLCh uri[] = UNICODE_LITERAL_3(u,r,i);
     static const XMLCh url[] = UNICODE_LITERAL_3(u,r,l);
@@ -568,24 +569,25 @@ URLInputSource::URLInputSource(const DOMElement* e, const char* systemId, string
 BinInputStream* URLInputSource::makeStream() const
 {
     // Ask the URL to create us an appropriate input stream
-    return m_url.makeNewStream();
+    return ("" == m_backingFile) ?  m_url.makeNewStream() : new CloneInputStream(m_url.makeNewStream(), m_backingFile);
 }
 
 #else
 
-URLInputSource::URLInputSource(const XMLCh* url, const char* systemId, string* cacheTag)
-    : InputSource(systemId), m_cacheTag(cacheTag), m_url(url), m_root(nullptr)
+URLInputSource::URLInputSource(const XMLCh* url, const char* systemId, string* cacheTag, std::string backingFile)
+    : InputSource(systemId), m_cacheTag(cacheTag), m_url(url), m_root(nullptr), m_backingFile(backingFile)
 {
 }
 
-URLInputSource::URLInputSource(const DOMElement* e, const char* systemId, string* cacheTag)
-    : InputSource(systemId), m_cacheTag(cacheTag), m_root(e)
+URLInputSource::URLInputSource(const DOMElement* e, const char* systemId, string* cacheTag, std::string backingFile)
+    : InputSource(systemId), m_cacheTag(cacheTag), m_root(e), m_backingFile(backingFile)
 {
 }
 
 BinInputStream* URLInputSource::makeStream() const
 {
-    return m_root ? new CurlURLInputStream(m_root, m_cacheTag) : new CurlURLInputStream(m_url.get(), m_cacheTag);
+    BinInputStream*  stream = m_root ? new CurlURLInputStream(m_root, m_cacheTag) : new CurlURLInputStream(m_url.get(), m_cacheTag);
+    return ("" == m_backingFile) ? stream : new CloneInputStream(stream, m_backingFile);
 }
 
 #endif
