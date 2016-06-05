@@ -138,11 +138,23 @@ namespace xmltooling {
          * backup for remote resources, which allows additional validation to be
          * performed besides just successful XML parsing.
          *
-         * @param backup    true iff the backup source should be loaded
+         * <p>Anyone calling this code needs to take ownership of the job of creating
+         * the backup (if the inpout is well formed).  As an assist, providing
+         * a unique file name as the second parameter causes the input source to be
+         * copied to this file.  Thus input cna be done without locking and the
+         * job of creating the backup consists of doign a rename (under the lock).
+         *
+         * <p> The single parameter version is deprecated and is the same as
+         * calling with an empty string at the second parameter (which means
+         * no backing file).
+         *
+         * @param backup      true iff the backup source should be loaded
+         * @param backingFile Filoe name to copy the input to.
          * @return a pair consisting of a flag indicating whether to take ownership of
          *      the document, and the root element of the tree to load
          */
         virtual std::pair<bool,xercesc::DOMElement*> load(bool backup);
+        virtual std::pair<bool, xercesc::DOMElement*> load(bool backup, std::string backingFile);
 
         /**
          * Accesses a lock interface protecting use of backup file associated with the

@@ -372,7 +372,12 @@ void ReloadableXMLFile::unlock()
         m_lock->unlock();
 }
 
-pair<bool,DOMElement*> ReloadableXMLFile::load(bool backup)
+pair<bool, DOMElement*> ReloadableXMLFile::load(bool backup)
+{
+    return load(backup, "");
+}
+
+pair<bool,DOMElement*> ReloadableXMLFile::load(bool backup, string backingFile)
 {
 #ifdef _DEBUG
     NDC ndc("load");
@@ -391,6 +396,12 @@ pair<bool,DOMElement*> ReloadableXMLFile::load(bool backup)
             else
                 m_log.debug("loading configuration from external resource...");
 
+            if (!backingFile.empty() && backup)
+                m_log.error("Internal error: backing file provided to backup load");
+
+            if (!backingFile.empty())
+                m_log.debug("writing to backing file " + backingFile);
+
             DOMDocument* doc=nullptr;
             if (m_local || backup) {
                 auto_ptr_XMLCh widenit(backup ? m_backing.c_str() : m_source.c_str());
@@ -404,7 +415,7 @@ pair<bool,DOMElement*> ReloadableXMLFile::load(bool backup)
                     doc=XMLToolingConfig::getConfig().getParser().parse(dsrc);
             }
             else {
-                URLInputSource src(m_root, nullptr, &m_cacheTag);
+                URLInputSource src(m_root, nullptr, &m_cacheTag, backingFile);
                 Wrapper4InputSource dsrc(&src, false);
                 if (m_validate)
                     doc=XMLToolingConfig::getConfig().getValidatingParser().parse(dsrc);
@@ -451,11 +462,18 @@ pair<bool,DOMElement*> ReloadableXMLFile::load(bool backup)
         auto_ptr_char msg(e.getMessage());
         m_log.errorStream() << "Xerces error while loading resource (" << (backup ? m_backing : m_source) << "): "
             << msg.get() << logging::eol;
+        //  Cleanup if we left anything in fligbt
+        if (!backingFile.empty() && !backup)
+            remove(backingFile.c_str());
+
         throw XMLParserException(msg.get());
     }
     catch (exception& e) {
         m_log.errorStream() << "error while loading resource ("
             << (m_source.empty() ? "inline" : (backup ? m_backing : m_source)) << "): " << e.what() << logging::eol;
+        //  Cleanup if we left anything in fligbt
+        if (!backingFile.empty() && !backup)
+            remove(backingFile.c_str());
         throw;
     }
 }
