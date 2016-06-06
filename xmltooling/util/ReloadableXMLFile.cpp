@@ -397,10 +397,10 @@ pair<bool,DOMElement*> ReloadableXMLFile::load(bool backup, string backingFile)
                 m_log.debug("loading configuration from external resource...");
 
             if (!backingFile.empty() && backup)
-                m_log.error("Internal error: backing file provided to backup load");
+                throw IOException("Backing file name cannot be provided during a backup load");
 
             if (!backingFile.empty())
-                m_log.debug("writing to backing file " + backingFile);
+                m_log.debug("writing to backing file: " + backingFile);
 
             DOMDocument* doc=nullptr;
             if (m_local || backup) {
@@ -462,7 +462,7 @@ pair<bool,DOMElement*> ReloadableXMLFile::load(bool backup, string backingFile)
         auto_ptr_char msg(e.getMessage());
         m_log.errorStream() << "Xerces error while loading resource (" << (backup ? m_backing : m_source) << "): "
             << msg.get() << logging::eol;
-        //  Cleanup if we left anything in fligbt
+        //  Cleanup if we left anything in flight
         if (!backingFile.empty() && !backup)
             remove(backingFile.c_str());
 
@@ -471,7 +471,7 @@ pair<bool,DOMElement*> ReloadableXMLFile::load(bool backup, string backingFile)
     catch (exception& e) {
         m_log.errorStream() << "error while loading resource ("
             << (m_source.empty() ? "inline" : (backup ? m_backing : m_source)) << "): " << e.what() << logging::eol;
-        //  Cleanup if we left anything in fligbt
+        //  Cleanup if we left anything in flight
         if (!backingFile.empty() && !backup)
             remove(backingFile.c_str());
         throw;

@@ -587,7 +587,7 @@ URLInputSource::URLInputSource(const DOMElement* e, const char* systemId, string
 BinInputStream* URLInputSource::makeStream() const
 {
     BinInputStream*  stream = m_root ? new CurlURLInputStream(m_root, m_cacheTag) : new CurlURLInputStream(m_url.get(), m_cacheTag);
-    return ("" == m_backingFile) ? stream : new CloneInputStream(stream, m_backingFile);
+    return (m_backingFile.empty()) ? stream : new CloneInputStream(stream, m_backingFile);
 }
 
 #endif
