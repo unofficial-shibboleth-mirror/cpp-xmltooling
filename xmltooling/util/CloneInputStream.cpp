@@ -34,11 +34,13 @@ using namespace xmltooling;
 using namespace xercesc;
 using namespace std;
 
-CloneInputStream::CloneInputStream(BinInputStream* stream, std::string backingFile)
+CloneInputStream::CloneInputStream(BinInputStream* stream, const std::string& backingFile)
 	: m_log(logging::Category::getInstance(XMLTOOLING_LOGCAT ".util.CloneInputStream"))
 	, m_input(stream)
 	, m_backingStream(backingFile.c_str(), ofstream::binary)
 {
+    if (!stream)
+        throw IOException("No input stream supplied to CloneInputStream constructor.");
     m_log.debug("initialized");
 }
 
@@ -57,3 +59,13 @@ XMLSize_t CloneInputStream::readBytes(XMLByte* const toFill, const XMLSize_t max
 
     return bytesRead;
 }
+
+XMLFilePos CloneInputStream::curPos() const
+{
+    return m_input->curPos();
+};
+
+const XMLCh* CloneInputStream::getContentType() const
+{
+    return m_input->getContentType();
+};
