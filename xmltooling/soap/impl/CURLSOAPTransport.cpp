@@ -618,8 +618,8 @@ size_t xmltooling::curl_header_hook(void* ptr, size_t size, size_t nmemb, void* 
             }
         }
         ctx->m_cipherLogged = true;
-#endif
     }
+#endif
 
     // only handle single-byte data
     if (size!=1)
