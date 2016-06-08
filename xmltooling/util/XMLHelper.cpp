@@ -25,6 +25,7 @@
  */
 
 #include "internal.h"
+#include "logging.h"
 #include "exceptions.h"
 #include "QName.h"
 #include "XMLObject.h"
@@ -360,6 +361,42 @@ bool XMLHelper::getAttrBool(const DOMElement* e, bool defValue, const XMLCh* loc
         }
     }
     return defValue;
+}
+
+bool XMLHelper::getCaseSensitive(const xercesc::DOMElement* e, bool defValue, const XMLCh* ns)
+{
+    static const XMLCh ignoreCase[] =   UNICODE_LITERAL_10(i,g,n,o,r,e,C,a,s,e);
+    static const XMLCh caseSensitive[] =   UNICODE_LITERAL_13(c,a,s,e,S,e,n,s,i,t,i,v,e);
+    static bool ignoreCaseWarned = false;
+    bool result=defValue;
+
+    if (e) {
+        const XMLCh* ic = e->getAttributeNS(ns, ignoreCase);
+        if (ic && * ic) {
+            if (!ignoreCaseWarned) {
+                logging::Category::getInstance(XMLTOOLING_LOGCAT ".XMLHelper").warn("Deprecated attribute \"ignoreCase\" encountered in configuration.  Use \"caseSensitive\".");
+                ignoreCaseWarned = true;
+            }
+            // caseInsensitive = !"ignoreCase"
+            if (*ic == chLatin_t || *ic == chDigit_1)
+                result = false;
+            if (*ic == chLatin_f || *ic == chDigit_0)
+                result = true;
+        }
+        const XMLCh* ci = e->getAttributeNS(ns, caseSensitive);
+        if (ci && *ci) {
+            if (ic && *ic) {
+                logging::Category::getInstance(XMLTOOLING_LOGCAT ".XMLHelper").warn("Attribute \"ignoreCase\" and \"caseSensitive\" should not be used in the same element.");
+            }
+            if (*ci == chLatin_t || *ci == chDigit_1) {
+                result =  true;
+            }
+            if (*ci == chLatin_f || *ci == chDigit_0) {
+                result =  false;
+            }
+        }
+    }
+    return result;
 }
 
 void XMLHelper::serialize(const DOMNode* n, std::string& buf, bool pretty)

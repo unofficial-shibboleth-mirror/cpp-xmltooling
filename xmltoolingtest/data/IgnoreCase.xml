@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test:Parent xmlns:test="test">
+  <test:IgnoreYes ignoreCase="t"/>
+  <test:IgnoreNo ignoreCase="0"/>
+  <test:CaseSensitiveYes caseSensitive="1"/>
+  <test:CaseSensitiveNo caseSensitive="f"/>
+  <test:Both ignoreCase="t" caseSensitive="t"/>
+  <test:Default/>
+</test:Parent>

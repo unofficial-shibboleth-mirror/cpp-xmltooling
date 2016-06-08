@@ -333,6 +333,20 @@ namespace xmltooling {
             );
 
         /**
+         *
+         * Returns the value of the attribute "caseSensitive" (if present).  Also interogates
+         * the (deprecated) "ignoreCase" attribute, warning if it is encountered.
+         *
+         * @param e         element to examine (may be nullptr)
+         * @param defValue  default value to return
+         * @param ns        namespace of attribute
+         * @return whatever "caseSensitive" or "ignoreCase" specifies, or the specified default
+         */
+        static bool getCaseSensitive(
+            const xercesc::DOMElement* e, bool defValue, const XMLCh* ns=nullptr
+            );
+
+        /**
          * Serializes the DOM node provided into a buffer using UTF-8 encoding and
          * the default XML serializer available. No manipulation or formatting is applied.
          *

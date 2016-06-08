@@ -79,7 +79,7 @@ public:
     }
 
     void testUnknown() {
-        ifstream fs("../xmltoolingtest/data/SimpleXMLObjectWithChildren.xml");
+        ifstream fs(data_path + "SimpleXMLObjectWithChildren.xml");
         DOMDocument* doc=XMLToolingConfig::getConfig().getParser().parse(fs);
         TS_ASSERT(doc!=nullptr);
 
@@ -107,7 +107,7 @@ public:
     }
 
     void testUnknownWithDocChange() {
-        ifstream fs("../xmltoolingtest/data/SimpleXMLObjectWithChildren.xml");
+        ifstream fs(data_path + "SimpleXMLObjectWithChildren.xml");
         DOMDocument* doc=XMLToolingConfig::getConfig().getParser().parse(fs);
         TS_ASSERT(doc!=nullptr);
 
@@ -129,6 +129,39 @@ public:
         TS_ASSERT_EQUALS(buf1,buf2);
 
         newDoc->release();
+    }
+
+    void testHelper() {
+        ifstream fs(data_path + "IgnoreCase.xml");
+        DOMDocument* doc=XMLToolingConfig::getConfig().getParser().parse(fs);
+        TS_ASSERT(doc!=nullptr);
+        DOMElement* parent = doc->getDocumentElement();
+
+        static const XMLCh IgnoreYes[] =   UNICODE_LITERAL_9(I,g,n,o,r,e,Y,e,s);
+        static const XMLCh Test[] =   UNICODE_LITERAL_4(t,e,s,t);
+        DOMElement* el = XMLHelper::getFirstChildElement(parent, Test, IgnoreYes);
+        TS_ASSERT(!XMLHelper::getCaseSensitive(el, true));
+
+        static const XMLCh IgnoreNo[] =   UNICODE_LITERAL_8(I,g,n,o,r,e,N,o);
+        el = XMLHelper::getFirstChildElement(parent, Test, IgnoreNo);
+        TS_ASSERT(XMLHelper::getCaseSensitive(el, false));
+
+        static const XMLCh CaseSensitiveYes[] =   UNICODE_LITERAL_16(C,a,s,e,S,e,n,s,i,t,i,v,e,Y,e,s);
+        el = XMLHelper::getFirstChildElement(parent, Test, CaseSensitiveYes);
+        TS_ASSERT(XMLHelper::getCaseSensitive(el, false));
+
+        static const XMLCh CaseSensitiveNo[] =   UNICODE_LITERAL_15(C,a,s,e,S,e,n,s,i,t,i,v,e,N,o);
+        el = XMLHelper::getFirstChildElement(parent, Test, CaseSensitiveNo);
+        TS_ASSERT(!XMLHelper::getCaseSensitive(el, true));
+
+        static const XMLCh Both[] =   UNICODE_LITERAL_4(B,o,t,h);
+        el = XMLHelper::getFirstChildElement(parent, Test, Both);
+        TS_ASSERT(XMLHelper::getCaseSensitive(el, false));
+
+        static const XMLCh Default[] =   UNICODE_LITERAL_7(D,e,f,a,u,l,t);
+        el = XMLHelper::getFirstChildElement(parent, Test, Default);
+        TS_ASSERT(!XMLHelper::getCaseSensitive(el, false));
+        TS_ASSERT(XMLHelper::getCaseSensitive(el, true));
     }
 };
 
