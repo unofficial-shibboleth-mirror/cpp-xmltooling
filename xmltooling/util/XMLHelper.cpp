@@ -365,22 +365,19 @@ bool XMLHelper::getAttrBool(const DOMElement* e, bool defValue, const XMLCh* loc
 
 bool XMLHelper::getCaseSensitive(const xercesc::DOMElement* e, bool defValue, const XMLCh* ns)
 {
-    static const XMLCh ignoreCase[] =   UNICODE_LITERAL_10(i,g,n,o,r,e,C,a,s,e);
-    static const XMLCh caseSensitive[] =   UNICODE_LITERAL_13(c,a,s,e,S,e,n,s,i,t,i,v,e);
-    static bool ignoreCaseWarned = false;
-    bool result=defValue;
+    static const XMLCh ignoreCase[] = UNICODE_LITERAL_10(i,g,n,o,r,e,C,a,s,e);
+    static const XMLCh caseSensitive[] = UNICODE_LITERAL_13(c,a,s,e,S,e,n,s,i,t,i,v,e);
+    bool result = defValue;
 
     if (e) {
         const XMLCh* ic = e->getAttributeNS(ns, ignoreCase);
         if (ic && * ic) {
-            if (!ignoreCaseWarned) {
-                logging::Category::getInstance(XMLTOOLING_LOGCAT ".XMLHelper").warn("Deprecated attribute \"ignoreCase\" encountered in configuration.  Use \"caseSensitive\".");
-                ignoreCaseWarned = true;
-            }
+            logging::Category::getInstance(XMLTOOLING_LOGCAT ".XMLHelper").warn("Deprecated attribute \"ignoreCase\" encountered in configuration. Use \"caseSensitive\".");
+
             // caseInsensitive = !"ignoreCase"
             if (*ic == chLatin_t || *ic == chDigit_1)
                 result = false;
-            if (*ic == chLatin_f || *ic == chDigit_0)
+            else if (*ic == chLatin_f || *ic == chDigit_0)
                 result = true;
         }
         const XMLCh* ci = e->getAttributeNS(ns, caseSensitive);
@@ -391,7 +388,7 @@ bool XMLHelper::getCaseSensitive(const xercesc::DOMElement* e, bool defValue, co
             if (*ci == chLatin_t || *ci == chDigit_1) {
                 result =  true;
             }
-            if (*ci == chLatin_f || *ci == chDigit_0) {
+            else if (*ci == chLatin_f || *ci == chDigit_0) {
                 result =  false;
             }
         }
