@@ -476,6 +476,11 @@ pair<bool,DOMElement*> ReloadableXMLFile::load(bool backup, string backingFile)
             remove(backingFile.c_str());
         throw;
     }
+    catch (long& ex) {
+        if (!backingFile.empty() && !backup)
+            remove(backingFile.c_str());
+        throw;
+    }
 }
 
 pair<bool,DOMElement*> ReloadableXMLFile::load()
