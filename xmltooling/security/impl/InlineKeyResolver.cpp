@@ -96,10 +96,10 @@ namespace xmltooling {
                             x509Datas.erase(x509Datas.begin() + pos);
                     }
                 }
-            }
-            if (!ret->hasChildren()) {
-                delete ret;
-                ret = nullptr;
+                if (!ret->hasChildren()) {
+                    delete ret;
+                    ret = nullptr;
+                }
             }
             return ret;
         }
