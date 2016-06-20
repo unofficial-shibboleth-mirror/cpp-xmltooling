@@ -5,12 +5,6 @@ include doxygen.am
 
 MOSTLYCLEANFILES = $(DX_CLEANFILES)
 
-DISTCLEANFILES = \
-	@PACKAGE_NAME@.pc \
-	@PACKAGE_NAME@.pc.in \
-	@PACKAGE_NAME@-uninstalled.pc \
-	@PACKAGE_NAME@-uninstalled.sh
-
 SUBDIRS = doc schemas @PACKAGE_NAME@ xmltoolingtest
 
 if DX_COND_doc
@@ -20,7 +14,7 @@ all-local:
 endif
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = @PACKAGE_NAME@.pc
+pkgconfig_DATA = @PACKAGE_NAME@.pc @PACKAGE_NAME@-lite.pc
 
 GENFILES = @PACKAGE_NAME@.spec
 

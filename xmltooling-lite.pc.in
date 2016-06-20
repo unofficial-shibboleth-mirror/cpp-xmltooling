@@ -1,0 +1,13 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: @PACKAGE_NAME@ (lite version)
+Description: OpenSAML XMLTooling-C library (lite version)
+Version: @PACKAGE_VERSION@
+Libs: -L${libdir} -lxmltooling-lite
+Libs.private: @dlopen_LIBS@ @PTHREAD_LIBS@
+Cflags: -I${includedir} @BOOST_CPPFLAGS@ @PTHREAD_CFLAGS@
+Requires: @XMLTOOLING_LITE_REQUIRES@
+Requires.private: @XMLTOOLING_LITE_REQUIRES_PRIVATE@

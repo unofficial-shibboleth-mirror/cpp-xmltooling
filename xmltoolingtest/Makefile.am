@@ -5,7 +5,8 @@ if BUILD_UNITTEST
 bin_PROGRAMS = xmltoolingtest
 xmltoolingtest_CXXFLAGS = $(CXXTESTFLAGS)
 if BUILD_XMLSEC
-xmltoolingtest_LDFLAGS = $(XMLSEC_LIBS)
+xmltoolingtest_CPPFLAGS = $(xerces_CFLAGS) $(XMLSEC_CFLAGS)
+xmltoolingtest_LDFLAGS  = $(xerces_LIBS)   $(XMLSEC_LIBS)
 xmltoolingtest_LDADD = $(top_builddir)/xmltooling/libxmltooling.la
 else
 xmltoolingtest_LDADD = $(top_builddir)/xmltooling/libxmltooling-lite.la

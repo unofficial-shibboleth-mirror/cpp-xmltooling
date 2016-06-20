@@ -32,7 +32,7 @@ else
 fi
 
 AC_CONFIG_HEADERS([config.h xmltooling/config_pub.h])
-AC_CONFIG_FILES([xmltooling.spec])
+AC_CONFIG_FILES([xmltooling.spec xmltooling.pc xmltooling-lite.pc])
 AC_CONFIG_FILES([Makefile xmltooling/Makefile xmltoolingtest/Makefile schemas/Makefile doc/Makefile])
 
 AC_PROG_CC([gcc gcc3 cc])
@@ -71,7 +71,11 @@ AC_HEADER_DIRENT
 # Checks for library functions.
 AC_CHECK_FUNCS([strchr strdup strstr timegm gmtime_r strcasecmp])
 AC_CHECK_HEADERS([dlfcn.h])
+AX_SAVE_FLAGS
+LIBS=""
 AC_SEARCH_LIBS([dlopen],[dl],,[AC_MSG_ERROR([cannot find dlopen() function])])
+AC_SUBST([dlopen_LIBS],[$LIBS])
+AX_RESTORE_FLAGS
 
 # checks for pthreads
 AX_PTHREAD([enable_threads="pthread"],[enable_threads="no"])
@@ -79,13 +83,14 @@ if test $enable_threads != "pthread"; then
     AC_MSG_ERROR([unable to find pthreads, currently this is required])
 else
     AC_DEFINE([HAVE_PTHREAD],[1],[Define if you have POSIX threads libraries and header files.])
-	AM_CONDITIONAL(BUILD_PTHREAD,test "$enable_threads" = "pthread")
+    AX_SAVE_FLAGS
     LIBS="$PTHREAD_LIBS $LIBS"
     CFLAGS="$PTHREAD_CFLAGS $CFLAGS"
-    CXXFLAGS="$PTHREAD_CFLAGS $CXXFLAGS"
+    AC_CHECK_FUNCS([pthread_rwlock_init])
+    AX_RESTORE_FLAGS
 fi
 
-AC_CHECK_FUNCS([pthread_rwlock_init])
+AM_CONDITIONAL(BUILD_PTHREAD,test "$enable_threads" = "pthread")
 
 AC_LANG([C++])
 
@@ -102,7 +107,6 @@ BOOST_POINTER_CONTAINER
 BOOST_SMART_PTR
 BOOST_STRING_ALGO
 BOOST_TOKENIZER
-CPPFLAGS="$BOOST_CPPFLAGS $CPPFLAGS"
 
 # are covariant methods allowed?
 AC_LINK_IFELSE(
@@ -118,232 +122,41 @@ AC_COMPILE_IFELSE(
     [AC_LANG_PROGRAM([[#include <cstddef>]],[[const char* ptr = nullptr;]])],
     [AC_DEFINE([HAVE_NULLPTR],[1],[Define to 1 if C++ compiler supports nullptr keyword.])])
 
-# log4shib settings (favor this version over the log4cpp code)
-AC_PATH_PROG(LOG4SHIB_CONFIG,log4shib-config)
-AC_ARG_WITH(log4shib,
-    AS_HELP_STRING([--with-log4shib=PATH],[where log4shib-config is installed]),
-    [
-    LOG4SHIB_CONFIG="${with_log4shib}"
-    if ! test -f "${LOG4SHIB_CONFIG}" ; then
-    	LOG4SHIB_CONFIG="${with_log4shib}/bin/log4shib-config"
-    fi
-    ])
-if test -f "${LOG4SHIB_CONFIG}" ; then
-    LIBS="`${LOG4SHIB_CONFIG} --libs` $LIBS"
-    CPPFLAGS="`${LOG4SHIB_CONFIG} --cflags` $CPPFLAGS"
-    AC_CHECK_HEADER([log4shib/CategoryStream.hh],,AC_MSG_ERROR([unable to find log4shib header files]))
-    AC_LINK_IFELSE(
-        [AC_LANG_PROGRAM([[#include <log4shib/Category.hh>
-#include <log4shib/CategoryStream.hh>]],
-            [[log4shib::Category::getInstance("foo").errorStream() << log4shib::eol]])],
-        [AC_DEFINE([XMLTOOLING_LOG4SHIB],[1],[Define to 1 if log4shib library is used.])],
-        [AC_MSG_ERROR([unable to link with log4shib])])
-else
-    AC_MSG_WARN([log4shib-config not found, may need to use --with-log4shib option])
-    AC_MSG_WARN([will look for original log4cpp library])
-    
-    # log4cpp settings
-    AC_PATH_PROG(LOG4CPP_CONFIG,log4cpp-config)
-    AC_ARG_WITH(log4cpp,
-        AS_HELP_STRING([--with-log4cpp=PATH],[where log4cpp-config is installed]),
-        [
-        LOG4CPP_CONFIG="${with_log4cpp}"
-        if ! test -f "${LOG4CPP_CONFIG}" ; then
-        	LOG4CPP_CONFIG="${with_log4cpp}/bin/log4cpp-config"
-        fi
-        ])
-    if test -f "${LOG4CPP_CONFIG}"; then
-        AC_MSG_WARN([will try to use log4cpp, note that most non-Internet2 supplied versions are not thread-safe])
-        LIBS="`${LOG4CPP_CONFIG} --libs` $LIBS"
-        CPPFLAGS="`${LOG4CPP_CONFIG} --cflags` $CPPFLAGS"
-        AC_CHECK_HEADER([log4cpp/CategoryStream.hh],,AC_MSG_ERROR([unable to find log4cpp header files]))
-        AC_LINK_IFELSE(
-            [AC_LANG_PROGRAM([[#include <log4cpp/Category.hh>
-#include <log4cpp/CategoryStream.hh>]],
-                [[log4cpp::Category::getInstance("foo").errorStream() << log4cpp::eol]])],
-            [AC_DEFINE([XMLTOOLING_LOG4CPP],[1],[Define to 1 if log4cpp library is used.])],
-            [AC_MSG_ERROR([unable to link with log4cpp, need version 1.0 or later])])
-	else
-	    AC_MSG_ERROR([log4cpp-config not found, may need to use --with-log4cpp option])
-	fi
-fi
+AX_PKG_CHECK_MODULES([log4shib],,[log4shib],
+    [AC_DEFINE([XMLTOOLING_LOG4SHIB],[1],[Define to 1 if log4shib library is used.])],
+    [AX_PKG_CHECK_MODULES([log4cpp],,[log4cpp >= 1],
+        [AC_DEFINE([XMLTOOLING_LOG4CPP],[1],[Define to 1 if log4cpp library is used.])
+	 AC_MSG_WARN([using log4cpp, note that most non-Internet2 supplied versions are not thread-safe])],,
+        [XMLTOOLING_LITE_REQUIRES],[XMLTOOLING_LITE_REQUIRES_PRIVATE])],,
+    [XMLTOOLING_LITE_REQUIRES],[XMLTOOLING_LITE_REQUIRES_PRIVATE])
 
-# Xerces settings
-AC_ARG_WITH(xerces,
-    AS_HELP_STRING([--with-xerces=PATH],[where xerces-c is installed]),,
-    [with_xerces=/usr])
-if test x_$with_xerces != x_/usr; then
-    CPPFLAGS="-I${with_xerces}/include $CPPFLAGS"
-    LIBS="-L${with_xerces}/lib -lxerces-c $LIBS"
-else
-    LIBS="-lxerces-c $LIBS"
-fi
+AX_PKG_CHECK_MODULES([xerces],,[xerces-c >= 3],,,
+    [XMLTOOLING_LITE_REQUIRES],[XMLTOOLING_LITE_REQUIRES_PRIVATE])
 
-AC_CHECK_HEADER([xercesc/dom/DOM.hpp],,AC_MSG_ERROR([unable to find xerces header files]))
-AC_MSG_CHECKING([Xerces version])
-
-AC_PREPROC_IFELSE(
-    [AC_LANG_PROGRAM([#include <xercesc/util/XercesVersion.hpp>],
-[#if  _XERCES_VERSION >= 30000
-int i = 0;
-#else
-#error cannot use version 1.x or 2.x
-#endif])],
-    [AC_MSG_RESULT(OK)],
-    [AC_MSG_FAILURE([Xerces-C 3.x is required])])
-
-AC_LINK_IFELSE(
-    [AC_LANG_PROGRAM([[#include <xercesc/util/PlatformUtils.hpp>]],
-        [[xercesc::XMLPlatformUtils::Initialize()]])],
-    ,[AC_MSG_ERROR([unable to link with Xerces])])
-
-# XML-Security settings
 AC_ARG_WITH(xmlsec,
-    AS_HELP_STRING([--with-xmlsec=PATH], [where xmlsec is installed]),,
-    [with_xmlsec=/usr])
+    AS_HELP_STRING([--with-xmlsec],
+        [include signature/encryption support via Apache Santuario (XML Security) @<:@default=check@:>@]),,
+    [with_xmlsec=check])
 
-if test x_$with_xmlsec != x_no; then
-
-    # OpenSSL settings (need to do this first in case it's in a different spot from xmlsec)
-    AC_ARG_WITH(openssl,
-        AS_HELP_STRING([--with-openssl=PATH], [where openssl is installed]),
-        [if test x_$with_openssl != x_/usr; then
-            SSLFLAGS="-I${with_openssl}/include"
-            SSLLIBS="-L${with_openssl}/lib -lcrypto -lssl"
-        else
-            SSLLIBS="-lcrypto -lssl"
-        fi])
-    
-    if test "x$SSLLIBS" = "x" ; then
-        AC_PATH_PROG(PKG_CONFIG, pkg-config)
-        if test "x$PKG_CONFIG" != x && test "x$PKG_CONFIG" != "xno" ; then
-            if pkg-config openssl ; then
-                SSLLIBS="`$PKG_CONFIG --libs openssl`"
-                SSLFLAGS="`$PKG_CONFIG --cflags openssl`"
-            else
-                AC_MSG_WARN([OpenSSL not supported by pkg-config, try --with-openssl instead])
-            fi
-        fi
-    fi
-    
-    if test "x$SSLLIBS" = "x" ; then
-        SSLLIBS="-lcrypto -lssl"
-    fi
-    
-    AC_MSG_CHECKING(for OpenSSL cflags)
-    AC_MSG_RESULT($SSLFLAGS)
-    CPPFLAGS="$CPPFLAGS $SSLFLAGS"
-    AC_MSG_CHECKING(for OpenSSL libraries)
-    AC_MSG_RESULT($SSLLIBS)
-    XMLSEC_LIBS="$XMLSEC_LIBS $SSLLIBS"
-
-    # save and append master libs
-    save_LIBS="$LIBS"
-    LIBS="$XMLSEC_LIBS $LIBS"
-    
-    AC_CHECK_HEADER([openssl/pem.h],,AC_MSG_ERROR([unable to find openssl header files]))
-    AC_MSG_CHECKING(for ERR_load_CRYPTO_string)
-    AC_TRY_LINK_FUNC([ERR_load_CRYPTO_strings],,AC_MSG_ERROR([unable to link with openssl libraries]))
-    AC_MSG_RESULT(yes)
-
-    # restore master libs
-    LIBS="$save_LIBS"
-
-    if test x_$with_xmlsec != x_/usr; then
-        CPPFLAGS="-I${with_xmlsec}/include $CPPFLAGS"
-        XMLSEC_LIBS="-L${with_xmlsec}/lib -lxml-security-c $XMLSEC_LIBS"
-    else
-        XMLSEC_LIBS="-lxml-security-c $XMLSEC_LIBS"
-    fi
-    
-    # save and append master libs
-    save_LIBS="$LIBS"
-    LIBS="$XMLSEC_LIBS $LIBS"
-    
-    AC_CHECK_HEADER([xsec/utils/XSECPlatformUtils.hpp],,AC_MSG_ERROR([unable to find XML-Security header files]))
-    AC_MSG_CHECKING([XML-Security version])
-    AC_PREPROC_IFELSE(
-	    [AC_LANG_PROGRAM([#include <xsec/utils/XSECPlatformUtils.hpp>],
-        [#if XSEC_VERSION_MAJOR >= 2
-int i = 0;
-#else
-#error need version 2.0.0 or later
-#endif])],
-        [AC_MSG_RESULT(OK)],
-        [AC_MSG_FAILURE([XML-Security version 2.0.0 or greater is required.])])
-        
-    AC_LINK_IFELSE(
-        [AC_LANG_PROGRAM([[#include <xsec/utils/XSECPlatformUtils.hpp>]],
-            [[XSECPlatformUtils::Initialise()]])],,
-        [AC_MSG_ERROR([unable to link with XML-Security])])
-
-    # restore master libs
-    LIBS="$save_LIBS"
-
-    # libcurl settings
-    AC_PATH_PROG(CURL_CONFIG,curl-config)
-    AC_ARG_WITH(curl,
-        AS_HELP_STRING([--with-curl=PATH], [where curl-config is installed]),
-        [
-        CURL_CONFIG="${with_curl}"
-        if ! test -f "${CURL_CONFIG}" ; then
-            CURL_CONFIG="${with_curl}/bin/curl-config"
-        fi
-        ])
-    if test -f "${CURL_CONFIG}" ; then
-        CPPFLAGS="`${CURL_CONFIG} --cflags` $CPPFLAGS"
-        XMLSEC_LIBS="`${CURL_CONFIG} --libs` $XMLSEC_LIBS"
-    else
-        AC_MSG_ERROR([curl-config not found, may need to use --with-curl option])
-    fi
-
-    # save and append master libs
-    save_LIBS="$LIBS"
-    LIBS="$XMLSEC_LIBS $LIBS"
-	
-    AC_CHECK_HEADER([curl/curl.h],,AC_MSG_ERROR([unable to find libcurl header files]))
-    AC_LINK_IFELSE(
-        [AC_LANG_PROGRAM([[#include <curl/curl.h>]],
-            [[curl_global_init(CURL_GLOBAL_ALL)]])],,
-        [AC_MSG_ERROR([unable to link with libcurl])])
+AS_IF([test "x$with_xmlsec" != xno],
+    [AX_PKG_CHECK_MODULES([XMLSEC],,[xml-security-c >= 2 libcurl openssl zlib],
+        [AX_SAVE_FLAGS
+         CXXFLAGS="$XMLSEC_CFLAGS $CXXFLAGS"
+         LIBS="$XMLSEC_LIBS $LIBS"
          AC_CHECK_DECLS([CURLOPT_ACCEPT_ENCODING,CURLINFO_TLS_SSL_PTR],,,[[#include <curl/curl.h>]])
          AC_CHECK_DECL([CURLOPT_SSL_CTX_FUNCTION],,[AC_MSG_ERROR([need libcurl that supports CURLOPT_SSL_CTX_FUNCTION])],[[#include <curl/curl.h>]])
          AC_CHECK_TYPE([curl_off_t],[AC_DEFINE([HAVE_CURL_OFF_T],[1],[Define to 1 if you have the 'curl_off_t' type.])],,[[#include <curl/curl.h>]])
+         AX_RESTORE_FLAGS
+        ],
+        [AS_IF([test "x$with_xmlsec" = xcheck],
+             [AC_MSG_WARN([xmlsec disabled, building without signature/encryption support])
+              AC_DEFINE([XMLTOOLING_NO_XMLSEC],[1],
+                  [Define to 1 if you wish to disable XML-Security-dependent features.])],
+             [AC_MSG_FAILURE([--with-xmlsec was given, but the package was not found])])
+        ],[XMLTOOLING_REQUIRES],[XMLTOOLING_REQUIRES_PRIVATE])
+    ])
 
-    # restore master libs
-    LIBS="$save_LIBS"
-    
-    # zlib settings
-    AC_ARG_WITH(zlib,
-        AS_HELP_STRING([--with-zlib=PATH],[where zlib is installed]),
-        [
-            if test -d "$withval" ; then
-                CPPFLAGS="${CPPFLAGS} -I$withval/include"
-                XMLSEC_LIBS="$XMLSEC_LIBS -L$withval/lib"
-            fi
-        ]
-    )
-    XMLSEC_LIBS="$XMLSEC_LIBS -lz"
-
-    # save and append master libs
-    save_LIBS="$LIBS"
-    LIBS="$XMLSEC_LIBS $LIBS"
-    
-    AC_CHECK_HEADER([zlib.h],,AC_MSG_ERROR([unable to find zlib header files]))
-    AC_LINK_IFELSE(
-        [AC_LANG_PROGRAM([[#include <zlib.h>]],
-            [[zlibVersion()]])],,
-        [AC_MSG_ERROR([unable to link with zlib])])
-
-    # restore master libs
-    LIBS="$save_LIBS"
-    
-    AC_SUBST(XMLSEC_LIBS)
-else
-    AC_MSG_WARN([xmlsec disabled, building without signature/encryption support])
-    AC_DEFINE([XMLTOOLING_NO_XMLSEC],[1],[Define to 1 if you wish to disable XML-Security-dependent features.])
-fi
-AM_CONDITIONAL(BUILD_XMLSEC,test x_$with_xmlsec != x_no)
+AM_CONDITIONAL(BUILD_XMLSEC,test "x$XMLSEC_LIBS" != x)
 
 # Does the STL in use help or screw us?
 AC_LINK_IFELSE(
@@ -357,8 +170,6 @@ AC_LINK_IFELSE(
 AC_ARG_VAR([CXXTEST], [override the cxxtestgen executable and options])
 AC_CHECK_PROGS([CXXTEST], [cxxtestgen cxxtestgen.pl], [false])
 AM_CONDITIONAL([BUILD_UNITTEST], [test "x${CXXTEST}" != xfalse])
-
-AX_CREATE_PKGCONFIG_INFO(,,[$XMLSEC_LIBS -lxmltooling],[OpenSAML XMLTooling-C library])
 
 # output packaging and makefiles
 AC_OUTPUT
