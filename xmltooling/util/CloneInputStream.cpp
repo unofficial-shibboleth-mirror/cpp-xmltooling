@@ -53,7 +53,7 @@ CloneInputStream::~CloneInputStream()
 
 XMLSize_t CloneInputStream::readBytes(XMLByte* const toFill, const XMLSize_t maxToRead)
 {
-    auto bytesRead = m_input->readBytes(toFill, maxToRead);
+    XMLSize_t bytesRead = m_input->readBytes(toFill, maxToRead);
 
     if (bytesRead) m_backingStream.write((char*)toFill, bytesRead);
 

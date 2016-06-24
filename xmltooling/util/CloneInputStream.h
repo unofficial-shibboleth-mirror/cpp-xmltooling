@@ -55,9 +55,9 @@ namespace xmltooling {
 
 
     private :
-        std::ofstream            m_backingStream;
-        logging::Category&       m_log;
-	    xercesc::BinInputStream* m_input;
+        logging::Category& m_log;
+	xercesc::BinInputStream* m_input;
+        std::ofstream m_backingStream;
     };
 };
 
