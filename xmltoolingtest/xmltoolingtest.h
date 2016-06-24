@@ -79,7 +79,8 @@ public:
     }
 
     void testUnknown() {
-        ifstream fs(data_path + "SimpleXMLObjectWithChildren.xml");
+        string test_path = data_path + "SimpleXMLObjectWithChildren.xml";
+        ifstream fs(test_path.c_str());
         DOMDocument* doc=XMLToolingConfig::getConfig().getParser().parse(fs);
         TS_ASSERT(doc!=nullptr);
 
@@ -107,7 +108,8 @@ public:
     }
 
     void testUnknownWithDocChange() {
-        ifstream fs(data_path + "SimpleXMLObjectWithChildren.xml");
+        string test_path = data_path + "SimpleXMLObjectWithChildren.xml";
+        ifstream fs(test_path.c_str());
         DOMDocument* doc=XMLToolingConfig::getConfig().getParser().parse(fs);
         TS_ASSERT(doc!=nullptr);
 
@@ -132,7 +134,8 @@ public:
     }
 
     void testHelper() {
-        ifstream fs(data_path + "IgnoreCase.xml");
+        string test_path = data_path + "IgnoreCase.xml";
+        ifstream fs(test_path.c_str());
         DOMDocument* doc=XMLToolingConfig::getConfig().getParser().parse(fs);
         TS_ASSERT(doc!=nullptr);
         DOMElement* parent = doc->getDocumentElement();
