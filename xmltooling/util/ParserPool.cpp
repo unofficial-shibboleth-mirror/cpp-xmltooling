@@ -547,7 +547,7 @@ xsecsize_t StreamInputSource::StreamBinInputStream::readBytes(XMLByte* const toF
 
 #ifdef XMLTOOLING_LITE
 
-URLInputSource::URLInputSource(const XMLCh* url, const char* systemId, string* cacheTag, std::string backingFile) : InputSource(systemId), m_url(url), m_backingFile(backingFile)
+URLInputSource::URLInputSource(const XMLCh* url, const char* systemId, string* cacheTag, std::string backingFile) : InputSource(systemId), m_backingFile(backingFile), m_url(url)
 {
 }
 
