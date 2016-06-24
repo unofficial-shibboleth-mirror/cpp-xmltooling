@@ -575,12 +575,12 @@ BinInputStream* URLInputSource::makeStream() const
 #else
 
 URLInputSource::URLInputSource(const XMLCh* url, const char* systemId, string* cacheTag, std::string backingFile)
-    : InputSource(systemId), m_cacheTag(cacheTag), m_url(url), m_root(nullptr), m_backingFile(backingFile)
+    : InputSource(systemId), m_backingFile(backingFile), m_cacheTag(cacheTag), m_url(url), m_root(nullptr)
 {
 }
 
 URLInputSource::URLInputSource(const DOMElement* e, const char* systemId, string* cacheTag, std::string backingFile)
-    : InputSource(systemId), m_cacheTag(cacheTag), m_root(e), m_backingFile(backingFile)
+    : InputSource(systemId), m_backingFile(backingFile), m_cacheTag(cacheTag), m_root(e)
 {
 }
 
