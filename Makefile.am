@@ -25,7 +25,7 @@ pkgconfig_DATA = @PACKAGE_NAME@.pc
 GENFILES = @PACKAGE_NAME@.spec
 
 EXTRA_DIST = $(DX_CONFIG) \
-	cpp-@PACKAGE_NAME@.sln \
+	Projects \
 	config_win32.h \
 	$(GENFILES) \
 	$(GENFILES:%=%.in)

@@ -64,4 +64,4 @@ do-cxxtestgen:
 $(nodist_xmltoolingtest_SOURCES): %.cpp: %.h
 	$(MAKE) do-cxxtestgen HFILE=$< CPPFILE=$@
 
-EXTRA_DIST = xmltoolingtest.vcxproj xmltoolingtest.vcxproj.filters data
+EXTRA_DIST = data

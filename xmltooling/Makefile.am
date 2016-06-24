@@ -217,10 +217,6 @@ install-exec-hook:
 	for la in $(lib_LTLIBRARIES) ; do rm -f $(DESTDIR)$(libdir)/$$la ; done
 
 EXTRA_DIST = \
-    xmltooling.vcxproj \
-    xmltooling-lite.vcxproj \
-    xmltooling.vcxproj.filters \
-    xmltooling-lite.vcxproj.filters \
     config_pub.h.in \
     config_pub_win32.h\
     resource.h\
