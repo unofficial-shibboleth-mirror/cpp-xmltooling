@@ -53,7 +53,7 @@ void XSECCryptoX509CRL::loadX509CRLPEM(const char* buf, unsigned int len)
 		b = b1;
 	}
 
-	const char *p = strstr(buf, "-----BEGIN X509 CRL-----");
+	const char *p = strstr(b, "-----BEGIN X509 CRL-----");
 
 	if (p == nullptr) {
 
