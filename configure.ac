@@ -71,7 +71,7 @@ AC_HEADER_DIRENT
 # Checks for library functions.
 AC_CHECK_FUNCS([strchr strdup strstr timegm gmtime_r strcasecmp])
 AC_CHECK_HEADERS([dlfcn.h])
-AC_CHECK_FUNC(dlclose, , [ AC_CHECK_LIB(dl, dlopen) ])
+AC_SEARCH_LIBS([dlopen],[dl],,[AC_MSG_ERROR([cannot find dlopen() function])])
 
 # checks for pthreads
 AX_PTHREAD([enable_threads="pthread"],[enable_threads="no"])
