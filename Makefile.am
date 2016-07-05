@@ -13,7 +13,6 @@ else
 all-local:
 endif
 
-pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = @PACKAGE_NAME@.pc @PACKAGE_NAME@-lite.pc
 
 GENFILES = @PACKAGE_NAME@.spec
