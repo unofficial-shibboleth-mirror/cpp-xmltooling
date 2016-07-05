@@ -2,6 +2,8 @@ prefix=@prefix@
 exec_prefix=@exec_prefix@
 libdir=@libdir@
 includedir=@includedir@
+datarootdir=@datarootdir@
+pkgxmldir=@pkgxmldir@
 
 Name: @PACKAGE_NAME@
 Description: OpenSAML XMLTooling-C library
