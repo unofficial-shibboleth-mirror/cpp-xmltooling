@@ -74,7 +74,7 @@ namespace xmltooling {
         CURLSOAPTransport(const Address& addr)
             : m_sender(addr.m_from ? addr.m_from : ""), m_peerName(addr.m_to ? addr.m_to : ""), m_endpoint(addr.m_endpoint),
                 m_handle(nullptr), m_keepHandle(false), m_headers(nullptr),
-#ifdef HAVE_CURLINFO_TLS_SSL_PTR
+#if HAVE_DECL_CURLINFO_TLS_SSL_PTR
                     m_cipherLogged(false),
 #endif
 #ifndef XMLTOOLING_NO_XMLSEC
@@ -120,7 +120,7 @@ namespace xmltooling {
 
         bool setAcceptEncoding(const char *value)
         {
-#ifdef HAVE_CURLOPT_ACCEPT_ENCODING
+#if HAVE_DECL_CURLOPT_ACCEPT_ENCODING
             return (curl_easy_setopt(m_handle, CURLOPT_ACCEPT_ENCODING, value) == CURLE_OK);
 #else
             return (curl_easy_setopt(m_handle, CURLOPT_ENCODING, value) == CURLE_OK);
@@ -235,7 +235,7 @@ namespace xmltooling {
 		string m_useragent;
         map<string,vector<string> > m_response_headers;
         vector<string> m_saved_options;
-#ifdef HAVE_CURLINFO_TLS_SSL_PTR
+#if HAVE_DECL_CURLINFO_TLS_SSL_PTR
         bool m_cipherLogged;
 #endif
 #ifndef XMLTOOLING_NO_XMLSEC
@@ -615,7 +615,7 @@ size_t xmltooling::curl_header_hook(void* ptr, size_t size, size_t nmemb, void* 
 {
     CURLSOAPTransport* ctx = reinterpret_cast<CURLSOAPTransport*>(stream);
 
-#ifdef HAVE_CURLINFO_TLS_SSL_PTR
+#if HAVE_DECL_CURLINFO_TLS_SSL_PTR
     if (!ctx->m_cipherLogged) {
         Category& log = Category::getInstance(XMLTOOLING_LOGCAT ".SOAPTransport.CURL");
         if (log.isDebugEnabled()) {

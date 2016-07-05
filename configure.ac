@@ -306,18 +306,10 @@ int i = 0;
         [AC_LANG_PROGRAM([[#include <curl/curl.h>]],
             [[curl_global_init(CURL_GLOBAL_ALL)]])],,
         [AC_MSG_ERROR([unable to link with libcurl])])
-    AC_MSG_CHECKING([for CURLOPT_ACCEPT_ENCODING in curl.h])
-    AC_EGREP_HEADER([CURLOPT_ACCEPT_ENCODING], [curl/curl.h],
-        [AC_DEFINE([HAVE_CURLOPT_ACCEPT_ENCODING],[1],[Define to 1 if you have support for the CURLOPT_ACCEPT_ENCODING option.])])
-    AC_MSG_CHECKING([for CURLOPT_SSL_CTX_FUNCTION in curl.h])
-    AC_EGREP_HEADER([CURLOPT_SSL_CTX_FUNCTION], [curl/curl.h],
-        [AC_MSG_RESULT(yes)],
-        [AC_MSG_ERROR([need libcurl that supports CURLOPT_SSL_CTX_FUNCTION])])
-    AC_CHECK_TYPE([curl_off_t],[AC_DEFINE([HAVE_CURL_OFF_T],[1],[Define to 1 if you have the 'curl_off_t' type.])],,[[#include <curl/curl.h>]])
-    AC_MSG_CHECKING([for CURLINFO_TLS_SSL_PTR in curl.h])
-    AC_EGREP_HEADER([CURLINFO_TLS_SSL_PTR], [curl/curl.h],
-        [AC_DEFINE([HAVE_CURLINFO_TLS_SSL_PTR],[1],[Define to 1 if you have support for the CURLINFO_TLS_SSL_PTR feature.])])
-    
+         AC_CHECK_DECLS([CURLOPT_ACCEPT_ENCODING,CURLINFO_TLS_SSL_PTR],,,[[#include <curl/curl.h>]])
+         AC_CHECK_DECL([CURLOPT_SSL_CTX_FUNCTION],,[AC_MSG_ERROR([need libcurl that supports CURLOPT_SSL_CTX_FUNCTION])],[[#include <curl/curl.h>]])
+         AC_CHECK_TYPE([curl_off_t],[AC_DEFINE([HAVE_CURL_OFF_T],[1],[Define to 1 if you have the 'curl_off_t' type.])],,[[#include <curl/curl.h>]])
+
     # restore master libs
     LIBS="$save_LIBS"
     

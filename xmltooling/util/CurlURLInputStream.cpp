@@ -275,7 +275,7 @@ void CurlURLInputStream::init(const DOMElement* e)
     curl_easy_setopt(fEasy, CURLOPT_NOPROGRESS, 1);
     curl_easy_setopt(fEasy, CURLOPT_NOSIGNAL, 1);
     curl_easy_setopt(fEasy, CURLOPT_FAILONERROR, 1);
-#ifdef HAVE_CURLOPT_ACCEPT_ENCODING
+#if HAVE_DECL_CURLOPT_ACCEPT_ENCODING
     curl_easy_setopt(fEasy, CURLOPT_ACCEPT_ENCODING, "");
 #else
     curl_easy_setopt(fEasy, CURLOPT_ENCODING, "");
