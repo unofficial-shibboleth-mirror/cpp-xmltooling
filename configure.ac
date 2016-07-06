@@ -362,21 +362,9 @@ AC_LINK_IFELSE(
     [AC_DEFINE([HAVE_ITERATOR_TRAITS],[1],[Define to 1 if you have an STL implementation that supports std::iterator_traits.])],[])
 
 # Check for unit test support
-CXXTEST="/usr/bin/cxxtestgen.pl"
-CXXTESTFLAGS=""
-AC_ARG_WITH(cxxtest,
-    AS_HELP_STRING([--with-cxxtest=PATH], [where cxxtest is installed]),
-    [if test x_$with_cxxtest != x_/usr; then
-        CXXTEST="${with_cxxtest}/cxxtestgen.pl"
-        CXXTESTFLAGS="-I${with_cxxtest}"
-    fi])
-if ! test -f "${CXXTEST}"; then
-    AC_MSG_WARN([cxxtestgen not found, won't build unit tests])
-fi
-
-AC_SUBST(CXXTEST)
-AC_SUBST(CXXTESTFLAGS)
-AM_CONDITIONAL(BUILD_UNITTEST,test -f ${CXXTEST})
+AC_ARG_VAR([CXXTEST], [override the cxxtestgen executable and options])
+AC_CHECK_PROGS([CXXTEST], [cxxtestgen cxxtestgen.pl], [false])
+AM_CONDITIONAL([BUILD_UNITTEST], [test "x${CXXTEST}" != xfalse])
 
 AX_CREATE_PKGCONFIG_INFO(,,[$XMLSEC_LIBS -lxmltooling],[OpenSAML XMLTooling-C library])
 
