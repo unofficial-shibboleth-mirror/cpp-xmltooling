@@ -15,49 +15,43 @@ xmltoolingtest_LDADD += $(xerces_LIBS)
 
 if BUILD_XMLSEC
 xmlsec_sources = \
-	DataSealerTest.h \
-	EncryptionTest.h \
-	FilesystemCredentialResolverTest.h \
-	ExplicitKeyTrustEngineTest.h \
-	InlineKeyResolverTest.h \
-	MemoryStorageServiceTest.h \
-	PKIXEngineTest.h \
-	SecurityHelperTest.h \
-	SignatureTest.h
-else
-xmlsec_sources =
+	DataSealerTest.cpp \
+	EncryptionTest.cpp \
+	FilesystemCredentialResolverTest.cpp \
+	ExplicitKeyTrustEngineTest.cpp \
+	InlineKeyResolverTest.cpp \
+	MemoryStorageServiceTest.cpp \
+	PKIXEngineTest.cpp \
+	SecurityHelperTest.cpp \
+	SignatureTest.cpp
 endif
 
-xmltoolingtest_h = \
-	ComplexXMLObjectTest.h \
-	DateTimeTest.h \
-	DirectoryWalkerTest.h \
-	ExceptionTest.h \
-	KeyInfoTest.h \
-	MarshallingTest.h \
-	NonVisibleNamespaceTest.h \
-	SOAPTest.h \
-	UnmarshallingTest.h \
-	TemplateEngineTest.h \
-	xmltoolingtest.h \
+xmltoolingtest_sources = \
+	ComplexXMLObjectTest.cpp \
+	DateTimeTest.cpp \
+	DirectoryWalkerTest.cpp \
+	ExceptionTest.cpp \
+	KeyInfoTest.cpp \
+	MarshallingTest.cpp \
+	NonVisibleNamespaceTest.cpp \
+	SOAPTest.cpp \
+	UnmarshallingTest.cpp \
+	TemplateEngineTest.cpp \
 	${xmlsec_sources}
 
 noinst_HEADERS = \
 	XMLObjectBaseTestCase.h \
-	$(xmltoolingtest_h)
+	xmltoolingtest.h \
+	$(xmltoolingtest_sources:.cpp=.h)
 
-nodist_xmltoolingtest_SOURCES = $(xmltoolingtest_h:.h=.cpp)
+nodist_xmltoolingtest_SOURCES = xmltoolingtest.cpp $(xmltoolingtest_sources)
+
+xmltoolingtest.cpp: %.cpp: %.h
+	$(CXXTEST) --error-printer --have-eh --have-std --abort-on-fail -o $@ $<
+
+$(xmltoolingtest_sources): %.cpp: %.h
+	$(CXXTEST) --part --have-eh --have-std --abort-on-fail -o $@ $<
 
 CLEANFILES = $(nodist_xmltoolingtest_SOURCES)
-
-do-cxxtestgen:
-	if test "$(CPPFILE)" = "xmltoolingtest.cpp"; then \
-		$(CXXTEST) --error-printer --have-eh --have-std --abort-on-fail -o $(CPPFILE) $(HFILE); \
-	else \
-		$(CXXTEST) --part --have-eh --have-std --abort-on-fail -o $(CPPFILE) $(HFILE); \
-	fi;
-
-$(nodist_xmltoolingtest_SOURCES): %.cpp: %.h
-	$(MAKE) do-cxxtestgen HFILE=$< CPPFILE=$@
 
 EXTRA_DIST = data
