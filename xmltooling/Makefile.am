@@ -218,8 +218,7 @@ common_LIBADD   = $(xerces_LIBS)   $(log4shib_LIBS)   $(log4cpp_LIBS)   $(PTHREA
 
 libxmltooling_lite_la_SOURCES = \
 	${common_sources}
-libxmltooling_lite_la_CPPFLAGS = -DXMLTOOLING_LITE
-libxmltooling_lite_la_CXXFLAGS = $(common_CXXFLAGS)
+libxmltooling_lite_la_CXXFLAGS = -DXMLTOOLING_LITE $(common_CXXFLAGS)
 libxmltooling_lite_la_LDFLAGS = -version-info 8:0:0
 libxmltooling_lite_la_LIBADD = $(common_LIBADD)
 

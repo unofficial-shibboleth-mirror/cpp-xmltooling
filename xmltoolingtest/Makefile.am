@@ -2,19 +2,18 @@ AUTOMAKE_OPTIONS = foreign
 
 if BUILD_UNITTEST
 
-bin_PROGRAMS = xmltoolingtest
-xmltoolingtest_CXXFLAGS = $(CXXTESTFLAGS)
+TESTS = xmltoolingtest
+
+check_PROGRAMS = xmltoolingtest
+
+xmltoolingtest_CXXFLAGS = $(CXXTESTFLAGS) $(xerces_CFLAGS)
 if BUILD_XMLSEC
-xmltoolingtest_CPPFLAGS = $(xerces_CFLAGS) $(XMLSEC_CFLAGS)
-xmltoolingtest_LDFLAGS  = $(xerces_LIBS)   $(XMLSEC_LIBS)
-xmltoolingtest_LDADD = $(top_builddir)/xmltooling/libxmltooling.la
+xmltoolingtest_CXXFLAGS += $(XMLSEC_CFLAGS)
+xmltoolingtest_LDADD = $(top_builddir)/xmltooling/libxmltooling.la $(XMLSEC_LIBS)
 else
 xmltoolingtest_LDADD = $(top_builddir)/xmltooling/libxmltooling-lite.la
 endif
-
-else
-
-bin_PROGRAMS = 
+xmltoolingtest_LDADD += $(xerces_LIBS)
 
 endif
 
