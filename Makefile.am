@@ -5,7 +5,11 @@ include doxygen.am
 
 MOSTLYCLEANFILES = $(DX_CLEANFILES)
 
-SUBDIRS = doc schemas @PACKAGE_NAME@ xmltoolingtest
+SUBDIRS = doc schemas @PACKAGE_NAME@
+
+if BUILD_UNITTEST
+SUBDIRS += xmltoolingtest
+endif
 
 if DX_COND_doc
 all-local: doxygen-doc

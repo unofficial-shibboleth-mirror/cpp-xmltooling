@@ -1,7 +1,5 @@
 AUTOMAKE_OPTIONS = foreign
 
-if BUILD_UNITTEST
-
 TESTS = xmltoolingtest
 
 check_PROGRAMS = xmltoolingtest
@@ -14,8 +12,6 @@ else
 xmltoolingtest_LDADD = $(top_builddir)/xmltooling/libxmltooling-lite.la
 endif
 xmltoolingtest_LDADD += $(xerces_LIBS)
-
-endif
 
 if BUILD_XMLSEC
 xmlsec_sources = \
@@ -52,10 +48,8 @@ noinst_HEADERS = \
 
 nodist_xmltoolingtest_SOURCES = $(xmltoolingtest_h:.h=.cpp)
 
-if BUILD_UNITTEST
 BUILT_SOURCES = $(nodist_xmltoolingtest_SOURCES)
 CLEANFILES = $(nodist_xmltoolingtest_SOURCES)
-endif
 
 do-cxxtestgen:
 	if test "$(CPPFILE)" = "xmltoolingtest.cpp"; then \
