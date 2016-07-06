@@ -48,7 +48,6 @@ noinst_HEADERS = \
 
 nodist_xmltoolingtest_SOURCES = $(xmltoolingtest_h:.h=.cpp)
 
-BUILT_SOURCES = $(nodist_xmltoolingtest_SOURCES)
 CLEANFILES = $(nodist_xmltoolingtest_SOURCES)
 
 do-cxxtestgen:
