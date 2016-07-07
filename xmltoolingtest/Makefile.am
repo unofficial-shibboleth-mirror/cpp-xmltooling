@@ -20,7 +20,9 @@ xmlsec_sources = \
 	FilesystemCredentialResolverTest.cpp \
 	ExplicitKeyTrustEngineTest.cpp \
 	InlineKeyResolverTest.cpp \
+	KeyInfoTest.cpp \
 	MemoryStorageServiceTest.cpp \
+	NonVisibleNamespaceTest.cpp \
 	PKIXEngineTest.cpp \
 	SecurityHelperTest.cpp \
 	SignatureTest.cpp
@@ -31,9 +33,7 @@ xmltoolingtest_sources = \
 	DateTimeTest.cpp \
 	DirectoryWalkerTest.cpp \
 	ExceptionTest.cpp \
-	KeyInfoTest.cpp \
 	MarshallingTest.cpp \
-	NonVisibleNamespaceTest.cpp \
 	SOAPTest.cpp \
 	UnmarshallingTest.cpp \
 	TemplateEngineTest.cpp \
