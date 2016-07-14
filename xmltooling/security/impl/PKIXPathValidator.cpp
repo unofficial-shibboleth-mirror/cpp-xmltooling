@@ -30,6 +30,7 @@
 #include "security/OpenSSLCryptoX509CRL.h"
 #include "security/PKIXPathValidatorParams.h"
 #include "security/SecurityHelper.h"
+#include "security/impl/OpenSSLSupport.h"
 #include "util/NDC.h"
 #include "util/PathResolver.h"
 #include "util/Threads.h"
@@ -54,7 +55,9 @@ namespace {
     {
         if (!ok) {
             Category::getInstance("OpenSSL").error(
-                "path validation failure at depth(%d): %s", ctx->error_depth, X509_verify_cert_error_string(ctx->error)
+                "path validation failure at depth(%d): %s",
+                X509_STORE_CTX_get_error_depth(ctx),
+                X509_verify_cert_error_string(X509_STORE_CTX_get_error(ctx))
                 );
         }
         return ok;
@@ -291,18 +294,24 @@ bool PKIXPathValidator::validate(X509* EE, STACK_OF(X509)* untrusted, const Path
 
     // This contains the state of the validate operation.
     int count=0;
-    X509_STORE_CTX ctx;
+    X509StoreCtxRAII ctxContainer;
+
+    if (!ctxContainer.of()) {
+        log_openssl();
+        X509_STORE_free(store);
+        return false;
+    }
 
     // AFAICT, EE and untrusted are passed in but not owned by the ctx.
 #if (OPENSSL_VERSION_NUMBER >= 0x00907000L)
-    if (X509_STORE_CTX_init(&ctx,store,EE,untrusted) != 1) {
+    if (X509_STORE_CTX_init(ctxContainer.of(),store,EE,untrusted) != 1) {
         log_openssl();
         m_log.error("unable to initialize X509_STORE_CTX");
         X509_STORE_free(store);
         return false;
     }
 #else
-    X509_STORE_CTX_init(&ctx,store,EE,untrusted);
+    X509_STORE_CTX_init(ctxContainer.of(),store,EE,untrusted);
 #endif
 
     STACK_OF(X509)* CAstack = sk_X509_new_null();
@@ -316,15 +325,15 @@ bool PKIXPathValidator::validate(X509* EE, STACK_OF(X509)* untrusted, const Path
     m_log.debug("supplied (%d) CA certificate(s)", count);
 
     // Seems to be most efficient to just pass in the CA stack.
-    X509_STORE_CTX_trusted_stack(&ctx,CAstack);
-    X509_STORE_CTX_set_depth(&ctx,100);    // we check the depth down below
-    X509_STORE_CTX_set_verify_cb(&ctx,error_callback);
+    ctxContainer.set0TrustedStack(CAstack);
+    X509_STORE_CTX_set_depth(ctxContainer.of(),100);    // we check the depth down below
+    X509_STORE_CTX_set_verify_cb(ctxContainer.of(),error_callback);
 
     // Do a first pass verify. If CRLs aren't used, this is the only pass.
-    int ret = X509_verify_cert(&ctx);
+    int ret = X509_verify_cert(ctxContainer.of());
     if (ret == 1) {
         // Now see if the depth was acceptable by counting the number of intermediates.
-        int depth=sk_X509_num(ctx.chain)-2;
+        int depth=sk_X509_num(ctxContainer.get0Chain())-2;
         if (pkixParams->getVerificationDepth() < depth) {
             m_log.error(
                 "certificate chain was too long (%d intermediates, only %d allowed)",
@@ -340,7 +349,7 @@ bool PKIXPathValidator::validate(X509* EE, STACK_OF(X509)* untrusted, const Path
 #if (OPENSSL_VERSION_NUMBER >= 0x00907000L)
         // After the first X509_verify_cert call, the ctx can no longer be used
         // (subsequent calls will fail with OpenSSL 1.0.1p / 1.0.2d or later).
-        X509_STORE_CTX_cleanup(&ctx);
+        X509_STORE_CTX_cleanup(ctxContainer.of());
 
         // When we add CRLs, we have to be sure the nextUpdate hasn't passed, because OpenSSL won't accept
         // the CRL in that case. If we end up not adding a CRL for a particular link in the chain, the
@@ -403,23 +412,23 @@ bool PKIXPathValidator::validate(X509* EE, STACK_OF(X509)* untrusted, const Path
         // Do a second pass verify with CRLs in place. Reinitialize ctx, see
         // https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=aae41f8c54257d9fa6904d3a9aa09c5db6cefd0d
 #if (OPENSSL_VERSION_NUMBER >= 0x00907000L)
-        if (X509_STORE_CTX_init(&ctx,store,EE,untrusted) != 1) {
+        if (X509_STORE_CTX_init(ctxContainer.of(),store,EE,untrusted) != 1) {
             log_openssl();
             m_log.error("unable to initialize X509_STORE_CTX");
             ret = 0;
         }
 #else
-        X509_STORE_CTX_init(&ctx,store,EE,untrusted);
+        X509_STORE_CTX_init(ctxContainer.of(),store,EE,untrusted);
 #endif
         if (ret != 0) {
-            X509_STORE_CTX_trusted_stack(&ctx,CAstack);
-            X509_STORE_CTX_set_depth(&ctx,100);  // already checked above
-            X509_STORE_CTX_set_verify_cb(&ctx,error_callback);
+            ctxContainer.set0TrustedStack(CAstack);
+            X509_STORE_CTX_set_depth(ctxContainer.of(),100);  // already checked above
+            X509_STORE_CTX_set_verify_cb(ctxContainer.of(),error_callback);
             if (pkixParams->getRevocationChecking() == PKIXPathValidatorParams::REVOCATION_FULLCHAIN)
-                X509_STORE_CTX_set_flags(&ctx, X509_V_FLAG_CRL_CHECK|X509_V_FLAG_CRL_CHECK_ALL);
+                X509_STORE_CTX_set_flags(ctxContainer.of(), X509_V_FLAG_CRL_CHECK|X509_V_FLAG_CRL_CHECK_ALL);
             else
-                X509_STORE_CTX_set_flags(&ctx, X509_V_FLAG_CRL_CHECK);
-            ret = X509_verify_cert(&ctx);
+                X509_STORE_CTX_set_flags(ctxContainer.of(), X509_V_FLAG_CRL_CHECK);
+            ret = X509_verify_cert(ctxContainer.of());
         }
 #else
         m_log.warn("CRL checking is enabled, but OpenSSL version is too old");
@@ -431,13 +440,13 @@ bool PKIXPathValidator::validate(X509* EE, STACK_OF(X509)* untrusted, const Path
         m_log.debug("successfully validated certificate chain");
     }
 #if defined(X509_V_ERR_NO_EXPLICIT_POLICY) && (OPENSSL_VERSION_NUMBER < 0x10000000L)
-    else if (X509_STORE_CTX_get_error(&ctx) == X509_V_ERR_NO_EXPLICIT_POLICY && !pkixParams->isPolicyMappingInhibited()) {
+    else if (X509_STORE_CTX_get_error(ctxContainer.of()) == X509_V_ERR_NO_EXPLICIT_POLICY && !pkixParams->isPolicyMappingInhibited()) {
         m_log.warn("policy mapping requires OpenSSL 1.0.0 or later");
     }
 #endif
 
     // Clean up...
-    X509_STORE_CTX_cleanup(&ctx);
+    X509_STORE_CTX_cleanup(ctxContainer.of());
     X509_STORE_free(store);
     sk_X509_free(CAstack);
 
@@ -546,7 +555,10 @@ XSECCryptoX509CRL* PKIXPathValidator::getRemoteCRLs(const char* cdpuri) const
 bool PKIXPathValidator::isFreshCRL(XSECCryptoX509CRL *c, Category* log) const
 {
     if (c) {
-        const X509_CRL* crl = static_cast<OpenSSLCryptoX509CRL*>(c)->getOpenSSLX509CRL();
+#if (OPENSSL_VERSION_NUMBER < 0x10100000L)
+        const
+#endif
+        X509_CRL* crl = static_cast<OpenSSLCryptoX509CRL*>(c)->getOpenSSLX509CRL();
         time_t thisUpdate = getCRLTime(X509_CRL_get_lastUpdate(crl));
         time_t nextUpdate = getCRLTime(X509_CRL_get_nextUpdate(crl));
         time_t now = time(nullptr);
