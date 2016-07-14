@@ -57,6 +57,7 @@ encinclude_HEADERS = \
 
 implinclude_HEADERS = \
 	impl/AnyElement.h \
+	security/impl/OpenSSLSupport.h \
 	impl/UnknownElement.h
 
 ioinclude_HEADERS = \
@@ -147,6 +148,7 @@ xmlsec_sources = \
 	security/impl/InlineKeyResolver.cpp \
 	security/impl/KeyInfoResolver.cpp \
 	security/impl/OpenSSLCryptoX509CRL.cpp \
+	security/impl/OpenSSLSupport.cpp \
 	security/impl/PKIXPathValidator.cpp \
 	security/impl/SecurityHelper.cpp \
 	security/impl/StaticPKIXTrustEngine.cpp \
