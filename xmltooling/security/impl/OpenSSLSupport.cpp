@@ -27,9 +27,7 @@
 
 #include "internal.h"
 #include <openssl/x509_vfy.h> 
-#include <security\impl\OpenSSLSupport.h>
-
-using namespace xmltooling;
+#include <security/impl/OpenSSLSupport.h>
 
 X509StoreCtxRAII::X509StoreCtxRAII() : m_context(X509_STORE_CTX_new()) {
 }
@@ -58,8 +56,7 @@ STACK_OF(X509) *X509StoreCtxRAII::get0Chain() {
 }
 
 // the API to set the trusted stack changed in OpenSSL1.1
-void X509StoreCtxRAII::set0TrustedStack(STACK_OF(X509) *sk)
-{
+void X509StoreCtxRAII::set0TrustedStack(STACK_OF(X509) *sk) {
     if (m_context) {
 #if (OPENSSL_VERSION_NUMBER < 0x10100000L)
         X509_STORE_CTX_trusted_stack(m_context, sk);
@@ -67,59 +64,4 @@ void X509StoreCtxRAII::set0TrustedStack(STACK_OF(X509) *sk)
         X509_STORE_CTX_set0_trusted_stack(m_context, sk);
 #endif
     }
-}
-
-BIGNUM *DSA_get0_pubkey(const DSA *dsa)
-{
-#if (OPENSSL_VERSION_NUMBER < 0x10100000L)
-    return dsa->pub_key;
-#else
-    BIGNUM *result;
-    DSA_get0_key(dsa, &result, NULL);
-    return result;
-#endif
-}
-
-BIGNUM *DSA_get0_privkey(const DSA *dsa)
-{
-#if (OPENSSL_VERSION_NUMBER < 0x10100000L)
-    return dsa->priv_key;
-#else
-    BIGNUM *result;
-    DSA_get0_key(dsa, NULL, &result);
-    return result;
-#endif
-}
-
-BIGNUM *RSA_get0_n(const RSA *rsa)
-{
-#if (OPENSSL_VERSION_NUMBER < 0x10100000L)
-    return rsa->n;
-#else
-    BIGNUM *result;
-    RSA_get0_key(rsa, &result, NULL, NULL);
-    return result;
-#endif
-}
-
-BIGNUM *RSA_get0_e(const RSA *rsa)
-{
-#if (OPENSSL_VERSION_NUMBER < 0x10100000L)
-    return rsa->e;
-#else
-    BIGNUM *result;
-    RSA_get0_key(rsa, NULL, &result, NULL);
-    return result;
-#endif
-}
-
-BIGNUM *RSA_get0_d(const RSA *rsa)
-{
-#if (OPENSSL_VERSION_NUMBER < 0x10100000L)
-    return rsa->d;
-#else
-    BIGNUM *result;
-    RSA_get0_key(rsa, NULL, NULL, &result);
-    return result;
-#endif
 }
