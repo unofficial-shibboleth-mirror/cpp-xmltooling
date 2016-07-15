@@ -34,11 +34,13 @@
 #include "signature/Signature.h"
 #include "signature/SignatureValidator.h"
 #include "util/NDC.h"
+#include "security/impl/OpenSSLSupport.h"
 
 #include <xercesc/util/XMLUniDefs.hpp>
 #include <xsec/enc/OpenSSL/OpenSSLCryptoKeyDSA.hpp>
 #include <xsec/enc/OpenSSL/OpenSSLCryptoKeyRSA.hpp>
 #include <xsec/enc/OpenSSL/OpenSSLCryptoX509.hpp>
+
 
 using namespace xmlsignature;
 using namespace xmltooling::logging;
@@ -277,7 +279,7 @@ bool ExplicitKeyTrustEngine::validate(
                 {
                     DSA* dsa = static_cast<OpenSSLCryptoKeyDSA*>(key)->getOpenSSLDSA();
                     EVP_PKEY* evp = X509_PUBKEY_get(X509_get_X509_PUBKEY(certEE));
-                    if (dsa && evp && evp->type == EVP_PKEY_DSA && BN_cmp(dsa->pub_key,evp->pkey.dsa->pub_key) == 0) {
+                    if (dsa && evp && evp->type == EVP_PKEY_DSA && BN_cmp(DSA_get0_pubkey(dsa),DSA_get0_pubkey(evp->pkey.dsa)) == 0) {
                         if (evp)
                             EVP_PKEY_free(evp);
                         log.debug("end-entity certificate matches peer DSA key information");
