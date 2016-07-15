@@ -33,6 +33,7 @@
 #   define X509_STORE_CTX_get0_untrusted(ctx) (ctx->untrusted)
 #endif
 
+namespace xmltooling {
     // RAII for the now opaque X509_STORE_CTX
     class X509StoreCtxRAII
     {
@@ -51,3 +52,9 @@
     private:
         X509_STORE_CTX *m_context;
     };
+
+
+    BIGNUM *DSA_get0_pubkey(const DSA *dsa);
+    BIGNUM *DSA_get0_privkey(const DSA *dsa);
+
+}

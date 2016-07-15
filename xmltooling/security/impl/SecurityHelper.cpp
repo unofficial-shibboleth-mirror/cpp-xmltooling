@@ -30,6 +30,7 @@
 #include "security/OpenSSLCryptoX509CRL.h"
 #include "security/SecurityHelper.h"
 #include "security/X509Credential.h"
+#include "security/impl/OpenSSLSupport.h"
 #include "soap/HTTPSOAPTransport.h"
 #include "util/NDC.h"
 
@@ -504,7 +505,7 @@ bool SecurityHelper::matches(const XSECCryptoKey& key1, const XSECCryptoKey& key
             return false;
         const DSA* dsa1 = static_cast<const OpenSSLCryptoKeyDSA&>(key1).getOpenSSLDSA();
         const DSA* dsa2 = static_cast<const OpenSSLCryptoKeyDSA&>(key2).getOpenSSLDSA();
-        return (dsa1 && dsa2 && BN_cmp(dsa1->pub_key,dsa2->pub_key) == 0);
+        return (dsa1 && dsa2 && BN_cmp(DSA_get0_pubkey(dsa1),DSA_get0_pubkey(dsa2)) == 0);
     }
 
     // For a private key, compare the private half.
@@ -513,7 +514,7 @@ bool SecurityHelper::matches(const XSECCryptoKey& key1, const XSECCryptoKey& key
             return false;
         const DSA* dsa1 = static_cast<const OpenSSLCryptoKeyDSA&>(key1).getOpenSSLDSA();
         const DSA* dsa2 = static_cast<const OpenSSLCryptoKeyDSA&>(key2).getOpenSSLDSA();
-        return (dsa1 && dsa2 && BN_cmp(dsa1->priv_key,dsa2->priv_key) == 0);
+        return (dsa1 && dsa2 && BN_cmp(DSA_get0_privkey(dsa1),DSA_get0_privkey(dsa2)) == 0);
     }
 
 #if defined(XMLTOOLING_XMLSEC_ECC) && defined(XMLTOOLING_OPENSSL_HAVE_EC)
