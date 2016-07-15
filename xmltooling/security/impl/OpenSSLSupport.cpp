@@ -90,3 +90,36 @@ BIGNUM *DSA_get0_privkey(const DSA *dsa)
     return result;
 #endif
 }
+
+BIGNUM *RSA_get0_n(const RSA *rsa)
+{
+#if (OPENSSL_VERSION_NUMBER < 0x10100000L)
+    return rsa->n;
+#else
+    BIGNUM *result;
+    RSA_get0_key(rsa, &result, NULL, NULL);
+    return result;
+#endif
+}
+
+BIGNUM *RSA_get0_e(const RSA *rsa)
+{
+#if (OPENSSL_VERSION_NUMBER < 0x10100000L)
+    return rsa->e;
+#else
+    BIGNUM *result;
+    RSA_get0_key(rsa, NULL, &result, NULL);
+    return result;
+#endif
+}
+
+BIGNUM *RSA_get0_d(const RSA *rsa)
+{
+#if (OPENSSL_VERSION_NUMBER < 0x10100000L)
+    return rsa->d;
+#else
+    BIGNUM *result;
+    RSA_get0_key(rsa, NULL, NULL, &result);
+    return result;
+#endif
+}

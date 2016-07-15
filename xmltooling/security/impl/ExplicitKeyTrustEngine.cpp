@@ -263,8 +263,8 @@ bool ExplicitKeyTrustEngine::validate(
                 {
                     RSA* rsa = static_cast<OpenSSLCryptoKeyRSA*>(key)->getOpenSSLRSA();
                     EVP_PKEY* evp = X509_PUBKEY_get(X509_get_X509_PUBKEY(certEE));
-                    if (rsa && evp && evp->type == EVP_PKEY_RSA &&
-                            BN_cmp(rsa->n,evp->pkey.rsa->n) == 0 && BN_cmp(rsa->e,evp->pkey.rsa->e) == 0) {
+                    if (rsa && evp && EVP_PKEY_id(evp) == EVP_PKEY_RSA &&
+                            BN_cmp(RSA_get0_n(rsa),RSA_get0_n(EVP_PKEY_get0_RSA(evp))) == 0 && BN_cmp(RSA_get0_e(rsa), RSA_get0_e(EVP_PKEY_get0_RSA(evp))) == 0) {
                         if (evp)
                             EVP_PKEY_free(evp);
                         log.debug("end-entity certificate matches peer RSA key information");
@@ -279,7 +279,7 @@ bool ExplicitKeyTrustEngine::validate(
                 {
                     DSA* dsa = static_cast<OpenSSLCryptoKeyDSA*>(key)->getOpenSSLDSA();
                     EVP_PKEY* evp = X509_PUBKEY_get(X509_get_X509_PUBKEY(certEE));
-                    if (dsa && evp && evp->type == EVP_PKEY_DSA && BN_cmp(DSA_get0_pubkey(dsa),DSA_get0_pubkey(evp->pkey.dsa)) == 0) {
+                    if (dsa && evp && EVP_PKEY_id(evp) == EVP_PKEY_DSA && BN_cmp(DSA_get0_pubkey(dsa),DSA_get0_pubkey(EVP_PKEY_get0_DSA(evp))) == 0) {
                         if (evp)
                             EVP_PKEY_free(evp);
                         log.debug("end-entity certificate matches peer DSA key information");

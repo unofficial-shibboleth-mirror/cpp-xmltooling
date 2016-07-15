@@ -29,8 +29,15 @@
 // X509_STORE_CTX becomes opaque
 
 #if (OPENSSL_VERSION_NUMBER < 0x10100000L)
-#   define X509_STORE_CTX_get0_cert(ctx) (ctx->cert)
-#   define X509_STORE_CTX_get0_untrusted(ctx) (ctx->untrusted)
+#   define X509_STORE_CTX_get0_cert(_ctx_) ((_ctx_)->cert)
+#   define X509_STORE_CTX_get0_untrusted(_ctx_) ((_ctx_)->untrusted)
+
+#   define EVP_PKEY_get0_DSA(_pkey_) ((_pkey_)->pkey.dsa)
+#   define EVP_PKEY_get0_RSA(_pkey_) ((_pkey_)->pkey.rsa)
+#endif
+
+#if (OPENSSL_VERSION_NUMBER < 0x10000000L)
+#   define EVP_PKEY_id(_evp_) ((_evp_)->type)
 #endif
 
 namespace xmltooling {
@@ -56,5 +63,9 @@ namespace xmltooling {
 
     BIGNUM *DSA_get0_pubkey(const DSA *dsa);
     BIGNUM *DSA_get0_privkey(const DSA *dsa);
+
+    BIGNUM *RSA_get0_n(const RSA *rsa);
+    BIGNUM *RSA_get0_d(const RSA *rsa);
+    BIGNUM *RSA_get0_e(const RSA *rsa);
 
 }
