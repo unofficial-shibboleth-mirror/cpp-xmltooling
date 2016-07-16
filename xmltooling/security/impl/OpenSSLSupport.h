@@ -40,6 +40,16 @@
 #   define EVP_PKEY_id(_evp_) ((_evp_)->type)
 #endif
 
+// BIO_s_file and BIO_s_file_internal
+// in 0.9.8 #define BIO_s_file          BIO_s_file_internal, uses both
+// in 1.0.0 #define BIO_s_file_internal BIO_s_file, uses both
+// in 1.0.1 #define BIO_s_file_internal BIO_s_file, uses both
+// in 1.0.1 #define BIO_s_file_internal BIO_s_file, uses both
+// in 1.1 no BIO_s_file_internal
+#if (OPENSSL_VERSION_NUMBER >= 0x10000000L)
+#   define BIO_s_file_internal BIO_s_file
+#endif
+
 namespace xmltooling {
     // RAII for the now opaque X509_STORE_CTX
     class X509StoreCtxRAII
