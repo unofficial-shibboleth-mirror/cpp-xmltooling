@@ -34,6 +34,7 @@
 #include "security/OpenSSLCredential.h"
 #include "security/SecurityHelper.h"
 #include "security/XSECCryptoX509CRL.h"
+#include "security/impl/OpenSSLSupport.h"
 #include "util/NDC.h"
 #include "util/PathResolver.h"
 #include "util/Threads.h"
