@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -194,7 +194,6 @@
     <ClCompile Include="..\..\..\XMLTooling\Lockable.cpp" />
     <ClCompile Include="..\..\..\XMLTooling\Namespace.cpp" />
     <ClCompile Include="..\..\..\XMLTooling\QName.cpp" />
-    <ClCompile Include="..\..\..\xmltooling\security\impl\OpenSSLSupport.cpp" />
     <ClCompile Include="..\..\..\XMLTooling\security\impl\PKIXPathValidator.cpp" />
     <ClCompile Include="..\..\..\XMLTooling\unicode.cpp" />
     <ClCompile Include="..\..\..\XMLTooling\util\CloneInputStream.cpp" />
@@ -271,7 +270,6 @@
     <ClInclude Include="..\..\..\XMLTooling\Namespace.h" />
     <ClInclude Include="..\..\..\XMLTooling\PluginManager.h" />
     <ClInclude Include="..\..\..\XMLTooling\QName.h" />
-    <ClInclude Include="..\..\..\xmltooling\security\impl\OpenSSLSupport.h" />
     <ClInclude Include="..\..\..\XMLTooling\security\OpenSSLPathValidator.h" />
     <ClInclude Include="..\..\..\XMLTooling\security\PathValidator.h" />
     <ClInclude Include="..\..\..\XMLTooling\security\PKIXPathValidatorParams.h" />

@@ -30,7 +30,6 @@
 #include "security/CredentialCriteria.h"
 #include "security/OpenSSLTrustEngine.h"
 #include "security/OpenSSLCredential.h"
-#include "security/impl/OpenSSLSupport.h"
 #include "soap/HTTPSOAPTransport.h"
 #include "soap/OpenSSLSOAPTransport.h"
 #include "util/NDC.h"
@@ -712,20 +711,20 @@ int xmltooling::verify_callback(X509_STORE_CTX* x509_ctx, void* arg)
         ctx->m_criteria->setUsage(Credential::TLS_CREDENTIAL);
         // Bypass name check (handled for us by curl).
         ctx->m_criteria->setPeerName(nullptr);
-        success = ctx->m_trustEngine->validate(X509_STORE_CTX_get0_cert(x509_ctx),X509_STORE_CTX_get0_untrusted(x509_ctx),*(ctx->m_peerResolver),ctx->m_criteria);
+        success = ctx->m_trustEngine->validate(x509_ctx->cert,x509_ctx->untrusted,*(ctx->m_peerResolver),ctx->m_criteria);
     }
     else {
         // Bypass name check (handled for us by curl).
         CredentialCriteria cc;
         cc.setUsage(Credential::TLS_CREDENTIAL);
-        success = ctx->m_trustEngine->validate(X509_STORE_CTX_get0_cert(x509_ctx),X509_STORE_CTX_get0_untrusted(x509_ctx),*(ctx->m_peerResolver),&cc);
+        success = ctx->m_trustEngine->validate(x509_ctx->cert,x509_ctx->untrusted,*(ctx->m_peerResolver),&cc);
     }
 
     if (!success) {
         log.error("supplied TrustEngine failed to validate SSL/TLS server certificate");
-        if (X509_STORE_CTX_get0_cert(x509_ctx)) {
+        if (x509_ctx->cert) {
             BIO* b = BIO_new(BIO_s_mem());
-            X509_print(b, X509_STORE_CTX_get0_cert(x509_ctx));
+            X509_print(b, x509_ctx->cert);
             BUF_MEM* bptr = nullptr;
             BIO_get_mem_ptr(b, &bptr);
             if (bptr && bptr->length > 0) {
@@ -737,7 +736,7 @@ int xmltooling::verify_callback(X509_STORE_CTX* x509_ctx, void* arg)
             }
             BIO_free(b);
         }
-        X509_STORE_CTX_set_error(x509_ctx, X509_V_ERR_APPLICATION_VERIFICATION);     // generic error, check log for plugin specifics
+        x509_ctx->error = X509_V_ERR_APPLICATION_VERIFICATION;     // generic error, check log for plugin specifics
         ctx->setAuthenticated(false);
         return ctx->m_mandatory ? 0 : 1;
     }

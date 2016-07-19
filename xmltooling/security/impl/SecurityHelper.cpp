@@ -30,7 +30,6 @@
 #include "security/OpenSSLCryptoX509CRL.h"
 #include "security/SecurityHelper.h"
 #include "security/X509Credential.h"
-#include "security/impl/OpenSSLSupport.h"
 #include "soap/HTTPSOAPTransport.h"
 #include "util/NDC.h"
 
@@ -206,7 +205,7 @@ XSECCryptoKey* SecurityHelper::loadKeyFromFile(const char* pathname, const char*
     // Now map it to an XSEC wrapper.
     if (pkey) {
         XSECCryptoKey* ret=nullptr;
-        switch (EVP_PKEY_id(pkey)) {
+        switch (pkey->type) {
             case EVP_PKEY_RSA:
                 ret=new OpenSSLCryptoKeyRSA(pkey);
                 break;
@@ -487,7 +486,7 @@ bool SecurityHelper::matches(const XSECCryptoKey& key1, const XSECCryptoKey& key
             return false;
         const RSA* rsa1 = static_cast<const OpenSSLCryptoKeyRSA&>(key1).getOpenSSLRSA();
         const RSA* rsa2 = static_cast<const OpenSSLCryptoKeyRSA&>(key2).getOpenSSLRSA();
-        return (rsa1 && rsa2 && BN_cmp(RSA_get0_n(rsa1),RSA_get0_n(rsa2)) == 0 && BN_cmp(RSA_get0_e(rsa1),RSA_get0_e(rsa2)) == 0);
+        return (rsa1 && rsa2 && BN_cmp(rsa1->n,rsa2->n) == 0 && BN_cmp(rsa1->e,rsa2->e) == 0);
     }
 
     // For a private key, compare the private half.
@@ -496,7 +495,7 @@ bool SecurityHelper::matches(const XSECCryptoKey& key1, const XSECCryptoKey& key
             return false;
         const RSA* rsa1 = static_cast<const OpenSSLCryptoKeyRSA&>(key1).getOpenSSLRSA();
         const RSA* rsa2 = static_cast<const OpenSSLCryptoKeyRSA&>(key2).getOpenSSLRSA();
-        return (rsa1 && rsa2 && BN_cmp(RSA_get0_n(rsa1),RSA_get0_n(rsa2)) == 0 && BN_cmp(RSA_get0_d(rsa1),RSA_get0_d(rsa2)) == 0);
+        return (rsa1 && rsa2 && BN_cmp(rsa1->n,rsa2->n) == 0 && BN_cmp(rsa1->d,rsa2->d) == 0);
     }
 
     // If one key is public or both, just compare the public key half.
@@ -505,7 +504,7 @@ bool SecurityHelper::matches(const XSECCryptoKey& key1, const XSECCryptoKey& key
             return false;
         const DSA* dsa1 = static_cast<const OpenSSLCryptoKeyDSA&>(key1).getOpenSSLDSA();
         const DSA* dsa2 = static_cast<const OpenSSLCryptoKeyDSA&>(key2).getOpenSSLDSA();
-        return (dsa1 && dsa2 && BN_cmp(DSA_get0_pubkey(dsa1),DSA_get0_pubkey(dsa2)) == 0);
+        return (dsa1 && dsa2 && BN_cmp(dsa1->pub_key,dsa2->pub_key) == 0);
     }
 
     // For a private key, compare the private half.
@@ -514,7 +513,7 @@ bool SecurityHelper::matches(const XSECCryptoKey& key1, const XSECCryptoKey& key
             return false;
         const DSA* dsa1 = static_cast<const OpenSSLCryptoKeyDSA&>(key1).getOpenSSLDSA();
         const DSA* dsa2 = static_cast<const OpenSSLCryptoKeyDSA&>(key2).getOpenSSLDSA();
-        return (dsa1 && dsa2 && BN_cmp(DSA_get0_privkey(dsa1),DSA_get0_privkey(dsa2)) == 0);
+        return (dsa1 && dsa2 && BN_cmp(dsa1->priv_key,dsa2->priv_key) == 0);
     }
 
 #if defined(XMLTOOLING_XMLSEC_ECC) && defined(XMLTOOLING_OPENSSL_HAVE_EC)
@@ -790,7 +789,7 @@ XSECCryptoKey* SecurityHelper::fromDEREncoding(const char* buf, unsigned long bu
         // Now map it to an XSEC wrapper.
         XSECCryptoKey* ret = nullptr;
         try {
-            switch (EVP_PKEY_id(pkey)) {
+            switch (pkey->type) {
                 case EVP_PKEY_RSA:
                     ret = new OpenSSLCryptoKeyRSA(pkey);
                     break;

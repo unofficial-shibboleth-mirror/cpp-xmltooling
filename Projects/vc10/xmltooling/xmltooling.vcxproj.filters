@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Source Files">
@@ -72,9 +72,6 @@
     <Filter Include="Resource Files">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
-    </Filter>
-    <Filter Include="Header Files\security\impl">
-      <UniqueIdentifier>{8ce132be-735f-49f0-899a-cc0e7cb8e775}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -272,9 +269,6 @@
     </ClCompile>
     <ClCompile Include="..\..\..\XMLTooling\util\CloneInputStream.cpp">
       <Filter>Source Files\util</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\xmltooling\security\impl\OpenSSLSupport.cpp">
-      <Filter>Source Files\security\impl</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -526,9 +520,6 @@
     </ClInclude>
     <ClInclude Include="..\..\..\XMLTooling\util\CloneInputStream.h">
       <Filter>Header Files\util</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\xmltooling\security\impl\OpenSSLSupport.h">
-      <Filter>Header Files\security\impl</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -111,15 +111,6 @@ using namespace xmlsignature;
 namespace {
     static XMLToolingInternalConfig g_config;
 #ifndef XMLTOOLING_NO_XMLSEC
-// NOTE:
-// "The old locking functions have been removed completely without compatibility macros"
-// see:
-// https://www.openssl.org/docs/manmaster/crypto/CRYPTO_THREAD_lock_free.html
-//
-// For now we just make the callback compile.  More work TBD
-#ifndef CRYPTO_LOCK
-#define CRYPTO_LOCK 1
-#endif
     static ptr_vector<Mutex> g_openssl_locks;
 
     extern "C" void openssl_locking_callback(int mode,int n,const char *file,int line)
