@@ -71,11 +71,11 @@ namespace xmltooling {
     };
 
 
-    BIGNUM *DSA_get0_pubkey(const DSA *dsa);
-    BIGNUM *DSA_get0_privkey(const DSA *dsa);
+    const BIGNUM *DSA_get0_pubkey(const DSA *dsa);
+    const BIGNUM *DSA_get0_privkey(const DSA *dsa);
 
-    BIGNUM *RSA_get0_n(const RSA *rsa);
-    BIGNUM *RSA_get0_d(const RSA *rsa);
-    BIGNUM *RSA_get0_e(const RSA *rsa);
+    const BIGNUM *RSA_get0_n(const RSA *rsa);
+    const BIGNUM *RSA_get0_d(const RSA *rsa);
+    const BIGNUM *RSA_get0_e(const RSA *rsa);
 
 }
