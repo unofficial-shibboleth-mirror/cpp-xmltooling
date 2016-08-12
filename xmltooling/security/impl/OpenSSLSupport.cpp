@@ -27,7 +27,7 @@
 
 #include "internal.h"
 #include <openssl/x509_vfy.h> 
-#include <security\impl\OpenSSLSupport.h>
+#include <security/impl/OpenSSLSupport.h>
 
 using namespace xmltooling;
 
