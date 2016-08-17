@@ -41,6 +41,9 @@
     <ClCompile Include="NonVisibleNamespaceTest.cpp">
       <Filter>Generated Code</Filter>
     </ClCompile>
+    <ClCompile Include="OpenSSL1_1Test.cpp">
+      <Filter>Generated Code</Filter>
+    </ClCompile>
     <ClCompile Include="PKIXEngineTest.cpp">
       <Filter>Generated Code</Filter>
     </ClCompile>
@@ -62,9 +65,15 @@
     <ClCompile Include="SOAPTest.cpp">
       <Filter>Generated Code</Filter>
     </ClCompile>
+    <ClCompile Include="CloneInputStreamTest.cpp">
+      <Filter>Generated Code</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\XMLToolingTest\XMLObjectBaseTestCase.h">
+      <Filter>Unit Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\xmltoolingtest\OpenSSL1_1Test.h">
       <Filter>Unit Tests</Filter>
     </ClInclude>
   </ItemGroup>
@@ -120,7 +129,10 @@
     <CustomBuild Include="..\..\..\XMLToolingTest\xmltoolingtest.h">
       <Filter>Unit Tests</Filter>
     </CustomBuild>
-    <CustomBuild Include="..\..\..\XMLToolingTest\eSOAPTest.h">
+    <CustomBuild Include="..\..\..\XMLToolingTest\CloneInputStreamTest.h">
+      <Filter>Unit Tests</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\..\..\XMLToolingTest\SOAPTest.h">
       <Filter>Unit Tests</Filter>
     </CustomBuild>
   </ItemGroup>

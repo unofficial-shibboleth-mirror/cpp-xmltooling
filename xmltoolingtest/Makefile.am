@@ -37,6 +37,7 @@ xmltoolingtest_h = \
     KeyInfoTest.h \
     MarshallingTest.h \
     NonVisibleNamespaceTest.h \
+	OpenSSL1_1Test.h \
     SOAPTest.h \
     UnmarshallingTest.h \
     TemplateEngineTest.h \
