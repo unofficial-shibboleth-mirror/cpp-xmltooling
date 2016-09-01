@@ -33,6 +33,13 @@ class SecurityHelperTest : public CxxTest::TestSuite {
         string scheme(addr.m_endpoint, strchr(addr.m_endpoint,':') - addr.m_endpoint);
         return XMLToolingConfig::getConfig().SOAPTransportManager.newPlugin(scheme.c_str(), addr, false);
     }
+
+    void skipNetworked() {
+        if (getenv("XMLTOOLINGTEST_SKIP_NETWORKED")) {
+            TS_SKIP("requires network access");
+        }
+    }
+
 public:
     void setUp() {
     }
@@ -59,6 +66,7 @@ public:
     }
 
     void testKeysFromURLs() {
+        skipNetworked();
         string pathname = data_path + "key.pem.bak";
         scoped_ptr<SOAPTransport> t1(getTransport("https://wiki.shibboleth.net/confluence/download/attachments/3277026/key.pem"));
         scoped_ptr<XSECCryptoKey> key1(SecurityHelper::loadKeyFromURL(*t1.get(), pathname.c_str()));
@@ -110,6 +118,7 @@ public:
     }
 
     void testCertificatesFromURLs() {
+        skipNetworked();
         string pathname = data_path + "cert.pem.bak";
         scoped_ptr<SOAPTransport> t1(getTransport("https://wiki.shibboleth.net/confluence/download/attachments/3277026/cert.pem"));
         SecurityHelper::loadCertificatesFromURL(certs, *t1.get(), pathname.c_str());
