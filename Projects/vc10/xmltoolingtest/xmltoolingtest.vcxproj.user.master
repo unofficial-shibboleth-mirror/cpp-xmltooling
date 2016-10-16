@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LocalDebuggerEnvironment>PATH=%PATH%;$(SolutionDir)..\..\..\$(xerces)\Build\Win32\$(MsVCVersion)\Debug;$(SolutionDir)..\..\..\$(xmlsec)\Build\Win32\$(MsVCVersion)\Debug No Xalan;$(SolutionDir)..\..\..\$(openssl)\out32dll.dbg;Xalan;$(SolutionDir)..\..\..\$(curl)\lib\debug-dll-ssl-dll-zlib-dll;$(SolutionDir)..\..\..\$(log4shib)\ms$(MsVCVersion)\Debug;$(SolutionDir)..\..\..\$(zlib)\Debug
+XMLTOOLINGTEST_DATA=$(SolutionDir)..\..\xmltoolingtest/data/
+$(LocalDebuggerEnvironment)</LocalDebuggerEnvironment>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+    <LocalDebuggerWorkingDirectory>$(SolutionDir)..</LocalDebuggerWorkingDirectory>
+  </PropertyGroup>
+</Project>
