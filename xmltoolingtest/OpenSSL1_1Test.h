@@ -36,8 +36,8 @@ public:
 
     void tearDown() {
     }
-
     void testRSA() {
+#if (OPENSSL_VERSION_NUMBER >= 0x10100000)
         string pathname = data_path + "key.pem";
         auto_ptr<OpenSSLCryptoKeyRSA> key1(dynamic_cast<OpenSSLCryptoKeyRSA*>(SecurityHelper::loadKeyFromFile(pathname.c_str())));
         
@@ -63,9 +63,12 @@ public:
 
         TSM_ASSERT("Private Matches", SecurityHelper::matches(*privateOnly.get(),*key1.get()));
 #endif
+#endif
     }
 
 private:
+
+#if (OPENSSL_VERSION_NUMBER >= 0x10100000)
 
     static bool deepEquals(OpenSSLCryptoKeyRSA * key1, OpenSSLCryptoKeyRSA *key2) {
         if (key1->getKeyType() != key2->getKeyType())
@@ -95,4 +98,5 @@ private:
 
         return true;
     }
+#endif
 };
