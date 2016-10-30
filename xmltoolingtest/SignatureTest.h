@@ -31,6 +31,7 @@
 #include <xercesc/util/XMLUniDefs.hpp>
 #include <xsec/dsig/DSIGReference.hpp>
 #include <xsec/dsig/DSIGSignature.hpp>
+#include <openssl/opensslv.h>
 
 class TestContext : public ContentReference
 {
@@ -102,7 +103,203 @@ public:
         delete m_resolver;
     }
 
-    void testSignature() {
+    void testOpenSSLEC() {
+#if (OPENSSL_VERSION_NUMBER >= 0x00907000L)
+
+        CredentialCriteria cc;
+        cc.setUsage(Credential::SIGNING_CREDENTIAL);
+        cc.setKeyAlgorithm("EC");
+
+        Locker locker(m_resolver);
+        XSECCryptoKeyEC* ecCred = dynamic_cast<XSECCryptoKeyEC*>(m_resolver->resolve(&cc)->getPrivateKey());
+
+        unsigned char toSign[] = "NibbleAHappyWartHog";
+        const int bufferSize = 1024;
+        char outSig[bufferSize] = {0};
+        unsigned int len = ecCred->signBase64SignatureDSA(toSign, sizeof(toSign), &outSig[0], bufferSize);
+        bool worked = ecCred->verifyBase64SignatureDSA(toSign, sizeof(toSign), &outSig[0], len);
+        TSM_ASSERT("EC Round Trip Signature Failed", worked);
+
+        char knownGoodSig[] = "JGRaZN8SxNqcwkc4N/NSSTP/ugzp3tjuDVDr+EI+1yu7iNYTgiiPL8kwIPs9dUeH\n"
+                              "XU1qCCu+iay+8MwmneIqnGZB2lhXSpYREJSVk24vUMU7mK5fA7lynssSSXs/K4Il\n";
+        unsigned int knownGoodSigSize=0x82;
+
+        worked = ecCred->verifyBase64SignatureDSA(toSign, sizeof(toSign), knownGoodSig, knownGoodSigSize);
+        TSM_ASSERT("EC Canned Signature Failed", worked);
+
+#endif
+    }
+
+    void testOpenSSLRSA() {
+        CredentialCriteria cc;
+        cc.setUsage(Credential::SIGNING_CREDENTIAL);
+        cc.setKeyAlgorithm("RSA");
+
+        Locker locker(m_resolver);
+        XSECCryptoKeyRSA* rsaCred = dynamic_cast<XSECCryptoKeyRSA*>(m_resolver->resolve(&cc)->getPrivateKey());
+
+        unsigned char toSign[] = "Nibble A Happy WartHog";
+        const int bufferSize = 1024;
+        char outSig[bufferSize] = {0};
+        const char knownGoodSig[] = "jCNgXSZOuKATdqkws11rSA0+7kXu0jpLtH3p4H+hgFJGhXyzEtkv09YG5UvMYxaO\n"
+                                    "/pktalyEYtfAaQL3cs01TFs+92cI6ytIrQumroQeRpc+EJuj43RWaFqlMtKj5qkS\n"
+                                    "3Q03BRauYYexXQBoP/K5irtkyLWEun4tVhIePOUvl90=\n";
+        unsigned int len;
+
+        len = rsaCred->signSHA1PKCS1Base64Signature(toSign, 20, &outSig[0], bufferSize, HASH_SHA1);
+
+        const int diffLen = memcmp(outSig, knownGoodSig, len);
+        TSM_ASSERT("RSA Signature Failed", diffLen == 0);
+    }
+
+    void testOpenSSLDSA() {
+        CredentialCriteria cc;
+        cc.setUsage(Credential::SIGNING_CREDENTIAL);
+        cc.setKeyAlgorithm("DSA");
+
+        Locker locker(m_resolver);
+        XSECCryptoKeyDSA* dsaCred = dynamic_cast<XSECCryptoKeyDSA*>(m_resolver->resolve(&cc)->getPrivateKey());
+
+        unsigned char toSign[] = "NibbleAHappyWartHog";
+        const int bufferSize = 1024;
+        char outSig[bufferSize] = {0};
+        unsigned int len = dsaCred->signBase64Signature(toSign, sizeof(toSign), &outSig[0], bufferSize);
+        bool worked = dsaCred->verifyBase64Signature(toSign, sizeof(toSign), &outSig[0], len);
+        TSM_ASSERT("DSA Round Trip Signature Failed", worked);
+
+        fprintf(stderr, "\n\n%s\n\n0x%x\n\n", outSig, len);
+
+        char knownGoodSig[] = "bjl/jCGFdRgs0Ar5DKQkE9jPZFSXU5Wm2SKMzur4TSzoQmTe82WC8A==\012";
+        unsigned int knownGoodSigSize=0x39;
+
+        worked = dsaCred->verifyBase64Signature(toSign, sizeof(toSign), knownGoodSig, knownGoodSigSize);
+        TSM_ASSERT("DSA Canned Signature Failed", worked);
+    }
+
+    void testSignatureDSA() {
+        xmltooling::QName qname(SimpleXMLObject::NAMESPACE,SimpleXMLObject::LOCAL_NAME);
+        const SimpleXMLObjectBuilder* b=dynamic_cast<const SimpleXMLObjectBuilder*>(XMLObjectBuilder::getBuilder(qname));
+        TS_ASSERT(b!=nullptr);
+
+        auto_ptr<SimpleXMLObject> sxObject(dynamic_cast<SimpleXMLObject*>(b->buildObject()));
+        TS_ASSERT(sxObject.get()!=nullptr);
+        VectorOf(SimpleXMLObject) kids=sxObject->getSimpleXMLObjects();
+        kids.push_back(dynamic_cast<SimpleXMLObject*>(b->buildObject()));
+        kids.push_back(dynamic_cast<SimpleXMLObject*>(b->buildObject()));
+
+        // Test some collection stuff
+        auto_ptr_XMLCh foo("Foo");
+        auto_ptr_XMLCh bar("Bar");
+        kids.begin()->setId(foo.get());
+        kids[1]->setValue(bar.get());
+
+        // Append a Signature.
+        Signature* sig=SignatureBuilder::buildSignature();
+        sig->setSignatureAlgorithm(DSIGConstants::s_unicodeStrURIDSA_SHA256);
+        sxObject->setSignature(sig);
+
+        sig->setContentReference(new TestContext(&chNull));
+
+        CredentialCriteria cc;
+        cc.setUsage(Credential::SIGNING_CREDENTIAL);
+        cc.setKeyAlgorithm("DSA");
+
+        Locker locker(m_resolver);
+        const Credential* cred = m_resolver->resolve(&cc);
+        TSM_ASSERT("Retrieved credential was null", cred!=nullptr);
+
+        DOMElement* rootElement = nullptr;
+        try {
+            vector<Signature*> sigs(1,sig);
+            rootElement=sxObject->marshall((DOMDocument*)nullptr,&sigs,cred);
+        }
+        catch (XMLToolingException& e) {
+            TS_TRACE(e.what());
+            throw;
+        }
+
+        string buf;
+        XMLHelper::serialize(rootElement, buf);
+
+        istringstream in(buf);
+        DOMDocument* doc=XMLToolingConfig::getConfig().getParser().parse(in);
+        auto_ptr<SimpleXMLObject> sxObject2(dynamic_cast<SimpleXMLObject*>(b->buildFromDocument(doc)));
+        TS_ASSERT(sxObject2.get()!=nullptr);
+        TS_ASSERT(sxObject2->getSignature()!=nullptr);
+
+        try {
+            TestValidator tv(&chNull, cred);
+            tv.validate(sxObject2->getSignature());
+        }
+        catch (XMLToolingException& e) {
+            TS_TRACE(e.what());
+            throw;
+        }
+    }
+
+
+    void testSignatureEC() {
+        xmltooling::QName qname(SimpleXMLObject::NAMESPACE,SimpleXMLObject::LOCAL_NAME);
+        const SimpleXMLObjectBuilder* b=dynamic_cast<const SimpleXMLObjectBuilder*>(XMLObjectBuilder::getBuilder(qname));
+        TS_ASSERT(b!=nullptr);
+
+        auto_ptr<SimpleXMLObject> sxObject(dynamic_cast<SimpleXMLObject*>(b->buildObject()));
+        TS_ASSERT(sxObject.get()!=nullptr);
+        VectorOf(SimpleXMLObject) kids=sxObject->getSimpleXMLObjects();
+        kids.push_back(dynamic_cast<SimpleXMLObject*>(b->buildObject()));
+        kids.push_back(dynamic_cast<SimpleXMLObject*>(b->buildObject()));
+
+        // Test some collection stuff
+        auto_ptr_XMLCh foo("Foo");
+        auto_ptr_XMLCh bar("Bar");
+        kids.begin()->setId(foo.get());
+        kids[1]->setValue(bar.get());
+
+        // Append a Signature.
+        Signature* sig=SignatureBuilder::buildSignature();
+        sig->setSignatureAlgorithm(DSIGConstants::s_unicodeStrURIECDSA_SHA1);
+        sxObject->setSignature(sig);
+
+        sig->setContentReference(new TestContext(&chNull));
+
+        CredentialCriteria cc;
+        cc.setUsage(Credential::SIGNING_CREDENTIAL);
+        cc.setKeyAlgorithm("EC");
+
+        Locker locker(m_resolver);
+        const Credential* cred = m_resolver->resolve(&cc);
+        TSM_ASSERT("Retrieved credential was null", cred!=nullptr);
+
+        DOMElement* rootElement = nullptr;
+        try {
+            vector<Signature*> sigs(1,sig);
+            rootElement=sxObject->marshall((DOMDocument*)nullptr,&sigs,cred);
+        }
+        catch (XMLToolingException& e) {
+            TS_TRACE(e.what());
+            throw;
+        }
+
+        string buf;
+        XMLHelper::serialize(rootElement, buf);
+
+        istringstream in(buf);
+        DOMDocument* doc=XMLToolingConfig::getConfig().getParser().parse(in);
+        auto_ptr<SimpleXMLObject> sxObject2(dynamic_cast<SimpleXMLObject*>(b->buildFromDocument(doc)));
+        TS_ASSERT(sxObject2.get()!=nullptr);
+        TS_ASSERT(sxObject2->getSignature()!=nullptr);
+
+        try {
+            TestValidator tv(&chNull, cred);
+            tv.validate(sxObject2->getSignature());
+        }
+        catch (XMLToolingException& e) {
+            TS_TRACE(e.what());
+            throw;
+        }
+    }
+
+    void testSignatureRSA() {
         xmltooling::QName qname(SimpleXMLObject::NAMESPACE,SimpleXMLObject::LOCAL_NAME);
         const SimpleXMLObjectBuilder* b=dynamic_cast<const SimpleXMLObjectBuilder*>(XMLObjectBuilder::getBuilder(qname));
         TS_ASSERT(b!=nullptr);
@@ -126,6 +323,8 @@ public:
 
         CredentialCriteria cc;
         cc.setUsage(Credential::SIGNING_CREDENTIAL);
+        cc.setKeyAlgorithm("RSA");
+
         Locker locker(m_resolver);
         const Credential* cred = m_resolver->resolve(&cc);
         TSM_ASSERT("Retrieved credential was null", cred!=nullptr);
@@ -159,5 +358,6 @@ public:
             throw;
         }
     }
+
 
 };
