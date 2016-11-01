@@ -167,8 +167,6 @@ public:
         bool worked = dsaCred->verifyBase64Signature(toSign, sizeof(toSign), &outSig[0], len);
         TSM_ASSERT("DSA Round Trip Signature Failed", worked);
 
-        fprintf(stderr, "\n\n%s\n\n0x%x\n\n", outSig, len);
-
         char knownGoodSig[] = "bjl/jCGFdRgs0Ar5DKQkE9jPZFSXU5Wm2SKMzur4TSzoQmTe82WC8A==\012";
         unsigned int knownGoodSigSize=0x39;
 
