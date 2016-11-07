@@ -120,9 +120,8 @@ public:
         bool worked = ecCred->verifyBase64SignatureDSA(toSign, sizeof(toSign), &outSig[0], len);
         TSM_ASSERT("EC Round Trip Signature Failed", worked);
 
-        char knownGoodSig[] = "JGRaZN8SxNqcwkc4N/NSSTP/ugzp3tjuDVDr+EI+1yu7iNYTgiiPL8kwIPs9dUeH\n"
-                              "XU1qCCu+iay+8MwmneIqnGZB2lhXSpYREJSVk24vUMU7mK5fA7lynssSSXs/K4Il\n";
-        unsigned int knownGoodSigSize=0x82;
+        char knownGoodSig[] = "AkXRDL2H2I+fozXnuHKYa4+UE/k+AnhOLp2AY5d8lAqciZ5wdObHbifX\n";
+        unsigned int knownGoodSigSize=0x38;
 
         worked = ecCred->verifyBase64SignatureDSA(toSign, sizeof(toSign), knownGoodSig, knownGoodSigSize);
         TSM_ASSERT("EC Canned Signature Failed", worked);
