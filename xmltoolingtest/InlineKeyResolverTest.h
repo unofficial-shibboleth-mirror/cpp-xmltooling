@@ -24,7 +24,11 @@
 
 #include <xmltooling/security/X509Credential.h>
 #include <xmltooling/security/KeyInfoResolver.h>
+#include <xmltooling/security/Credential.h>
+#include <xmltooling/security/CredentialCriteria.h>
+#include <xmltooling/security/CredentialResolver.h>
 #include <xmltooling/signature/KeyInfo.h>
+
 
 #include <xsec/enc/XSECCryptoKey.hpp>
 
@@ -83,6 +87,45 @@ public:
         TSM_ASSERT_EQUALS("Wrong CRL count.", cred->getCRLs().size(), 3);
     }
 
+    void testOpenSSLDSA() {
+
+        string path=data_path + "KeyInfoDSA.xml";
+        ifstream fs(path.c_str());
+        DOMDocument* doc=XMLToolingConfig::getConfig().getValidatingParser().parse(fs);
+        TS_ASSERT(doc!=nullptr);
+        const XMLObjectBuilder* b = XMLObjectBuilder::getBuilder(doc->getDocumentElement());
+        TS_ASSERT(b!=nullptr);
+        auto_ptr<KeyInfo> kiObject(dynamic_cast<KeyInfo*>(b->buildFromDocument(doc)));
+        TS_ASSERT(kiObject.get()!=nullptr);
+
+        auto_ptr<X509Credential> credFromKeyInfo(dynamic_cast<X509Credential*>(m_resolver->resolve(kiObject.get())));
+        const DSA *keyInfoDSA = dynamic_cast<OpenSSLCryptoKeyDSA*>(credFromKeyInfo->getPublicKey())->getOpenSSLDSA();
+
+        path = data_path + "FileSystemCredentialResolver.xml";
+        ifstream in(path.c_str());
+        DOMDocument* cdoc=XMLToolingConfig::getConfig().getParser().parse(in);
+        XercesJanitor<DOMDocument> cjanitor(cdoc);
+        CredentialResolver* cresolver = XMLToolingConfig::getConfig().CredentialResolverManager.newPlugin(
+            CHAINING_CREDENTIAL_RESOLVER,cdoc->getDocumentElement()
+            );
+
+        CredentialCriteria cc;
+        cc.setUsage(Credential::SIGNING_CREDENTIAL);
+        cc.setKeyAlgorithm("DSA");
+        OpenSSLCryptoKeyDSA* fileResolverCryptoKeyDSA = dynamic_cast<OpenSSLCryptoKeyDSA*>(cresolver->resolve(&cc)->getPublicKey());
+        DSA* fileResolverDSA = fileResolverCryptoKeyDSA ->getOpenSSLDSA();
+
+        int cmp = BN_cmp(keyInfoDSA->g, fileResolverDSA->g);
+        TSM_ASSERT(cmp, "G mismatch between keyInfo and file");
+        cmp = BN_cmp(keyInfoDSA->p, fileResolverDSA->p);
+        TSM_ASSERT(cmp, "P mismatch between keyInfo and file");
+        cmp = BN_cmp(keyInfoDSA->q, fileResolverDSA->q);
+        TSM_ASSERT(cmp, "Q mismatch between keyInfo and file");
+        cmp = BN_cmp(keyInfoDSA->priv_key, fileResolverDSA->priv_key);
+        //TSM_ASSERT(cmp, "G mismatch between keyInfo and file");  // There is no private key in KeyInfo
+        cmp = BN_cmp(keyInfoDSA->pub_key, fileResolverDSA->pub_key);
+        TSM_ASSERT(cmp, "PubKey/Y mismatch between keyInfo and file");
+    }
 
     void testOpenSSLRSA() {
         string path=data_path + "KeyInfo1.xml";
@@ -130,6 +173,7 @@ public:
         TS_ASSERT(0 ==  BN_cmp(kdmq1, dmq1));
         TS_ASSERT(0 ==  BN_cmp(kiqmp, iqmp));
     }
+
 
     void testDER() {
         string path=data_path + "KeyInfo5.xml";
