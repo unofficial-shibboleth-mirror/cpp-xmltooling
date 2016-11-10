@@ -40,13 +40,12 @@ extern "C" {
 
 // Force XMLSEC to assume OpenSSL
 #define XSEC_HAVE_OPENSSL 1
+#define XSEC_OPENSSL_HAVE_EC (OPENSSL_VERSION_NUMBER >= 0x00907000L)
 
 #include <xsec/enc/OpenSSL/OpenSSLCryptoX509.hpp>
 #include <xsec/enc/OpenSSL/OpenSSLCryptoKeyDSA.hpp>
 #include <xsec/enc/OpenSSL/OpenSSLCryptoKeyEC.hpp>
 #include <xsec/enc/OpenSSL/OpenSSLCryptoKeyRSA.hpp>
-
-
 
 using namespace xmlsignature;
 
@@ -126,6 +125,47 @@ public:
         cmp = BN_cmp(keyInfoDSA->pub_key, fileResolverDSA->pub_key);
         TSM_ASSERT(cmp, "PubKey/Y mismatch between keyInfo and file");
     }
+
+    void testOpenSSLEC() {
+
+        string path=data_path + "KeyInfoEC.xml";
+        ifstream fs(path.c_str());
+        DOMDocument* doc=XMLToolingConfig::getConfig().getValidatingParser().parse(fs);
+        TS_ASSERT(doc!=nullptr);
+        const XMLObjectBuilder* b = XMLObjectBuilder::getBuilder(doc->getDocumentElement());
+        TS_ASSERT(b!=nullptr);
+        auto_ptr<KeyInfo> kiObject(dynamic_cast<KeyInfo*>(b->buildFromDocument(doc)));
+        TS_ASSERT(kiObject.get()!=nullptr);
+
+        auto_ptr<X509Credential> credFromKeyInfo(dynamic_cast<X509Credential*>(m_resolver->resolve(kiObject.get())));
+        OpenSSLCryptoKeyEC* sslCredFromKeyInfo= dynamic_cast<OpenSSLCryptoKeyEC*>(credFromKeyInfo->getPublicKey());
+
+        const  EC_KEY* keyInfoEC = dynamic_cast<OpenSSLCryptoKeyEC*>(credFromKeyInfo->getPublicKey())->getOpenSSLEC();
+
+        path = data_path + "FileSystemCredentialResolver.xml";
+        ifstream in(path.c_str());
+        DOMDocument* cdoc=XMLToolingConfig::getConfig().getParser().parse(in);
+        XercesJanitor<DOMDocument> cjanitor(cdoc);
+        CredentialResolver* cresolver = XMLToolingConfig::getConfig().CredentialResolverManager.newPlugin(
+            CHAINING_CREDENTIAL_RESOLVER,cdoc->getDocumentElement()
+            );
+
+        CredentialCriteria cc;
+        cc.setUsage(Credential::SIGNING_CREDENTIAL);
+        cc.setKeyAlgorithm("EC");
+        OpenSSLCryptoKeyEC* fileResolverCryptoKeyEC = dynamic_cast<OpenSSLCryptoKeyEC*>(cresolver->resolve(&cc)->getPublicKey());
+        const EC_KEY* fileResolverEC= fileResolverCryptoKeyEC->getOpenSSLEC();
+
+        unsigned char toSign[] = "NibbleAHappyWartHog";
+        const int bufferSize = 1024;
+        char outSig[bufferSize] = {0};
+        unsigned int len = fileResolverCryptoKeyEC->signBase64SignatureDSA(toSign, sizeof(toSign), &outSig[0], bufferSize);
+        //bool worked = fileResolverCryptoKeyEC->verifyBase64SignatureDSA(toSign, sizeof(toSign), &outSig[0], len);
+        //TSM_ASSERT("EC Round Trip Signature Failed", worked);
+        bool worked = sslCredFromKeyInfo->verifyBase64SignatureDSA(toSign, sizeof(toSign), &outSig[0], len);
+        TSM_ASSERT("EC Round Trip Signature via KeyInfo Failed", worked);
+    }
+
 
     void testOpenSSLRSA() {
         string path=data_path + "KeyInfo1.xml";
