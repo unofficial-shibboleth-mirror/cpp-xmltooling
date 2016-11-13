@@ -191,250 +191,250 @@
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="..\..\..\XMLToolingTest\CloneInputStreamTest.h">
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(Filename).cpp;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename).cpp;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(Filename).cpp;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Filename).cpp;%(Outputs)</Outputs>
     </CustomBuild>
     <CustomBuild Include="..\..\..\XMLToolingTest\ComplexXMLObjectTest.h">
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(Filename).cpp;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename).cpp;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(Filename).cpp;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Filename).cpp;%(Outputs)</Outputs>
     </CustomBuild>
     <CustomBuild Include="..\..\..\XMLToolingTest\DateTimeTest.h">
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(Filename).cpp;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename).cpp;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(Filename).cpp;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Filename).cpp;%(Outputs)</Outputs>
     </CustomBuild>
     <CustomBuild Include="..\..\..\XMLToolingTest\EncryptionTest.h">
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(Filename).cpp;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename).cpp;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(Filename).cpp;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Filename).cpp;%(Outputs)</Outputs>
     </CustomBuild>
     <CustomBuild Include="..\..\..\XMLToolingTest\ExceptionTest.h">
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(Filename).cpp;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename).cpp;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(Filename).cpp;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Filename).cpp;%(Outputs)</Outputs>
     </CustomBuild>
     <CustomBuild Include="..\..\..\XMLToolingTest\FilesystemCredentialResolverTest.h">
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(Filename).cpp;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename).cpp;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(Filename).cpp;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Filename).cpp;%(Outputs)</Outputs>
     </CustomBuild>
     <CustomBuild Include="..\..\..\XMLToolingTest\InlineKeyResolverTest.h">
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(Filename).cpp;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename).cpp;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(Filename).cpp;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Filename).cpp;%(Outputs)</Outputs>
     </CustomBuild>
     <CustomBuild Include="..\..\..\XMLToolingTest\KeyInfoTest.h">
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(Filename).cpp;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename).cpp;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(Filename).cpp;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Filename).cpp;%(Outputs)</Outputs>
     </CustomBuild>
     <CustomBuild Include="..\..\..\XMLToolingTest\MarshallingTest.h">
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(Filename).cpp;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename).cpp;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(Filename).cpp;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Filename).cpp;%(Outputs)</Outputs>
     </CustomBuild>
     <CustomBuild Include="..\..\..\XMLToolingTest\MemoryStorageServiceTest.h">
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(Filename).cpp;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename).cpp;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(Filename).cpp;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Filename).cpp;%(Outputs)</Outputs>
     </CustomBuild>
     <CustomBuild Include="..\..\..\XMLToolingTest\NonVisibleNamespaceTest.h">
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(Filename).cpp;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(Filename).cpp;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename).cpp;%(Outputs)</Outputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Filename).cpp;%(Outputs)</Outputs>
     </CustomBuild>
     <CustomBuild Include="..\..\..\XMLToolingTest\PKIXEngineTest.h">
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(Filename).cpp;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(Filename).cpp;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename).cpp;%(Outputs)</Outputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Filename).cpp;%(Outputs)</Outputs>
     </CustomBuild>
     <CustomBuild Include="..\..\..\XMLToolingTest\SecurityHelperTest.h">
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(Filename).cpp;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename).cpp;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(Filename).cpp;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Filename).cpp;%(Outputs)</Outputs>
     </CustomBuild>
     <CustomBuild Include="..\..\..\XMLToolingTest\SignatureTest.h">
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(Filename).cpp;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename).cpp;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(Filename).cpp;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Filename).cpp;%(Outputs)</Outputs>
     </CustomBuild>
     <CustomBuild Include="..\..\..\XMLToolingTest\SOAPTest.h">
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(Filename).cpp;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename).cpp;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(Filename).cpp;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Filename).cpp;%(Outputs)</Outputs>
     </CustomBuild>
     <CustomBuild Include="..\..\..\XMLToolingTest\TemplateEngineTest.h">
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(Filename).cpp;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename).cpp;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(Filename).cpp;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Filename).cpp;%(Outputs)</Outputs>
     </CustomBuild>
     <CustomBuild Include="..\..\..\XMLToolingTest\UnmarshallingTest.h">
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(Filename).cpp;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename).cpp;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(Filename).cpp;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Filename).cpp;%(Outputs)</Outputs>
     </CustomBuild>
     <CustomBuild Include="..\..\..\XMLToolingTest\xmltoolingtest.h">
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --error-printer --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --error-printer --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(Filename).cpp;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --error-printer --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --error-printer --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename).cpp;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --error-printer --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --error-printer --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(Filename).cpp;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --error-printer --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --error-printer --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp ../../../xmltoolingtest/"%(FileName)".h"
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Filename).cpp;%(Outputs)</Outputs>
     </CustomBuild>

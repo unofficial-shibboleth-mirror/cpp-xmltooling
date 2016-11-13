@@ -98,7 +98,7 @@ public:
         TS_ASSERT(kiObject.get()!=nullptr);
 
         auto_ptr<X509Credential> credFromKeyInfo(dynamic_cast<X509Credential*>(m_resolver->resolve(kiObject.get())));
-        const DSA *keyInfoDSA = dynamic_cast<OpenSSLCryptoKeyDSA*>(credFromKeyInfo->getPublicKey())->getOpenSSLDSA();
+        OpenSSLCryptoKeyDSA* keyInfoDSA = dynamic_cast<OpenSSLCryptoKeyDSA*>(credFromKeyInfo->getPublicKey());
 
         path = data_path + "FileSystemCredentialResolver.xml";
         ifstream in(path.c_str());
@@ -111,19 +111,20 @@ public:
         CredentialCriteria cc;
         cc.setUsage(Credential::SIGNING_CREDENTIAL);
         cc.setKeyAlgorithm("DSA");
-        OpenSSLCryptoKeyDSA* fileResolverCryptoKeyDSA = dynamic_cast<OpenSSLCryptoKeyDSA*>(cresolver->resolve(&cc)->getPublicKey());
-        DSA* fileResolverDSA = fileResolverCryptoKeyDSA ->getOpenSSLDSA();
+        OpenSSLCryptoKeyDSA* fileResolverDSA = dynamic_cast<OpenSSLCryptoKeyDSA*>(cresolver->resolve(&cc)->getPublicKey());
 
-        int cmp = BN_cmp(keyInfoDSA->g, fileResolverDSA->g);
-        TSM_ASSERT(cmp, "G mismatch between keyInfo and file");
-        cmp = BN_cmp(keyInfoDSA->p, fileResolverDSA->p);
-        TSM_ASSERT(cmp, "P mismatch between keyInfo and file");
-        cmp = BN_cmp(keyInfoDSA->q, fileResolverDSA->q);
-        TSM_ASSERT(cmp, "Q mismatch between keyInfo and file");
-        cmp = BN_cmp(keyInfoDSA->priv_key, fileResolverDSA->priv_key);
-        //TSM_ASSERT(cmp, "G mismatch between keyInfo and file");  // There is no private key in KeyInfo
-        cmp = BN_cmp(keyInfoDSA->pub_key, fileResolverDSA->pub_key);
-        TSM_ASSERT(cmp, "PubKey/Y mismatch between keyInfo and file");
+        unsigned char toSign[] = "Nibble A Happy WartHog";
+        const int bufferSize = 1024;
+        char outSig[bufferSize] = {0};
+
+        unsigned int len = fileResolverDSA->signBase64Signature(toSign, 20, outSig, bufferSize);
+
+        bool worked = fileResolverDSA->verifyBase64Signature(toSign, 20, outSig, len);
+        TSM_ASSERT(worked, "round trip file resolver DSA");
+
+        worked = keyInfoDSA->verifyBase64Signature(toSign, 20, outSig, len);
+        TSM_ASSERT(worked, "round trip KeyInfo DSA");
+
     }
 
     void testOpenSSLEC() {
