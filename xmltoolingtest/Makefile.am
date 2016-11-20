@@ -21,6 +21,7 @@ if BUILD_XMLSEC
 xmlsec_sources = \
     EncryptionTest.h \
     FilesystemCredentialResolverTest.h \
+	ExplicitKeyTrustEngineTest.h \
     InlineKeyResolverTest.h \
     MemoryStorageServiceTest.h \
     PKIXEngineTest.h \

@@ -70,6 +70,9 @@
     <ClInclude Include="..\..\..\XMLToolingTest\XMLObjectBaseTestCase.h">
       <Filter>Unit Tests</Filter>
     </ClInclude>
+    <ClInclude Include="ExplicitKeyTrustEngineTest.h">
+      <Filter>Unit Tests</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\XMLToolingTest\Makefile.am" />
