@@ -120,10 +120,10 @@ public:
         unsigned int len = fileResolverDSA->signBase64Signature(toSign, 20, outSig, bufferSize);
 
         bool worked = fileResolverDSA->verifyBase64Signature(toSign, 20, outSig, len);
-        TSM_ASSERT(worked, "round trip file resolver DSA");
+        TSM_ASSERT("Round trip file resolver DSA failed", worked);
 
         worked = keyInfoDSA->verifyBase64Signature(toSign, 20, outSig, len);
-        TSM_ASSERT(worked, "round trip KeyInfo DSA");
+        TSM_ASSERT("Round trip KeyInfo DSA failed", worked);
 
     }
 
@@ -161,8 +161,7 @@ public:
         const int bufferSize = 1024;
         char outSig[bufferSize] = {0};
         unsigned int len = fileResolverCryptoKeyEC->signBase64SignatureDSA(toSign, sizeof(toSign), &outSig[0], bufferSize);
-        //bool worked = fileResolverCryptoKeyEC->verifyBase64SignatureDSA(toSign, sizeof(toSign), &outSig[0], len);
-        //TSM_ASSERT("EC Round Trip Signature Failed", worked);
+
         bool worked = sslCredFromKeyInfo->verifyBase64SignatureDSA(toSign, sizeof(toSign), &outSig[0], len);
         TSM_ASSERT("EC Round Trip Signature via KeyInfo Failed", worked);
     }
