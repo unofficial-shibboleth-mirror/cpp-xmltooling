@@ -29,13 +29,15 @@
 #include <xmltooling/security/CredentialResolver.h>
 #include <xmltooling/signature/KeyInfo.h>
 
-
 #include <xsec/enc/XSECCryptoKey.hpp>
 
 #include <xsec/dsig/DSIGReference.hpp>
 #include <xsec/dsig/DSIGSignature.hpp>
 extern "C" {
 #include <openssl/opensslv.h>
+#if (OPENSSL_VERSION_NUMBER < 0x10100000L)
+#include <openssl/x509_vfy.h>
+#endif
 }
 
 // Force XMLSEC to assume OpenSSL
@@ -186,6 +188,7 @@ public:
         RSA* rsaCred = sslCred->getOpenSSLRSA();
         RSA* rsaKey = sslKey->getOpenSSLRSA();
 
+#if (OPENSSL_VERSION_NUMBER < 0x10100000L)
         BIGNUM* n = rsaCred->n;
         BIGNUM* e = rsaCred->e;
         BIGNUM* d = rsaCred->d;
@@ -203,7 +206,15 @@ public:
         BIGNUM* kdmp1 = rsaKey->dmp1;
         BIGNUM* kdmq1 = rsaKey->dmq1;
         BIGNUM* kiqmp = rsaKey->iqmp;
+#else
+        const BIGNUM *n, *e, *d; RSA_get0_key(rsaCred, &n, &e, &d);
+        const BIGNUM *p, *q;  RSA_get0_factors(rsaCred, &p, &q);
+        const BIGNUM *dmp1, *dmq1, *iqmp; RSA_get0_crt_params(rsaCred, &dmp1, &dmq1, &iqmp);
 
+        const BIGNUM *kn, *ke, *kd; RSA_get0_key(rsaKey, &kn, &ke, &kd);
+        const BIGNUM *kp, *kq;  RSA_get0_factors(rsaKey, &kp, &kq);
+        const BIGNUM *kdmp1, *kdmq1, *kiqmp; RSA_get0_crt_params(rsaKey, &kdmp1, &kdmq1, &kiqmp);
+#endif
         TS_ASSERT(0 == BN_cmp(kn, n));
         TS_ASSERT(0 == BN_cmp(ke, e));
         TS_ASSERT(0 ==  BN_cmp(kd, d));
