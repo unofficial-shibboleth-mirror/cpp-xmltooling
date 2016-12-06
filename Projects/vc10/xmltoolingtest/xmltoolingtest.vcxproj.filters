@@ -65,12 +65,12 @@
     <ClCompile Include="CloneInputStreamTest.cpp">
       <Filter>Generated Code</Filter>
     </ClCompile>
+    <ClCompile Include="ExplicitKeyTrustEngineTest.cpp">
+      <Filter>Generated Code</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\XMLToolingTest\XMLObjectBaseTestCase.h">
-      <Filter>Unit Tests</Filter>
-    </ClInclude>
-    <ClInclude Include="ExplicitKeyTrustEngineTest.h">
       <Filter>Unit Tests</Filter>
     </ClInclude>
   </ItemGroup>
@@ -130,6 +130,9 @@
       <Filter>Unit Tests</Filter>
     </CustomBuild>
     <CustomBuild Include="..\..\..\XMLToolingTest\SOAPTest.h">
+      <Filter>Unit Tests</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\..\..\XMLToolingTest\ExplicitKeyTrustEngineTest.h">
       <Filter>Unit Tests</Filter>
     </CustomBuild>
   </ItemGroup>
