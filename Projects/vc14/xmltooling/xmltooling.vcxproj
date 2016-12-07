@@ -254,6 +254,7 @@
     <ClCompile Include="..\..\..\XMLTooling\security\impl\FilesystemCredentialResolver.cpp" />
     <ClCompile Include="..\..\..\XMLTooling\security\impl\InlineKeyResolver.cpp" />
     <ClCompile Include="..\..\..\XMLTooling\security\impl\KeyInfoResolver.cpp" />
+    <ClCompile Include="..\..\..\xmltooling\security\impl\OpenSSLSupport.cpp" />
     <ClCompile Include="..\..\..\XMLTooling\security\impl\OpenSSLCryptoX509CRL.cpp" />
     <ClCompile Include="..\..\..\XMLTooling\security\impl\SecurityHelper.cpp" />
     <ClCompile Include="..\..\..\XMLTooling\security\impl\StaticPKIXTrustEngine.cpp">
