@@ -74,7 +74,7 @@ AC_CHECK_HEADERS([dlfcn.h])
 AC_CHECK_FUNC(dlclose, , [ AC_CHECK_LIB(dl, dlopen) ])
 
 # checks for pthreads
-ACX_PTHREAD([enable_threads="pthread"],[enable_threads="no"])
+AX_PTHREAD([enable_threads="pthread"],[enable_threads="no"])
 if test $enable_threads != "pthread"; then
     AC_MSG_ERROR([unable to find pthreads, currently this is required])
 else
