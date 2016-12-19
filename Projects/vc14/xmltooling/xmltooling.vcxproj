@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -96,7 +96,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>$(SolutionDir)..\..\;$(ProjectDir)\..\..\..\XMLTooling\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>CPPXT_107_VC16;WIN32;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
@@ -125,7 +125,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>$(SolutionDir)..\..\;$(ProjectDir)\..\..\..\XMLTooling;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>CPPXT_107_VC16;WIN32;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
@@ -150,7 +150,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <AdditionalIncludeDirectories>$(SolutionDir)..\..\;$(ProjectDir)\..\..\..\XMLTooling\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>CPPXT_107_VC16;WIN32;NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
@@ -174,7 +174,7 @@
     </Midl>
     <ClCompile>
       <AdditionalIncludeDirectories>$(SolutionDir)..\..\;$(ProjectDir)\..\..\..\XMLTooling\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>CPPXT_107_VC16;WIN32;NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
@@ -238,12 +238,7 @@
     <ClCompile Include="..\..\..\XMLTooling\encryption\impl\Encrypter.cpp" />
     <ClCompile Include="..\..\..\XMLTooling\encryption\impl\EncryptionImpl.cpp" />
     <ClCompile Include="..\..\..\XMLTooling\encryption\impl\EncryptionSchemaValidators.cpp" />
-    <ClCompile Include="..\..\..\XMLTooling\security\impl\AbstractPKIXTrustEngine.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
+    <ClCompile Include="..\..\..\XMLTooling\security\impl\AbstractPKIXTrustEngine.cpp" />
     <ClCompile Include="..\..\..\XMLTooling\security\impl\BasicX509Credential.cpp" />
     <ClCompile Include="..\..\..\XMLTooling\security\impl\ChainingCredentialResolver.cpp" />
     <ClCompile Include="..\..\..\XMLTooling\security\impl\ChainingTrustEngine.cpp" />
@@ -257,12 +252,7 @@
     <ClCompile Include="..\..\..\xmltooling\security\impl\OpenSSLSupport.cpp" />
     <ClCompile Include="..\..\..\XMLTooling\security\impl\OpenSSLCryptoX509CRL.cpp" />
     <ClCompile Include="..\..\..\XMLTooling\security\impl\SecurityHelper.cpp" />
-    <ClCompile Include="..\..\..\XMLTooling\security\impl\StaticPKIXTrustEngine.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
+    <ClCompile Include="..\..\..\XMLTooling\security\impl\StaticPKIXTrustEngine.cpp" />
     <ClCompile Include="..\..\..\XMLTooling\security\impl\TrustEngine.cpp" />
     <ClCompile Include="..\..\..\XMLTooling\security\impl\XSECCryptoX509CRL.cpp" />
     <ClCompile Include="..\..\..\XMLTooling\soap\impl\CURLSOAPTransport.cpp" />
