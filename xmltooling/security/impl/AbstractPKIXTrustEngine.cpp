@@ -50,7 +50,6 @@ using namespace xmlsignature;
 using namespace xmltooling::logging;
 using namespace xmltooling;
 using namespace std;
-using boost::ptr_vector;
 
 namespace xmltooling {
     // Adapter between TrustEngine and PathValidator
@@ -162,7 +161,8 @@ AbstractPKIXTrustEngine::AbstractPKIXTrustEngine(const xercesc::DOMElement* e)
                         delete pv;
                         throw XMLSecurityException("PathValidator doesn't support OpenSSL interface.");
                     }
-                    m_pathValidators.push_back(ospv);
+                    boost::shared_ptr<OpenSSLPathValidator> ptr(ospv);
+                    m_pathValidators.push_back(ptr);
                 }
             }
             catch (exception& ex) {
@@ -175,11 +175,12 @@ AbstractPKIXTrustEngine::AbstractPKIXTrustEngine(const xercesc::DOMElement* e)
     }
 
     if (m_pathValidators.empty()) {
-        m_pathValidators.push_back(
+        boost::shared_ptr<OpenSSLPathValidator> ptr(
             dynamic_cast<OpenSSLPathValidator*>(
                 XMLToolingConfig::getConfig().PathValidatorManager.newPlugin(PKIX_PATHVALIDATOR, e)
                 )
             );
+        m_pathValidators.push_back(ptr);
     }
 }
 
@@ -377,8 +378,8 @@ bool AbstractPKIXTrustEngine::validateWithCRLs(
     auto_ptr<PKIXValidationInfoIterator> pkix(getPKIXValidationInfoIterator(credResolver, criteria));
     while (pkix->next()) {
         PKIXParams params(*this, *pkix.get(), inlineCRLs);
-        for (ptr_vector<OpenSSLPathValidator>::const_iterator v = m_pathValidators.begin(); v != m_pathValidators.end(); ++v) {
-            if (v->validate(certEE, certChain, params)) {
+        for (vector< boost::shared_ptr<OpenSSLPathValidator> >::const_iterator v = m_pathValidators.begin(); v != m_pathValidators.end(); ++v) {
+            if (v->get()->validate(certEE, certChain, params)) {
                 return true;
             }
         }
