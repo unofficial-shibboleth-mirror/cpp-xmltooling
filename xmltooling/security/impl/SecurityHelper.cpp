@@ -54,6 +54,8 @@
 # include <xsec/enc/OpenSSL/OpenSSLCryptoKeyEC.hpp>
 #endif
 
+#include "security/OpenSSLSecurityHelper.h"
+
 using namespace xmltooling::logging;
 using namespace xmltooling;
 using namespace std;
@@ -481,63 +483,29 @@ bool SecurityHelper::matches(const XSECCryptoKey& key1, const XSECCryptoKey& key
         return false;
     }
 
-    // If one key is public or both, just compare the public key half.
     if (key1.getKeyType()==XSECCryptoKey::KEY_RSA_PUBLIC || key1.getKeyType()==XSECCryptoKey::KEY_RSA_PAIR) {
-        if (key2.getKeyType()!=XSECCryptoKey::KEY_RSA_PUBLIC && key2.getKeyType()!=XSECCryptoKey::KEY_RSA_PAIR)
-            return false;
-        const RSA* rsa1 = static_cast<const OpenSSLCryptoKeyRSA&>(key1).getOpenSSLRSA();
-        const RSA* rsa2 = static_cast<const OpenSSLCryptoKeyRSA&>(key2).getOpenSSLRSA();
-        return (rsa1 && rsa2 && BN_cmp(RSA_get0_n(rsa1),RSA_get0_n(rsa2)) == 0 && BN_cmp(RSA_get0_e(rsa1),RSA_get0_e(rsa2)) == 0);
+        return OpenSSLSecurityHelper::matchesPublic(static_cast<const OpenSSLCryptoKeyRSA&>(key1).getOpenSSLRSA(), key2);
     }
 
-    // For a private key, compare the private half.
     if (key1.getKeyType()==XSECCryptoKey::KEY_RSA_PRIVATE) {
-        if (key2.getKeyType()!=XSECCryptoKey::KEY_RSA_PRIVATE && key2.getKeyType()!=XSECCryptoKey::KEY_RSA_PAIR)
-            return false;
-        const RSA* rsa1 = static_cast<const OpenSSLCryptoKeyRSA&>(key1).getOpenSSLRSA();
-        const RSA* rsa2 = static_cast<const OpenSSLCryptoKeyRSA&>(key2).getOpenSSLRSA();
-        return (rsa1 && rsa2 && BN_cmp(RSA_get0_n(rsa1),RSA_get0_n(rsa2)) == 0 && BN_cmp(RSA_get0_d(rsa1),RSA_get0_d(rsa2)) == 0);
+        return OpenSSLSecurityHelper::matchesPrivate(static_cast<const OpenSSLCryptoKeyRSA&>(key1).getOpenSSLRSA(), key2);
     }
 
-    // If one key is public or both, just compare the public key half.
     if (key1.getKeyType()==XSECCryptoKey::KEY_DSA_PUBLIC || key1.getKeyType()==XSECCryptoKey::KEY_DSA_PAIR) {
-        if (key2.getKeyType()!=XSECCryptoKey::KEY_DSA_PUBLIC && key2.getKeyType()!=XSECCryptoKey::KEY_DSA_PAIR)
-            return false;
-        const DSA* dsa1 = static_cast<const OpenSSLCryptoKeyDSA&>(key1).getOpenSSLDSA();
-        const DSA* dsa2 = static_cast<const OpenSSLCryptoKeyDSA&>(key2).getOpenSSLDSA();
-        return (dsa1 && dsa2 && BN_cmp(DSA_get0_pubkey(dsa1),DSA_get0_pubkey(dsa2)) == 0);
+        return OpenSSLSecurityHelper::matchesPublic(static_cast<const OpenSSLCryptoKeyDSA&>(key1).getOpenSSLDSA(), key2);
     }
 
-    // For a private key, compare the private half.
     if (key1.getKeyType()==XSECCryptoKey::KEY_DSA_PRIVATE) {
-        if (key2.getKeyType()!=XSECCryptoKey::KEY_DSA_PRIVATE && key2.getKeyType()!=XSECCryptoKey::KEY_DSA_PAIR)
-            return false;
-        const DSA* dsa1 = static_cast<const OpenSSLCryptoKeyDSA&>(key1).getOpenSSLDSA();
-        const DSA* dsa2 = static_cast<const OpenSSLCryptoKeyDSA&>(key2).getOpenSSLDSA();
-        return (dsa1 && dsa2 && BN_cmp(DSA_get0_privkey(dsa1),DSA_get0_privkey(dsa2)) == 0);
+        return OpenSSLSecurityHelper::matchesPrivate(static_cast<const OpenSSLCryptoKeyDSA&>(key1).getOpenSSLDSA(), key2);
     }
 
 #if defined(XMLTOOLING_XMLSEC_ECC) && defined(XMLTOOLING_OPENSSL_HAVE_EC)
-    // If one key is public or both, just compare the public key half.
     if (key1.getKeyType()==XSECCryptoKey::KEY_EC_PUBLIC || key1.getKeyType()==XSECCryptoKey::KEY_EC_PAIR) {
-        if (key2.getKeyType()!=XSECCryptoKey::KEY_EC_PUBLIC && key2.getKeyType()!=XSECCryptoKey::KEY_EC_PAIR)
-            return false;
-        const EC_KEY* ec1 = static_cast<const OpenSSLCryptoKeyEC&>(key1).getOpenSSLEC();
-        const EC_KEY* ec2 = static_cast<const OpenSSLCryptoKeyEC&>(key2).getOpenSSLEC();
-        if (!ec1 || !ec2)
-            return false;
-        if (EC_GROUP_cmp(EC_KEY_get0_group(ec1), EC_KEY_get0_group(ec2), nullptr) != 0)
-            return false;
-        return (EC_POINT_cmp(EC_KEY_get0_group(ec1), EC_KEY_get0_public_key(ec1), EC_KEY_get0_public_key(ec2), nullptr) == 0);
+        return OpenSSLSecurityHelper::matchesPublic(static_cast<const OpenSSLCryptoKeyEC&>(key1).getOpenSSLEC(), key2);
     }
 
-    // For a private key, compare the private half.
     if (key1.getKeyType()==XSECCryptoKey::KEY_EC_PRIVATE) {
-        if (key2.getKeyType()!=XSECCryptoKey::KEY_EC_PRIVATE && key2.getKeyType()!=XSECCryptoKey::KEY_EC_PAIR)
-            return false;
-        const EC_KEY* ec1 = static_cast<const OpenSSLCryptoKeyEC&>(key1).getOpenSSLEC();
-        const EC_KEY* ec2 = static_cast<const OpenSSLCryptoKeyEC&>(key2).getOpenSSLEC();
-        return (ec1 && ec2 && BN_cmp(EC_KEY_get0_private_key(ec1), EC_KEY_get0_private_key(ec2)) == 0);
+        return OpenSSLSecurityHelper::matchesPrivate(static_cast<const OpenSSLCryptoKeyEC&>(key1).getOpenSSLEC(), key2);
     }
 #endif
 

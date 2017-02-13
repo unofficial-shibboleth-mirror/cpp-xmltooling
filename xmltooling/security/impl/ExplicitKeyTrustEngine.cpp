@@ -41,6 +41,14 @@
 #include <xsec/enc/OpenSSL/OpenSSLCryptoKeyRSA.hpp>
 #include <xsec/enc/OpenSSL/OpenSSLCryptoX509.hpp>
 
+#ifdef WIN32
+# if (OPENSSL_VERSION_NUMBER >= 0x00907000)
+#  define XMLTOOLING_OPENSSL_HAVE_EC 1
+# endif
+#endif
+
+#include "security/OpenSSLSecurityHelper.h"
+#include <openssl/ec.h>
 
 using namespace xmlsignature;
 using namespace xmltooling::logging;
@@ -251,51 +259,43 @@ bool ExplicitKeyTrustEngine::validate(
     // peer resolver to verify the EE certificate.
 
     log.debug("attempting to match credentials from peer with end-entity certificate");
-    for (vector<const Credential*>::const_iterator c=credentials.begin(); c!=credentials.end(); ++c) {
+    bool found = false;
+    EVP_PKEY* evp = X509_PUBKEY_get(X509_get_X509_PUBKEY(certEE));
+    if (!evp)
+        return false;
+
+    for (vector<const Credential*>::const_iterator c=credentials.begin(); c != credentials.end(); ++c) {
         XSECCryptoKey* key = (*c)->getPublicKey();
-        if (key) {
-            if (key->getProviderName()!=DSIGConstants::s_unicodeStrPROVOpenSSL) {
-                log.error("only the OpenSSL XSEC provider is supported");
-                continue;
-            }
-            switch (key->getKeyType()) {
-                case XSECCryptoKey::KEY_RSA_PUBLIC:
-                {
-                    RSA* rsa = static_cast<OpenSSLCryptoKeyRSA*>(key)->getOpenSSLRSA();
-                    EVP_PKEY* evp = X509_PUBKEY_get(X509_get_X509_PUBKEY(certEE));
-                    if (rsa && evp && EVP_PKEY_id(evp) == EVP_PKEY_RSA &&
-                            BN_cmp(RSA_get0_n(rsa),RSA_get0_n(EVP_PKEY_get0_RSA(evp))) == 0 && BN_cmp(RSA_get0_e(rsa), RSA_get0_e(EVP_PKEY_get0_RSA(evp))) == 0) {
-                        if (evp)
-                            EVP_PKEY_free(evp);
-                        log.debug("end-entity certificate matches peer RSA key information");
-                        return true;
-                    }
-                    if (evp)
-                        EVP_PKEY_free(evp);
-                    break;
-                }
-                
-                case XSECCryptoKey::KEY_DSA_PUBLIC:
-                {
-                    DSA* dsa = static_cast<OpenSSLCryptoKeyDSA*>(key)->getOpenSSLDSA();
-                    EVP_PKEY* evp = X509_PUBKEY_get(X509_get_X509_PUBKEY(certEE));
-                    if (dsa && evp && EVP_PKEY_id(evp) == EVP_PKEY_DSA && BN_cmp(DSA_get0_pubkey(dsa),DSA_get0_pubkey(EVP_PKEY_get0_DSA(evp))) == 0) {
-                        if (evp)
-                            EVP_PKEY_free(evp);
-                        log.debug("end-entity certificate matches peer DSA key information");
-                        return true;
-                    }
-                    if (evp)
-                        EVP_PKEY_free(evp);
-                    break;
-                }
-
-                default:
-                    log.warn("unknown peer key type, skipping...");
-            }
+        if (!key)
+            continue;
+        if (key->getProviderName() != DSIGConstants::s_unicodeStrPROVOpenSSL) {
+            log.error("only the OpenSSL XSEC provider is supported");
+            continue;
         }
-    }
 
-    log.debug("no keys within this peer's key information matched the given end-entity certificate");
-    return false;
+        if (EVP_PKEY_id(evp) == EVP_PKEY_RSA) {
+            found = OpenSSLSecurityHelper::matchesPublic(EVP_PKEY_get0_RSA(evp), *key);
+            if (found) {
+                log.debug("end-entity certificate matches peer RSA key information");
+                break;
+            }
+        } else if (EVP_PKEY_id(evp) == EVP_PKEY_DSA) {
+            found = OpenSSLSecurityHelper::matchesPublic(EVP_PKEY_get0_DSA(evp), *key);
+            if (found) {
+                log.debug("end-entity certificate matches peer RSA key information");
+                break;
+            }
+        } else if (EVP_PKEY_id(evp) == EVP_PKEY_EC) {
+            found = OpenSSLSecurityHelper::matchesPublic(EVP_PKEY_get0_EC_KEY(evp), *key);
+            if (found) {
+                log.debug("end-entity certificate matches peer RSA key information");
+                break;
+            }
+        } else
+            log.warn("unknown peer key type, skipping...");
+    }
+    EVP_PKEY_free(evp);
+    if (!found)
+        log.debug("no keys within this peer's key information matched the given end-entity certificate");
+    return found;
 }
