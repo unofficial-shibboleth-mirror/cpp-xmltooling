@@ -300,7 +300,7 @@ void* ReloadableXMLFile::reload_fn(void* pv)
         if (r->m_filestamp >= stat_buf.st_mtime)
             continue;
 
-        // Elevate lock and recheck.
+        // Grab lock to protect m_filestamp.
         r->m_log.debug("timestamp of local resource changed, obtaining write lock");
         r->m_lock->wrlock();
         r->m_filestamp = stat_buf.st_mtime;
