@@ -34,6 +34,7 @@
 
 #   define EVP_PKEY_get0_DSA(_pkey_) ((_pkey_)->pkey.dsa)
 #   define EVP_PKEY_get0_RSA(_pkey_) ((_pkey_)->pkey.rsa)
+#   define EVP_PKEY_get0_EC_KEY(_pkey_) ((_pkey_)->pkey.ec)
 #endif
 
 #if (OPENSSL_VERSION_NUMBER < 0x10000000L)

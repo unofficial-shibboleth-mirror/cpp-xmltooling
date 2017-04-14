@@ -279,20 +279,26 @@ bool ExplicitKeyTrustEngine::validate(
                 log.debug("end-entity certificate matches peer RSA key information");
                 break;
             }
-        } else if (EVP_PKEY_id(evp) == EVP_PKEY_DSA) {
+        }
+        else if (EVP_PKEY_id(evp) == EVP_PKEY_DSA) {
             found = OpenSSLSecurityHelper::matchesPublic(EVP_PKEY_get0_DSA(evp), *key);
             if (found) {
                 log.debug("end-entity certificate matches peer RSA key information");
                 break;
             }
-        } else if (EVP_PKEY_id(evp) == EVP_PKEY_EC) {
+        }
+#if defined(XMLTOOLING_XMLSEC_ECC) && defined(XMLTOOLING_OPENSSL_HAVE_EC)
+        else if (EVP_PKEY_id(evp) == EVP_PKEY_EC) {
             found = OpenSSLSecurityHelper::matchesPublic(EVP_PKEY_get0_EC_KEY(evp), *key);
             if (found) {
-                log.debug("end-entity certificate matches peer RSA key information");
+                log.debug("end-entity certificate matches peer EC key information");
                 break;
             }
-        } else
+        }
+#endif
+        else {
             log.warn("unknown peer key type, skipping...");
+        }
     }
     EVP_PKEY_free(evp);
     if (!found)
