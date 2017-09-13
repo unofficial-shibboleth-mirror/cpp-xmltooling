@@ -47,15 +47,6 @@
 # define nullptr 0
 #endif
 
-#if defined(XMLTOOLING_NO_XMLSEC) || !defined(HAVE_XSECSIZE_T)
-# ifdef XMLTOOLING_XERCESC_64BITSAFE
-#   include <xercesc/util/XercesDefs.hpp>
-    typedef XMLSize_t xsecsize_t;
-# else
-    typedef unsigned int xsecsize_t;
-# endif
-#endif
-
 // Windows and GCC4 Symbol Visibility Macros
 #ifdef WIN32
   #define XMLTOOL_IMPORT __declspec(dllimport)

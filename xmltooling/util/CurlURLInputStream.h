@@ -93,7 +93,7 @@ namespace xmltooling {
         }
 #endif
 
-        xsecsize_t readBytes(XMLByte* const toFill, const xsecsize_t maxToRead);
+        XMLSize_t readBytes(XMLByte* const toFill, const XMLSize_t maxToRead);
 
         /**
          * Access the OpenSSL context options in place for this object.
@@ -127,8 +127,8 @@ namespace xmltooling {
 
         unsigned long       fTotalBytesRead;
         XMLByte*            fWritePtr;
-        xsecsize_t          fBytesRead;
-        xsecsize_t          fBytesToRead;
+        XMLSize_t           fBytesRead;
+        XMLSize_t           fBytesToRead;
         bool                fDataAvailable;
 
         // Overflow buffer for when curl writes more data to us

@@ -54,9 +54,6 @@
 # define XMLTOOLING_XERCESC_64BITSAFE           1
 #endif
 
-/* Define to 1 if you have the `xsecsize_t' type. */
-#define HAVE_XSECSIZE_T 1
-
 #ifndef XMLTOOLING_NO_XMLSEC
 # include <xsec/framework/XSECDefs.hpp>
 # if (_XSEC_VERSION_FULL >= 10500)

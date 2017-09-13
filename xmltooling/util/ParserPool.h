@@ -231,11 +231,11 @@ namespace xmltooling {
 #else
             unsigned int curPos() const;
 #endif
-            xsecsize_t readBytes(XMLByte* const toFill, const xsecsize_t maxToRead);
+            XMLSize_t readBytes(XMLByte* const toFill, const XMLSize_t maxToRead);
             /// @endcond
         private:
             std::istream& m_is;
-            xsecsize_t m_pos;
+            XMLSize_t m_pos;
         };
 
     private:

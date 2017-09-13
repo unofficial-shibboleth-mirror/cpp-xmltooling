@@ -317,7 +317,6 @@ int i = 0;
         [AC_LANG_PROGRAM([[#include <xsec/utils/XSECPlatformUtils.hpp>]],
             [[XSECPlatformUtils::Initialise()]])],,
         [AC_MSG_ERROR([unable to link with XML-Security])])
-    AC_CHECK_TYPE([xsecsize_t],[AC_DEFINE([HAVE_XSECSIZE_T],[1],[Define to 1 if you have the 'xsecsize_t' type.])])
 
     AC_MSG_CHECKING([whether XML-Security-C has multiple CRL support])
     AC_COMPILE_IFELSE(

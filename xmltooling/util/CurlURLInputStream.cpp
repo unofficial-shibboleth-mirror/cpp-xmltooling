@@ -561,7 +561,7 @@ bool CurlURLInputStream::readMore(int* runningHandles)
     return curlResult == CURLM_CALL_MULTI_PERFORM;
 }
 
-xsecsize_t CurlURLInputStream::readBytes(XMLByte* const toFill, const xsecsize_t maxToRead)
+XMLSize_t CurlURLInputStream::readBytes(XMLByte* const toFill, const XMLSize_t maxToRead)
 {
     fBytesRead = 0;
     fBytesToRead = maxToRead;

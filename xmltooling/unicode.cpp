@@ -36,8 +36,8 @@ static const XMLCh UTF8[]={ chLatin_U, chLatin_T, chLatin_F, chDigit_8, chNull }
 
 char* xmltooling::toUTF8(const XMLCh* src, bool use_malloc)
 {
-    xsecsize_t eaten,factor=1,bufsize;
-    xsecsize_t srclen=XMLString::stringLen(src);
+    XMLSize_t eaten,factor=1,bufsize;
+    XMLSize_t srclen=XMLString::stringLen(src);
     XMLUTF8Transcoder t(UTF8, 4096);    // block size isn't used any more anyway
     do {
         bufsize = factor*srclen + 10;
@@ -69,8 +69,8 @@ char* xmltooling::toUTF8(const XMLCh* src, bool use_malloc)
 
 XMLCh* xmltooling::fromUTF8(const char* src, bool use_malloc)
 {
-    xsecsize_t eaten;
-    xsecsize_t srclen=strlen(src);
+    XMLSize_t eaten;
+    XMLSize_t srclen=strlen(src);
     XMLUTF8Transcoder t(UTF8, 4096);    // block size isn't used any more anyway
     XMLCh* buf = use_malloc ? reinterpret_cast<XMLCh*>(malloc((srclen+1)*sizeof(XMLCh))) : new XMLCh[srclen + 1];
     unsigned char* sizes=new unsigned char[srclen];

@@ -522,10 +522,10 @@ const XMLCh* StreamInputSource::StreamBinInputStream::getContentType() const
 }
 #endif
 
-xsecsize_t StreamInputSource::StreamBinInputStream::readBytes(XMLByte* const toFill, const xsecsize_t maxToRead)
+XMLSize_t StreamInputSource::StreamBinInputStream::readBytes(XMLByte* const toFill, const XMLSize_t maxToRead)
 {
     XMLByte* target=toFill;
-    xsecsize_t bytes_read=0,request=maxToRead;
+    XMLSize_t bytes_read=0,request=maxToRead;
 
     // Fulfill the rest by reading from the stream.
     if (request && !m_is.eof() && !m_is.fail()) {

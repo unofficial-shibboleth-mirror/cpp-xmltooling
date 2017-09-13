@@ -200,7 +200,7 @@ void BasicX509Credential::initKeyInfo(unsigned int types)
         if (m_compactKeyInfo->getX509Datas().empty())
             m_compactKeyInfo->getX509Datas().push_back(X509DataBuilder::buildX509Data());
         safeBuffer& buf=m_xseccerts.front()->getDEREncodingSB();
-        xsecsize_t x;
+        XMLSize_t x;
         XMLByte* decoded = Base64::decode(reinterpret_cast<const XMLByte*>(buf.rawCharBuffer()), &x);
         if (decoded) {
             string xdig = SecurityHelper::doHash("SHA1", reinterpret_cast<char*>(decoded), x, false);

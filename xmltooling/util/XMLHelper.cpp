@@ -436,7 +436,7 @@ namespace {
         StreamFormatTarget(std::ostream& out) : m_out(out) {}
         ~StreamFormatTarget() {}
 
-        void writeChars(const XMLByte *const toWrite, const xsecsize_t count, XMLFormatter *const formatter) {
+        void writeChars(const XMLByte *const toWrite, const XMLSize_t count, XMLFormatter *const formatter) {
             m_out.write(reinterpret_cast<const char*>(toWrite),count);
         }
 

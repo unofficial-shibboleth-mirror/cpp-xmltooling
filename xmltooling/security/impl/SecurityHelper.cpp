@@ -733,7 +733,7 @@ string SecurityHelper::getDEREncoding(const Credential& cred, bool hash, bool no
 
 XSECCryptoKey* SecurityHelper::fromDEREncoding(const char* buf, unsigned long buflen, bool base64)
 {
-    xsecsize_t x;
+    XMLSize_t x;
     XMLByte* decoded=nullptr;
     if (base64) {
         decoded = xercesc::Base64::decode(reinterpret_cast<const XMLByte*>(buf), &x);
@@ -788,7 +788,7 @@ XSECCryptoKey* SecurityHelper::fromDEREncoding(const char* buf, unsigned long bu
 
 XSECCryptoKey* SecurityHelper::fromDEREncoding(const XMLCh* buf)
 {
-    xsecsize_t x;
+    XMLSize_t x;
     XMLByte* decoded = xercesc::Base64::decodeToXMLByte(buf, &x);
     if (!decoded) {
         Category::getInstance(XMLTOOLING_LOGCAT ".SecurityHelper").error("base64 decode failed");
