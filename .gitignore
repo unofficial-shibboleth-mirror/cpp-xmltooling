@@ -36,6 +36,8 @@ xmltooling-lite-Release
 /Projects/vc10/ipch/
 /Projects/vc??/*.opendb
 /Projects/vc??/*.db
+/Projects/vc??/.vs/
+/Projects/vc??/.vs/
 /xmltooling-uninstalled.sh
 /aclocal.m4
 /autom4te.cache
