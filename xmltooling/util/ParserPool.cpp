@@ -418,6 +418,7 @@ DOMLSParser* ParserPool::createBuilder()
     parser->getDomConfig()->setParameter(XMLUni::fgXercesDisableDefaultEntityResolution, true);
     parser->getDomConfig()->setParameter(XMLUni::fgDOMResourceResolver, dynamic_cast<DOMLSResourceResolver*>(this));
     parser->getDomConfig()->setParameter(XMLUni::fgXercesSecurityManager, m_security.get());
+    parser->getDomConfig()->setParameter(XMLUni::fgDOMDisallowDoctype, true);
     return parser;
 }
 
