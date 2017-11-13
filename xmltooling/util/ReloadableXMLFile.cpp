@@ -295,7 +295,7 @@ void* ReloadableXMLFile::reload_fn(void* pv)
 #else
         struct stat stat_buf;
         if (stat(r->m_source.c_str(), &stat_buf) != 0)
-            continue
+            continue;
 #endif
         if (r->m_filestamp >= stat_buf.st_mtime)
             continue;
