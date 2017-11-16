@@ -117,13 +117,13 @@
 #define PACKAGE_NAME "xmltooling"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "xmltooling 1.6.1"
+#define PACKAGE_STRING "xmltooling 1.6.2"
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "xmltooling"
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "1.6.1"
+#define PACKAGE_VERSION "1.6.2"
 
 /* Define to the necessary symbol if this constant uses a non-standard name on
    your system. */
