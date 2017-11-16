@@ -287,26 +287,7 @@ void* ReloadableXMLFile::reload_fn(void* pv)
             r->m_reload_wait->timedwait(mutex.get(), r->m_reloadInterval);
         if (r->m_shutdown)
             break;
-		
-#ifdef WIN32
-        struct _stat stat_buf;
-        if (_stat(r->m_source.c_str(), &stat_buf) != 0)
-            continue;
-#else
-        struct stat stat_buf;
-        if (stat(r->m_source.c_str(), &stat_buf) != 0)
-            continue
-#endif
-        if (r->m_filestamp >= stat_buf.st_mtime)
-            continue;
 
-        // Elevate lock and recheck.
-        r->m_log.debug("timestamp of local resource changed, obtaining write lock");
-        r->m_lock->wrlock();
-        r->m_filestamp = stat_buf.st_mtime;
-        r->m_log.debug("timestamp of local resource changed, releasing write lock");
-        r->m_lock->unlock();
-		
         try {
             r->m_log.info("reloading %s resource...", r->m_local ? "local" : "remote");
             pair<bool,DOMElement*> ret = r->background_load();
@@ -359,6 +340,20 @@ Lockable* ReloadableXMLFile::lock()
         if (m_filestamp >= stat_buf.st_mtime)
             return this;
 
+        // Elevate lock and recheck.
+        m_log.debug("timestamp of local resource changed, elevating to a write lock");
+        m_lock->unlock();
+        m_lock->wrlock();
+        if (m_filestamp >= stat_buf.st_mtime) {
+            // Somebody else handled it, just downgrade.
+            m_log.debug("update of local resource handled by another thread, downgrading lock");
+            m_lock->unlock();
+            m_lock->rdlock();
+            return this;
+        }
+
+        // Update the timestamp regardless.
+        m_filestamp = stat_buf.st_mtime;
         if (m_reload_wait) {
             m_log.info("change detected, signaling reload thread...");
             m_reload_wait->signal();
