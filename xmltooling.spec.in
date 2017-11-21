@@ -71,7 +71,7 @@ This package contains just the shared library.
 %package -n lib@PACKAGE_NAME@-devel
 Summary:	XMLTooling development Headers
 Group:		Development/Libraries/C and C++
-Requires:	lib@PACKAGE_NAME@7 = %{version}-%{release}
+Requires:	lib@PACKAGE_NAME@8 = %{version}-%{release}
 Provides:	@PACKAGE_NAME@-devel = %{version}-%{release}
 Obsoletes:	@PACKAGE_NAME@-devel < %{version}-%{release}
 %if 0%{?rhel} >= 7 || 0%{?centos_version} >= 700
