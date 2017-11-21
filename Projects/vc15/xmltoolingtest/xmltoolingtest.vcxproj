@@ -23,7 +23,6 @@
     <RootNamespace>xmltoolingtest</RootNamespace>
     <CxxTestRoot>$(BuildRoot)\cxxtest\</CxxTestRoot>
     <Keyword>Win32Proj</Keyword>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -109,7 +108,7 @@
       <DisableSpecificWarnings>4275</DisableSpecificWarnings>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>xerces-c_3D.lib;xsec_1D.lib;$(SSLLib);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>xerces-c_3D.lib;xsec_2D.lib;$(SSLLib);%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
@@ -134,7 +133,7 @@
       <DisableSpecificWarnings>4275</DisableSpecificWarnings>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>xerces-c_3D.lib;xsec_1D.lib;$(SSLLibD);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>xerces-c_3D.lib;xsec_2D.lib;$(SSLLibD);%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <DataExecutionPrevention>
@@ -151,7 +150,7 @@
       <DisableSpecificWarnings>4275</DisableSpecificWarnings>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>xerces-c_3.lib;xsec_1.lib;$(SSLLib);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>xerces-c_3.lib;xsec_2.lib;$(SSLLib);%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
@@ -175,7 +174,7 @@
       <DisableSpecificWarnings>4275</DisableSpecificWarnings>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>xerces-c_3.lib;xsec_1.lib;$(SSLLib);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>xerces-c_3.lib;xsec_2.lib;$(SSLLib);%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
