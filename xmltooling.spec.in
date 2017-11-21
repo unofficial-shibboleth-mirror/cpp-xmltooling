@@ -9,11 +9,11 @@ URL:		http://www.opensaml.org/
 Source:		%{name}-%{version}.tar.bz2
 BuildRoot:	%{_tmppath}/%{name}-%{version}-root
 %if 0%{?rhel} >= 7 || 0%{?centos_version} >= 700
-BuildRequires:  xerces-c-devel >= 3.1
+BuildRequires:  xerces-c-devel >= 3.2
 %else
-BuildRequires:  libxerces-c-devel >= 3.1
+BuildRequires:  libxerces-c-devel >= 3.2
 %endif
-BuildRequires:  libxml-security-c-devel >= 1.7.3
+BuildRequires:  libxml-security-c-devel >= 2.0.0
 %{?_with_log4cpp:BuildRequires: liblog4cpp-devel >= 1.0}
 %{!?_with_log4cpp:BuildRequires: liblog4shib-devel >= 1.0.4}
 BuildRequires: gcc-c++, openssl-devel, boost-devel >= 1.32.0
@@ -50,7 +50,7 @@ for declaring element- and type-specific API and implementation
 classes to add value around the DOM, as well as signing and encryption
 support.
 
-%package -n lib@PACKAGE_NAME@7
+%package -n lib@PACKAGE_NAME@8
 Summary:    OpenSAML XMLTooling library
 Group:      Development/Libraries/C and C++
 Provides:   @PACKAGE_NAME@ = %{version}-%{release}
@@ -59,7 +59,7 @@ Obsoletes:  @PACKAGE_NAME@ < %{version}-%{release}
 Requires: libcurl-openssl >= 7.21.7
 %endif
 
-%description -n lib@PACKAGE_NAME@7
+%description -n lib@PACKAGE_NAME@8
 The XMLTooling library contains generic XML parsing and processing
 classes based on the Xerces-C DOM. It adds more powerful facilities
 for declaring element- and type-specific API and implementation
@@ -75,11 +75,11 @@ Requires:	lib@PACKAGE_NAME@7 = %{version}-%{release}
 Provides:	@PACKAGE_NAME@-devel = %{version}-%{release}
 Obsoletes:	@PACKAGE_NAME@-devel < %{version}-%{release}
 %if 0%{?rhel} >= 7 || 0%{?centos_version} >= 700
-Requires:  xerces-c-devel >= 3.1
+Requires:  xerces-c-devel >= 3.2
 %else
-Requires:  libxerces-c-devel >= 3.1
+Requires:  libxerces-c-devel >= 3.2
 %endif
-Requires: libxml-security-c-devel >= 1.7.3
+Requires: libxml-security-c-devel >= 2.0.0
 %{?_with_log4cpp:Requires: liblog4cpp-devel >= 1.0}
 %{!?_with_log4cpp:Requires: liblog4shib-devel >= 1.0.4}
 Requires: openssl-devel, boost-devel >= 1.32.0
@@ -134,14 +134,14 @@ This package includes XML schemas and related files.
 [ "$RPM_BUILD_ROOT" != "/" ] && %{__rm} -rf $RPM_BUILD_ROOT
 
 %ifnos solaris2.8 solaris2.9 solaris2.10
-%post -n lib@PACKAGE_NAME@7 -p /sbin/ldconfig
+%post -n lib@PACKAGE_NAME@8 -p /sbin/ldconfig
 %endif
 
 %ifnos solaris2.8 solaris2.9 solaris2.10
-%postun -n lib@PACKAGE_NAME@7 -p /sbin/ldconfig
+%postun -n lib@PACKAGE_NAME@8 -p /sbin/ldconfig
 %endif
 
-%files -n lib@PACKAGE_NAME@7
+%files -n lib@PACKAGE_NAME@8
 %defattr(-,root,root,-)
 %{_libdir}/*.so.*
 
@@ -158,6 +158,9 @@ This package includes XML schemas and related files.
 %doc %{pkgdocdir}
 
 %changelog
+* Tue Nov 21 2017 Scott Cantor <cantor.2@osu.edu> - 3.0.0-1
+- Update soname
+
 * Fri Jun 24 2016 Scott Cantor <cantor.2@osu.edu> - 1.6.0-1
 - Fix some lint issues
 - Update soname in package name
