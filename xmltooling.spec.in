@@ -8,11 +8,7 @@ License:	Apache-2.0
 URL:		http://www.opensaml.org/
 Source:		%{name}-%{version}.tar.bz2
 BuildRoot:	%{_tmppath}/%{name}-%{version}-root
-%if 0%{?rhel} >= 7 || 0%{?centos_version} >= 700
-BuildRequires:  xerces-c-devel >= 3.2
-%else
 BuildRequires:  libxerces-c-devel >= 3.2
-%endif
 BuildRequires:  libxml-security-c-devel >= 2.0.0
 %{?_with_log4cpp:BuildRequires: liblog4cpp-devel >= 1.0}
 %{!?_with_log4cpp:BuildRequires: liblog4shib-devel >= 1.0.4}
@@ -74,11 +70,7 @@ Group:		Development/Libraries/C and C++
 Requires:	lib@PACKAGE_NAME@8 = %{version}-%{release}
 Provides:	@PACKAGE_NAME@-devel = %{version}-%{release}
 Obsoletes:	@PACKAGE_NAME@-devel < %{version}-%{release}
-%if 0%{?rhel} >= 7 || 0%{?centos_version} >= 700
-Requires:  xerces-c-devel >= 3.2
-%else
 Requires:  libxerces-c-devel >= 3.2
-%endif
 Requires: libxml-security-c-devel >= 2.0.0
 %{?_with_log4cpp:Requires: liblog4cpp-devel >= 1.0}
 %{!?_with_log4cpp:Requires: liblog4shib-devel >= 1.0.4}
@@ -160,6 +152,7 @@ This package includes XML schemas and related files.
 %changelog
 * Tue Nov 21 2017 Scott Cantor <cantor.2@osu.edu> - 3.0.0-1
 - Update soname
+- Require Xerces 3.2 as shipped by me on all platforms
 
 * Fri Jun 24 2016 Scott Cantor <cantor.2@osu.edu> - 1.6.0-1
 - Fix some lint issues
