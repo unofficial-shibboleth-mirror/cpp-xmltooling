@@ -45,12 +45,6 @@
 #include <xsec/enc/OpenSSL/OpenSSLCryptoKeyEC.hpp>
 #include <xercesc/util/Base64.hpp>
 
-#ifdef WIN32
-# if (OPENSSL_VERSION_NUMBER >= 0x00907000)
-#  define XMLTOOLING_OPENSSL_HAVE_EC 1
-# endif
-#endif
-
 #include "security/OpenSSLSecurityHelper.h"
 
 using namespace xmltooling::logging;
@@ -214,7 +208,7 @@ XSECCryptoKey* SecurityHelper::loadKeyFromFile(const char* pathname, const char*
                 ret=new OpenSSLCryptoKeyDSA(pkey);
                 break;
 
-#ifdef XMLTOOLING_OPENSSL_HAVE_EC
+#ifdef XSEC_OPENSSL_HAVE_EC
             case EVP_PKEY_EC:
                 ret=new OpenSSLCryptoKeyEC(pkey);
                 break;
@@ -496,7 +490,7 @@ bool SecurityHelper::matches(const XSECCryptoKey& key1, const XSECCryptoKey& key
         return OpenSSLSecurityHelper::matchesPrivate(static_cast<const OpenSSLCryptoKeyDSA&>(key1).getOpenSSLDSA(), key2);
     }
 
-#ifdef XMLTOOLING_OPENSSL_HAVE_EC
+#ifdef XSEC_OPENSSL_HAVE_EC
     if (key1.getKeyType()==XSECCryptoKey::KEY_EC_PUBLIC || key1.getKeyType()==XSECCryptoKey::KEY_EC_PAIR) {
         return OpenSSLSecurityHelper::matchesPublic(static_cast<const OpenSSLCryptoKeyEC&>(key1).getOpenSSLEC(), key2);
     }
@@ -562,7 +556,7 @@ string SecurityHelper::getDEREncoding(const XSECCryptoKey& key, const char* hash
 
     const RSA* rsa = nullptr;
     const DSA* dsa = nullptr;
-#ifdef XMLTOOLING_OPENSSL_HAVE_EC
+#ifdef XSEC_OPENSSL_HAVE_EC
     const EC_KEY* ec = nullptr;
 #endif
 
@@ -580,7 +574,7 @@ string SecurityHelper::getDEREncoding(const XSECCryptoKey& key, const char* hash
             return ret;
         }
     }
-#ifdef XMLTOOLING_OPENSSL_HAVE_EC
+#ifdef XSEC_OPENSSL_HAVE_EC
     else if (key.getKeyType() == XSECCryptoKey::KEY_EC_PUBLIC || key.getKeyType() == XSECCryptoKey::KEY_EC_PAIR) {
         ec = static_cast<const OpenSSLCryptoKeyEC&>(key).getOpenSSLEC();
         if (!ec) {
@@ -618,7 +612,7 @@ string SecurityHelper::getDEREncoding(const XSECCryptoKey& key, const char* hash
         i2d_RSA_PUBKEY_bio(chain, const_cast<RSA*>(rsa));
     else if (dsa)
         i2d_DSA_PUBKEY_bio(chain, const_cast<DSA*>(dsa));
-#ifdef XMLTOOLING_OPENSSL_HAVE_EC
+#ifdef XSEC_OPENSSL_HAVE_EC
     else
         i2d_EC_PUBKEY_bio(chain, const_cast<EC_KEY*>(ec));
 #endif
@@ -760,7 +754,7 @@ XSECCryptoKey* SecurityHelper::fromDEREncoding(const char* buf, unsigned long bu
                     ret = new OpenSSLCryptoKeyDSA(pkey);
                     break;
 
-#ifdef XMLTOOLING_OPENSSL_HAVE_EC
+#ifdef XSEC_OPENSSL_HAVE_EC
                 case EVP_PKEY_EC:
                     ret = new OpenSSLCryptoKeyEC(pkey);
                     break;

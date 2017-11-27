@@ -41,12 +41,6 @@
 #include <xsec/enc/OpenSSL/OpenSSLCryptoKeyRSA.hpp>
 #include <xsec/enc/OpenSSL/OpenSSLCryptoX509.hpp>
 
-#ifdef WIN32
-# if (OPENSSL_VERSION_NUMBER >= 0x00907000)
-#  define XMLTOOLING_OPENSSL_HAVE_EC 1
-# endif
-#endif
-
 #include "security/OpenSSLSecurityHelper.h"
 #include <openssl/ec.h>
 
@@ -287,7 +281,7 @@ bool ExplicitKeyTrustEngine::validate(
                 break;
             }
         }
-#ifdef XMLTOOLING_OPENSSL_HAVE_EC
+#ifdef XSEC_OPENSSL_HAVE_EC
         else if (EVP_PKEY_id(evp) == EVP_PKEY_EC) {
             found = OpenSSLSecurityHelper::matchesPublic(EVP_PKEY_get0_EC_KEY(evp), *key);
             if (found) {

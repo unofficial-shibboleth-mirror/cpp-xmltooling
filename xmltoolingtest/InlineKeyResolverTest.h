@@ -40,10 +40,6 @@ extern "C" {
 #endif
 }
 
-// Force XMLSEC to assume OpenSSL
-#define XSEC_HAVE_OPENSSL 1
-#define XSEC_OPENSSL_HAVE_EC (OPENSSL_VERSION_NUMBER >= 0x00907000L)
-
 #include <xsec/enc/OpenSSL/OpenSSLCryptoX509.hpp>
 #include <xsec/enc/OpenSSL/OpenSSLCryptoKeyDSA.hpp>
 #include <xsec/enc/OpenSSL/OpenSSLCryptoKeyEC.hpp>
@@ -129,6 +125,7 @@ public:
 
     }
 
+#ifdef XSEC_OPENSSL_HAVE_EC
     void testOpenSSLEC() {
 
         string path=data_path + "KeyInfoEC.xml";
@@ -167,7 +164,7 @@ public:
         bool worked = sslCredFromKeyInfo->verifyBase64SignatureDSA(toSign, sizeof(toSign), &outSig[0], len);
         TSM_ASSERT("EC Round Trip Signature via KeyInfo Failed", worked);
     }
-
+#endif
 
     void testOpenSSLRSA() {
         string path=data_path + "KeyInfo1.xml";

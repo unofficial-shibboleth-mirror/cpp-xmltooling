@@ -30,16 +30,11 @@
 #include <xsec/enc/OpenSSL/OpenSSLCryptoX509.hpp>
 #include <xsec/enc/OpenSSL/OpenSSLCryptoKeyRSA.hpp>
 #include <xsec/enc/OpenSSL/OpenSSLCryptoKeyDSA.hpp>
+#include <xsec/enc/OpenSSL/OpenSSLCryptoKeyEC.hpp>
 
 #include <openssl/evp.h>
 #include <openssl/rsa.h>
 #include <openssl/dsa.h>
-
-#ifdef WIN32
-# if (OPENSSL_VERSION_NUMBER >= 0x00907000)
-#  define XMLTOOLING_OPENSSL_HAVE_EC 1
-# endif
-#endif
 
 #include "security/OpenSSLSecurityHelper.h"
 
@@ -84,7 +79,7 @@ bool OpenSSLSecurityHelper::matchesPrivate(const DSA* dsa, const XSECCryptoKey& 
     const DSA* dsa2 = static_cast<const OpenSSLCryptoKeyDSA&>(key).getOpenSSLDSA();
     return (dsa && dsa2 && BN_cmp(DSA_get0_privkey(dsa), DSA_get0_privkey(dsa2)) == 0);
 }
-#ifdef XMLTOOLING_OPENSSL_HAVE_EC
+#ifdef XSEC_OPENSSL_HAVE_EC
 bool OpenSSLSecurityHelper::matchesPublic(const EC_KEY* ec, const XSECCryptoKey& key)
 {
     // If one key is public or both, just compare the public key half.

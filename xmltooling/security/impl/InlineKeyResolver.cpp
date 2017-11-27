@@ -294,6 +294,7 @@ bool InlineCredential::resolveKey(const KeyInfo* keyInfo, bool followRefs)
                 return true;
             }
 
+#ifdef XSEC_OPENSSL_HAVE_EC
             ECKeyValue* eckv = i->getECKeyValue();
             if (eckv && eckv->getNamedCurve() && eckv->getPublicKey()) {
                 log.warn("resolving ds11:ECKeyValue");
@@ -306,6 +307,8 @@ bool InlineCredential::resolveKey(const KeyInfo* keyInfo, bool followRefs)
                     return true;
                 }
             }
+#endif
+
         }
         catch (ValidationException& ex) {
             log.warn("skipping invalid ds:KeyValue (%s)", ex.what());
