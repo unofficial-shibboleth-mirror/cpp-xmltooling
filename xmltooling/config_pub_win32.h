@@ -39,20 +39,3 @@
 
 /* Define if log4cpp library is used. */
 /* #undef XMLTOOLING_LOG4CPP */
-
-/* Define to 1 to disable XML-Security-dependent features. */
-/* #undef XMLTOOLING_NO_XMLSEC */
-
-#ifndef XMLTOOLING_NO_XMLSEC
-# include <xsec/framework/XSECDefs.hpp>
-# if (_XSEC_VERSION_FULL >= 10500)
-#  define XMLTOOLING_XMLSEC_C14N11 1
-# endif
-# if (_XSEC_VERSION_FULL >= 10600)
-#  define XMLTOOLING_XMLSEC_MULTIPLECRL 1
-#  define XMLTOOLING_XMLSEC_SIGALGORITHM 1
-#  define XMLTOOLING_XMLSEC_ECC 1
-#  define XMLTOOLING_XMLSEC_DEBUGLOGGING 1
-# endif
-#endif
-

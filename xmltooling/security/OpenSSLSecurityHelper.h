@@ -32,7 +32,7 @@
 #include <openssl/rsa.h>
 #include <openssl/evp.h>
 
-#if defined(XMLTOOLING_XMLSEC_ECC) && defined(XMLTOOLING_OPENSSL_HAVE_EC)
+#ifdef XMLTOOLING_OPENSSL_HAVE_EC
 # include <xsec/enc/OpenSSL/OpenSSLCryptoKeyEC.hpp>
 #endif
 
@@ -55,7 +55,7 @@ namespace xmltooling {
         static bool matchesPrivate(const RSA* rsa, const XSECCryptoKey& key);
         static bool matchesPublic(const DSA* dsa1, const XSECCryptoKey& key);
         static bool matchesPrivate(const DSA* dsa, const XSECCryptoKey& key);
-#if defined(XMLTOOLING_XMLSEC_ECC) && defined(XMLTOOLING_OPENSSL_HAVE_EC)
+#ifdef XMLTOOLING_OPENSSL_HAVE_EC
         static bool matchesPublic(const EC_KEY* ec, const XSECCryptoKey& key);
         static bool matchesPrivate(const EC_KEY* ec, const XSECCryptoKey& key);
 #endif

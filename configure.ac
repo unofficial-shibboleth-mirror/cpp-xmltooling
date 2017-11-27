@@ -270,53 +270,18 @@ if test x_$with_xmlsec != x_no; then
     AC_MSG_CHECKING([XML-Security version])
     AC_PREPROC_IFELSE(
 	    [AC_LANG_PROGRAM([#include <xsec/utils/XSECPlatformUtils.hpp>],
-        [#if XSEC_VERSION_MAJOR > 1 || (XSEC_VERSION_MAJOR == 1 && XSEC_VERSION_MEDIUM > 3)
+        [#if XSEC_VERSION_MAJOR >= 2
 int i = 0;
 #else
-#error need version 1.4.0 or later
+#error need version 2.0.0 or later
 #endif])],
         [AC_MSG_RESULT(OK)],
-        [AC_MSG_FAILURE([XML-Security version 1.4.0 or greater is required.])])
+        [AC_MSG_FAILURE([XML-Security version 2.0.0 or greater is required.])])
         
     AC_LINK_IFELSE(
         [AC_LANG_PROGRAM([[#include <xsec/utils/XSECPlatformUtils.hpp>]],
             [[XSECPlatformUtils::Initialise()]])],,
         [AC_MSG_ERROR([unable to link with XML-Security])])
-
-    AC_MSG_CHECKING([whether XML-Security-C has multiple CRL support])
-    AC_COMPILE_IFELSE(
-        [AC_LANG_PROGRAM([[#include <xsec/dsig/DSIGKeyInfoX509.hpp>]],
-            [[DSIGKeyInfoX509* klist; klist->getX509CRLListSize();]])],
-        [AC_MSG_RESULT([yes])AC_DEFINE([XMLTOOLING_XMLSEC_MULTIPLECRL],[1],[Define to 1 if XML-Security-C handles multiple CRLs.])],
-        [AC_MSG_RESULT([no])])
-
-    AC_MSG_CHECKING([whether XML-Security-C exposes the signature algorithm URI])
-    AC_COMPILE_IFELSE(
-        [AC_LANG_PROGRAM([[#include <xsec/dsig/DSIGSignature.hpp>]],
-            [[DSIGSignature* sig; sig->getAlgorithmURI();]])],
-        [AC_MSG_RESULT([yes])AC_DEFINE([XMLTOOLING_XMLSEC_SIGALGORITHM],[1],[Define to 1 if XML-Security-C exposes the signature algorithm URI.])],
-        [AC_MSG_RESULT([no])])
-
-    AC_MSG_CHECKING([whether XML-Security-C includes ECC support])
-    AC_COMPILE_IFELSE(
-        [AC_LANG_PROGRAM([[#include <xsec/dsig/DSIGKeyInfoValue.hpp>]],
-            [[DSIGKeyInfoValue* info; info->getECNamedCurve();]])],
-        [AC_MSG_RESULT([yes])AC_DEFINE([XMLTOOLING_XMLSEC_ECC],[1],[Define to 1 if XML-Security-C includes ECC support.])],
-        [AC_MSG_RESULT([no])])
-
-    AC_MSG_CHECKING([whether XML-Security-C includes C14N 1.1 support])
-    AC_COMPILE_IFELSE(
-        [AC_LANG_PROGRAM([[#include <xsec/dsig/DSIGConstants.hpp>]],
-            [[transformType t = TRANSFORM_C14N11;]])],
-        [AC_MSG_RESULT([yes])AC_DEFINE([XMLTOOLING_XMLSEC_C14N11],[1],[Define to 1 if XML-Security-C includes C14N 1.1 support.])],
-        [AC_MSG_RESULT([no])])
-
-    AC_MSG_CHECKING([whether XML-Security-C includes debug logging support])
-    AC_COMPILE_IFELSE(
-        [AC_LANG_PROGRAM([[#include <xsec/utils/XSECPlatformUtils.hpp>]],
-            [[XSECPlatformUtils::SetReferenceLoggingSink(NULL)]])],
-        [AC_MSG_RESULT([yes])AC_DEFINE([XMLTOOLING_XMLSEC_DEBUGLOGGING],[1],[Define to 1 if XML-Security-C includes debug logging support.])],
-        [AC_MSG_RESULT([no])])
 
     # restore master libs
     LIBS="$save_LIBS"

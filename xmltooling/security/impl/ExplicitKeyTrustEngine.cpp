@@ -287,7 +287,7 @@ bool ExplicitKeyTrustEngine::validate(
                 break;
             }
         }
-#if defined(XMLTOOLING_XMLSEC_ECC) && defined(XMLTOOLING_OPENSSL_HAVE_EC)
+#ifdef XMLTOOLING_OPENSSL_HAVE_EC
         else if (EVP_PKEY_id(evp) == EVP_PKEY_EC) {
             found = OpenSSLSecurityHelper::matchesPublic(EVP_PKEY_get0_EC_KEY(evp), *key);
             if (found) {

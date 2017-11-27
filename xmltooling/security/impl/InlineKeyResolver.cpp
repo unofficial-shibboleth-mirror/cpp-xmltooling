@@ -45,9 +45,7 @@
 #include <xsec/enc/XSECCryptoX509.hpp>
 #include <xsec/enc/XSECCryptoKeyRSA.hpp>
 #include <xsec/enc/XSECCryptoKeyDSA.hpp>
-#ifdef XMLTOOLING_XMLSEC_ECC
-# include <xsec/enc/XSECCryptoKeyEC.hpp>
-#endif
+#include <xsec/enc/XSECCryptoKeyEC.hpp>
 #include <xsec/enc/XSECCryptoException.hpp>
 #include <xsec/framework/XSECException.hpp>
 
@@ -295,7 +293,7 @@ bool InlineCredential::resolveKey(const KeyInfo* keyInfo, bool followRefs)
                 m_key = dsa.release();
                 return true;
             }
-#ifdef XMLTOOLING_XMLSEC_ECC
+
             ECKeyValue* eckv = i->getECKeyValue();
             if (eckv && eckv->getNamedCurve() && eckv->getPublicKey()) {
                 log.warn("resolving ds11:ECKeyValue");
@@ -308,7 +306,6 @@ bool InlineCredential::resolveKey(const KeyInfo* keyInfo, bool followRefs)
                     return true;
                 }
             }
-#endif
         }
         catch (ValidationException& ex) {
             log.warn("skipping invalid ds:KeyValue (%s)", ex.what());
@@ -534,7 +531,6 @@ void InlineCredential::resolve(DSIGKeyInfoList* keyInfo, int types, bool followR
     if (types & X509Credential::RESOLVE_CRLS) {
         for (DSIGKeyInfoList::size_type i=0; i<sz; ++i) {
             if (keyInfo->item(i)->getKeyInfoType()==DSIGKeyInfo::KEYINFO_X509) {
-#ifdef XMLTOOLING_XMLSEC_MULTIPLECRL
                 DSIGKeyInfoX509* x509 = static_cast<DSIGKeyInfoX509*>(keyInfo->item(i));
                 int count = x509->getX509CRLListSize();
                 for (int j=0; j<count; ++j) {
@@ -556,34 +552,6 @@ void InlineCredential::resolve(DSIGKeyInfoList* keyInfo, int types, bool followR
                         }
                     }
                 }
-#else
-                // The current xmlsec API is limited to one CRL per KeyInfo.
-                // For now, I'm going to process the DOM directly.
-                DOMNode* x509Node = keyInfo->item(i)->getKeyInfoDOMNode();
-                DOMElement* crlElement = x509Node ? XMLHelper::getFirstChildElement(x509Node, xmlconstants::XMLSIG_NS, X509CRL::LOCAL_NAME) : nullptr;
-                while (crlElement) {
-                    if (crlElement->hasChildNodes()) {
-                        auto_ptr_char buf(crlElement->getFirstChild()->getNodeValue());
-                        if (buf.get()) {
-                            try {
-                                auto_ptr<XSECCryptoX509CRL> crlobj(XMLToolingConfig::getConfig().X509CRL());
-                                crlobj->loadX509CRLBase64Bin(buf.get(), strlen(buf.get()));
-                                m_crls.push_back(crlobj.release());
-                            }
-                            catch(XSECException& e) {
-                                auto_ptr_char temp(e.getMsg());
-                                Category::getInstance(XMLTOOLING_LOGCAT ".KeyResolver." INLINE_KEYINFO_RESOLVER).error(
-                                    "caught XML-Security exception loading CRL: %s", temp.get());
-                            }
-                            catch(XSECCryptoException& e) {
-                                Category::getInstance(XMLTOOLING_LOGCAT ".KeyResolver." INLINE_KEYINFO_RESOLVER).error(
-                                    "caught XML-Security exception loading CRL: %s", e.getMsg());
-                            }
-                        }
-                    }
-                    crlElement = XMLHelper::getNextSiblingElement(crlElement, xmlconstants::XMLSIG_NS, X509CRL::LOCAL_NAME);
-                }
-#endif
             }
         }
     }

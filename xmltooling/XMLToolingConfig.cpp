@@ -137,7 +137,6 @@ namespace {
     }
 # endif
 
-# ifdef XMLTOOLING_XMLSEC_DEBUGLOGGING
     class TXFMOutputLog : public TXFMBase {
 	    TXFMOutputLog();
     public:
@@ -191,7 +190,6 @@ namespace {
             return new TXFMOutputLog(doc);
         return nullptr;
     }
-# endif
 
 #endif
 
@@ -421,9 +419,7 @@ bool XMLToolingInternalConfig::init()
 
 #ifndef XMLTOOLING_NO_XMLSEC
         XSECPlatformUtils::Initialise();
-# ifdef XMLTOOLING_XMLSEC_DEBUGLOGGING
         XSECPlatformUtils::SetReferenceLoggingSink(TXFMOutputLogFactory);
-# endif
         m_xsecProvider = new XSECProvider();
         log.debug("XML-Security %s initialization complete", XSEC_FULLVERSIONDOT);
 #endif

@@ -578,10 +578,8 @@ void ReloadableXMLFile::validateSignature(Signature& sigObj) const
                         if (tlist->item(i)->getTransformType()==TRANSFORM_ENVELOPED_SIGNATURE)
                             valid=true;
                         else if (tlist->item(i)->getTransformType()!=TRANSFORM_EXC_C14N &&
-                                 tlist->item(i)->getTransformType()!=TRANSFORM_C14N
-#ifdef XMLTOOLING_XMLSEC_C14N11
-                                 && tlist->item(i)->getTransformType()!=TRANSFORM_C14N11
-#endif
+                                 tlist->item(i)->getTransformType()!=TRANSFORM_C14N &&
+                                 tlist->item(i)->getTransformType()!=TRANSFORM_C14N11
                                  ) {
                             valid=false;
                             break;

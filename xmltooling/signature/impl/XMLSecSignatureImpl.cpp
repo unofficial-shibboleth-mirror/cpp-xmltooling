@@ -95,13 +95,7 @@ namespace xmlsignature {
         }
         const XMLCh* getSignatureAlgorithm() const {
             if (!m_sm && m_signature) {
-#ifdef XMLTOOLING_XMLSEC_SIGALGORITHM
                 m_sm = XMLString::replicate(m_signature->getAlgorithmURI());
-#else
-                safeBuffer sURI;
-                if (signatureHashMethod2URI(sURI, m_signature->getSignatureMethod(), m_signature->getHashMethod()))
-                    m_sm = XMLString::replicate(sURI.sbStrToXMLCh());
-#endif
             }
             return m_sm;
         }

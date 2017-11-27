@@ -84,7 +84,7 @@ bool OpenSSLSecurityHelper::matchesPrivate(const DSA* dsa, const XSECCryptoKey& 
     const DSA* dsa2 = static_cast<const OpenSSLCryptoKeyDSA&>(key).getOpenSSLDSA();
     return (dsa && dsa2 && BN_cmp(DSA_get0_privkey(dsa), DSA_get0_privkey(dsa2)) == 0);
 }
-#if defined(XMLTOOLING_XMLSEC_ECC) && defined(XMLTOOLING_OPENSSL_HAVE_EC)
+#ifdef XMLTOOLING_OPENSSL_HAVE_EC
 bool OpenSSLSecurityHelper::matchesPublic(const EC_KEY* ec, const XSECCryptoKey& key)
 {
     // If one key is public or both, just compare the public key half.
