@@ -112,19 +112,14 @@ AbstractAttributeExtensibleXMLObject::AbstractAttributeExtensibleXMLObject(const
 
 AbstractAttributeExtensibleXMLObject::~AbstractAttributeExtensibleXMLObject()
 {
-#ifdef XMLTOOLING_XERCESC_HAS_XMLBYTE_RELEASE
-    static void (*release)(XMLCh**) = &XMLString::release;
-#else
     static void (*release)(XMLCh**,MemoryManager*) = &XMLString::release;
-#endif
+
     for_each(
         m_attributeMap.begin(), m_attributeMap.end(),
         lambda::bind(
             release,
-            &lambda::bind(&map<xmltooling::QName,XMLCh*>::value_type::second, boost::ref(_1))
-#ifndef XMLTOOLING_XERCESC_HAS_XMLBYTE_RELEASE
-            ,XMLPlatformUtils::fgMemoryManager
-#endif
+            &lambda::bind(&map<xmltooling::QName,XMLCh*>::value_type::second, boost::ref(_1)),
+			XMLPlatformUtils::fgMemoryManager
             )
         );
 }
@@ -202,11 +197,7 @@ void AbstractAttributeExtensibleXMLObject::unmarshallExtensionAttribute(const DO
     bool ID = attribute->isId() || isRegisteredIDAttribute(q);
     setAttribute(q,attribute->getNodeValue(),ID);
     if (ID) {
-#ifdef XMLTOOLING_XERCESC_BOOLSETIDATTRIBUTE
         attribute->getOwnerElement()->setIdAttributeNode(attribute, true);
-#else
-        attribute->getOwnerElement()->setIdAttributeNode(attribute);
-#endif
     }
 }
 
@@ -219,11 +210,7 @@ void AbstractAttributeExtensibleXMLObject::marshallExtensionAttributes(DOMElemen
         attr->setNodeValue(i->second);
         domElement->setAttributeNodeNS(attr);
         if (m_idAttribute == i) {
-#ifdef XMLTOOLING_XERCESC_BOOLSETIDATTRIBUTE
             domElement->setIdAttributeNode(attr, true);
-#else
-            domElement->setIdAttributeNode(attr);
-#endif
         }
     }
 }

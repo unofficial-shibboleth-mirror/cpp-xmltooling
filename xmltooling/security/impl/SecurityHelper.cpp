@@ -747,11 +747,7 @@ XSECCryptoKey* SecurityHelper::fromDEREncoding(const char* buf, unsigned long bu
     EVP_PKEY* pkey = d2i_PUBKEY_bio(b, nullptr);
     BIO_free(b);
     if (base64) {
-#ifdef XMLTOOLING_XERCESC_HAS_XMLBYTE_RELEASE
-        XMLString::release(&decoded);
-#else
         XMLString::release((char**)&decoded);
-#endif
     }
 
     if (pkey) {
@@ -795,10 +791,6 @@ XSECCryptoKey* SecurityHelper::fromDEREncoding(const XMLCh* buf)
         return nullptr;
     }
     XSECCryptoKey* ret = fromDEREncoding((const char*)decoded, x, false);
-#ifdef XMLTOOLING_XERCESC_HAS_XMLBYTE_RELEASE
-    XMLString::release(&decoded);
-#else
     XMLString::release((char**)&decoded);
-#endif
     return ret;
 }

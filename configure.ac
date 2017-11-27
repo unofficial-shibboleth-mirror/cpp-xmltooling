@@ -180,56 +180,21 @@ fi
 
 AC_CHECK_HEADER([xercesc/dom/DOM.hpp],,AC_MSG_ERROR([unable to find xerces header files]))
 AC_MSG_CHECKING([Xerces version])
+
 AC_PREPROC_IFELSE(
     [AC_LANG_PROGRAM([#include <xercesc/util/XercesVersion.hpp>],
-[#if  _XERCES_VERSION != 20600
+[#if  _XERCES_VERSION >= 30000
 int i = 0;
 #else
-#error cannot use version 2.6.0
+#error cannot use version 1.x or 2.x
 #endif])],
     [AC_MSG_RESULT(OK)],
-    [AC_MSG_FAILURE([Xerces-C v2.6.0 has bugs that inhibit use with signed XML, please use a newer version])])
+    [AC_MSG_FAILURE([Xerces-C 3.x is required])])
+
 AC_LINK_IFELSE(
     [AC_LANG_PROGRAM([[#include <xercesc/util/PlatformUtils.hpp>]],
         [[xercesc::XMLPlatformUtils::Initialize()]])],
     ,[AC_MSG_ERROR([unable to link with Xerces])])
-
-AC_MSG_CHECKING([whether Xerces is 64-bit clean])
-AC_COMPILE_IFELSE(
-    [AC_LANG_PROGRAM([[#include <xercesc/framework/MemBufInputSource.hpp>]],
-        [[using namespace XERCES_CPP_NAMESPACE; XMLFilePos testvar;]])],
-    [AC_MSG_RESULT([yes])AC_DEFINE([XMLTOOLING_XERCESC_64BITSAFE],[1],[Define to 1 if Xerces has a 64-bit-safe API.])],
-    [AC_MSG_RESULT([no])])
-
-AC_MSG_CHECKING([whether Xerces BinInputStream requires getContentType])
-AC_COMPILE_IFELSE(
-    [AC_LANG_PROGRAM([[#include <xercesc/util/BinMemInputStream.hpp>]],
-        [[using namespace XERCES_CPP_NAMESPACE; XMLByte buf[1024]; BinMemInputStream in(buf,1024); in.getContentType();]])],
-    [AC_MSG_RESULT([yes])AC_DEFINE([XMLTOOLING_XERCESC_INPUTSTREAM_HAS_CONTENTTYPE],[1],[Define to 1 if Xerces InputStream class requires getContentType.])],
-    [AC_MSG_RESULT([no])])
-
-AC_MSG_CHECKING([whether Xerces DOMLS API is compliant])
-AC_COMPILE_IFELSE(
-    [AC_LANG_PROGRAM([[#include <xercesc/dom/DOM.hpp>]],
-        [[using namespace XERCES_CPP_NAMESPACE;
-        DOMImplementation *impl = DOMImplementationRegistry::getDOMImplementation(NULL);
-        DOMLSSerializer *ls = ((DOMImplementationLS*)impl)->createLSSerializer();]])],
-    [AC_MSG_RESULT([yes])AC_DEFINE([XMLTOOLING_XERCESC_COMPLIANT_DOMLS],[1],[Define to 1 if Xerces supports a compliant DOMLS API.])],
-    [AC_MSG_RESULT([no])])
-
-AC_MSG_CHECKING([whether Xerces has setIdAttribute(XMLCh*, bool)])
-AC_COMPILE_IFELSE(
-    [AC_LANG_PROGRAM([[#include <xercesc/dom/DOM.hpp>]],
-        [[using namespace XERCES_CPP_NAMESPACE; DOMElement * elt; elt->setIdAttribute(NULL, false);]])],
-    [AC_MSG_RESULT([yes])AC_DEFINE([XMLTOOLING_XERCESC_BOOLSETIDATTRIBUTE],[1],[Define to 1 if Xerces DOM ID methods take extra parameter.])],
-    [AC_MSG_RESULT([no])])
-
-AC_MSG_CHECKING([whether Xerces XMLString::release(XMLByte**) exists])
-AC_COMPILE_IFELSE(
-    [AC_LANG_PROGRAM([[#include <xercesc/util/XMLString.hpp>]],
-    [[using namespace XERCES_CPP_NAMESPACE; XMLByte* buf=NULL; XMLString::release(&buf);]])],
-    [AC_MSG_RESULT([yes])AC_DEFINE([XMLTOOLING_XERCESC_HAS_XMLBYTE_RELEASE],[1],[Define to 1 if Xerces XMLString includes XMLByte release.])],
-    [AC_MSG_RESULT([no])])
 
 # XML-Security settings
 AC_ARG_WITH(xmlsec,

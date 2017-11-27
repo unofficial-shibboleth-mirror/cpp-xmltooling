@@ -130,8 +130,6 @@ DOMDocument* ParserPool::newDocument()
     return DOMImplementationRegistry::getDOMImplementation(nullptr)->createDocument();
 }
 
-#ifdef XMLTOOLING_XERCESC_COMPLIANT_DOMLS
-
 DOMDocument* ParserPool::parse(DOMLSInput& domsrc)
 {
     DOMLSParser* parser=checkoutBuilder();
@@ -164,43 +162,6 @@ DOMDocument* ParserPool::parse(DOMLSInput& domsrc)
         throw;
     }
 }
-
-#else
-
-DOMDocument* ParserPool::parse(DOMInputSource& domsrc)
-{
-    DOMBuilder* parser=checkoutBuilder();
-    XercesJanitor<DOMBuilder> janitor(parser);
-    try {
-        MyErrorHandler deh;
-        parser->setErrorHandler(&deh);
-        DOMDocument* doc=parser->parse(domsrc);
-        if (deh.errors) {
-            if (doc)
-                doc->release();
-            throw XMLParserException("XML error(s) during parsing, check log for specifics");
-        }
-        parser->setErrorHandler(nullptr);
-        parser->setFeature(XMLUni::fgXercesUserAdoptsDOMDocument, true);
-        checkinBuilder(janitor.release());
-        return doc;
-    }
-    catch (XMLException& ex) {
-        parser->setErrorHandler(nullptr);
-        parser->setFeature(XMLUni::fgXercesUserAdoptsDOMDocument, true);
-        checkinBuilder(janitor.release());
-        auto_ptr_char temp(ex.getMessage());
-        throw XMLParserException(string("Xerces error during parsing: ") + (temp.get() ? temp.get() : "no message"));
-    }
-    catch (XMLToolingException&) {
-        parser->setErrorHandler(nullptr);
-        parser->setFeature(XMLUni::fgXercesUserAdoptsDOMDocument, true);
-        checkinBuilder(janitor.release());
-        throw;
-    }
-}
-
-#endif
 
 DOMDocument* ParserPool::parse(istream& is)
 {
@@ -343,7 +304,6 @@ bool ParserPool::loadCatalog(const XMLCh* pathname)
     return true;
 }
 
-#ifdef XMLTOOLING_XERCESC_COMPLIANT_DOMLS
 DOMLSInput* ParserPool::resolveResource(
             const XMLCh *const resourceType,
             const XMLCh *const namespaceUri,
@@ -351,11 +311,6 @@ DOMLSInput* ParserPool::resolveResource(
             const XMLCh *const systemId,
             const XMLCh *const baseURI
             )
-#else
-DOMInputSource* ParserPool::resolveEntity(
-    const XMLCh* const publicId, const XMLCh* const systemId, const XMLCh* const baseURI
-    )
-#endif
 {
 #if _DEBUG
     xmltooling::NDC ndc("resolveEntity");
@@ -395,8 +350,6 @@ DOMInputSource* ParserPool::resolveEntity(
     static const XMLByte nullbuf[] = {0};
     return new Wrapper4InputSource(new MemBufInputSource(nullbuf, 0, systemId));
 }
-
-#ifdef XMLTOOLING_XERCESC_COMPLIANT_DOMLS
 
 DOMLSParser* ParserPool::createBuilder()
 {
@@ -443,55 +396,6 @@ void ParserPool::checkinBuilder(DOMLSParser* builder)
     }
 }
 
-#else
-
-DOMBuilder* ParserPool::createBuilder()
-{
-    static const XMLCh impltype[] = { chLatin_L, chLatin_S, chNull };
-    DOMImplementation* impl=DOMImplementationRegistry::getDOMImplementation(impltype);
-    DOMBuilder* parser=static_cast<DOMImplementationLS*>(impl)->createDOMBuilder(DOMImplementationLS::MODE_SYNCHRONOUS,0);
-    parser->setFeature(XMLUni::fgDOMNamespaces, m_namespaceAware);
-    if (m_schemaAware) {
-        parser->setFeature(XMLUni::fgDOMNamespaces, true);
-        parser->setFeature(XMLUni::fgXercesSchema, true);
-        parser->setFeature(XMLUni::fgDOMValidation, true);
-        parser->setFeature(XMLUni::fgXercesCacheGrammarFromParse, true);
-
-        // We build a "fake" schema location hint that binds each namespace to itself.
-        // This ensures the entity resolver will be given the namespace as a systemId it can check.
-        parser->setProperty(XMLUni::fgXercesSchemaExternalSchemaLocation,const_cast<XMLCh*>(m_schemaLocations.c_str()));
-    }
-    parser->setProperty(XMLUni::fgXercesSecurityManager, m_security.get());
-    parser->setFeature(XMLUni::fgXercesUserAdoptsDOMDocument, true);
-    parser->setFeature(XMLUni::fgXercesDisableDefaultEntityResolution, true);
-    parser->setEntityResolver(this);
-    return parser;
-}
-
-DOMBuilder* ParserPool::checkoutBuilder()
-{
-    Lock lock(m_lock);
-    if (m_pool.empty()) {
-        DOMBuilder* builder=createBuilder();
-        return builder;
-    }
-    DOMBuilder* p=m_pool.top();
-    m_pool.pop();
-    if (m_schemaAware)
-        p->setProperty(XMLUni::fgXercesSchemaExternalSchemaLocation,const_cast<XMLCh*>(m_schemaLocations.c_str()));
-    return p;
-}
-
-void ParserPool::checkinBuilder(DOMBuilder* builder)
-{
-    if (builder) {
-        Lock lock(m_lock);
-        m_pool.push(builder);
-    }
-}
-
-#endif
-
 StreamInputSource::StreamInputSource(istream& is, const char* systemId) : InputSource(systemId), m_is(is)
 {
 }
@@ -505,22 +409,15 @@ StreamInputSource::StreamBinInputStream::StreamBinInputStream(istream& is) : m_i
 {
 }
 
-#ifdef XMLTOOLING_XERCESC_64BITSAFE
-XMLFilePos
-#else
-unsigned int
-#endif
-StreamInputSource::StreamBinInputStream::curPos() const
+XMLFilePos StreamInputSource::StreamBinInputStream::curPos() const
 {
     return m_pos;
 }
 
-#ifdef XMLTOOLING_XERCESC_64BITSAFE
 const XMLCh* StreamInputSource::StreamBinInputStream::getContentType() const
 {
     return nullptr;
 }
-#endif
 
 XMLSize_t StreamInputSource::StreamBinInputStream::readBytes(XMLByte* const toFill, const XMLSize_t maxToRead)
 {

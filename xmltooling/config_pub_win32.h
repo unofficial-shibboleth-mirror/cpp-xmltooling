@@ -43,17 +43,6 @@
 /* Define to 1 to disable XML-Security-dependent features. */
 /* #undef XMLTOOLING_NO_XMLSEC */
 
-/* Define if you wish to disable Xalan-dependent features. */
-#define XSEC_NO_XALAN
-
-#include <xercesc/util/XercesVersion.hpp>
-
-#if (XERCES_VERSION_MAJOR >= 3)
-# define XMLTOOLING_XERCESC_COMPLIANT_DOMLS     1
-# define XMLTOOLING_XERCESC_BOOLSETIDATTRIBUTE  1
-# define XMLTOOLING_XERCESC_64BITSAFE           1
-#endif
-
 #ifndef XMLTOOLING_NO_XMLSEC
 # include <xsec/framework/XSECDefs.hpp>
 # if (_XSEC_VERSION_FULL >= 10500)

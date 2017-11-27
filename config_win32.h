@@ -87,17 +87,6 @@
 /* Define to 1 if you have the <unistd.h> header file. */
 /* #undef HAVE_UNISTD_H */
 
-#include <xercesc/util/XercesVersion.hpp>
-
-#if (XERCES_VERSION_MAJOR >= 3)
-# define XMLTOOLING_XERCESC_COMPLIANT_DOMLS     1
-# define XMLTOOLING_XERCESC_BOOLSETIDATTRIBUTE  1
-# define XMLTOOLING_XERCESC_64BITSAFE           1
-# define XMLTOOLING_XERCESC_INPUTSTREAM_HAS_CONTENTTYPE 1
-#else
-# define XMLTOOLING_XERCESC_HAS_XMLBYTE_RELEASE 1
-#endif
-
 /* Define to 1 if you have the `curl_off_t' type. */
 #define HAVE_CURL_OFF_T 1
 

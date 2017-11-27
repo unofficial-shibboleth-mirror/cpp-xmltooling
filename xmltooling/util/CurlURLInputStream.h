@@ -78,20 +78,13 @@ namespace xmltooling {
 
         ~CurlURLInputStream();
 
-#ifdef XMLTOOLING_XERCESC_64BITSAFE
-        XMLFilePos
-#else
-        unsigned int
-#endif
-        curPos() const {
+        XMLFilePos curPos() const {
             return fTotalBytesRead;
         }
 
-#ifdef XMLTOOLING_XERCESC_INPUTSTREAM_HAS_CONTENTTYPE
         const XMLCh* getContentType() const {
             return fContentType;
         }
-#endif
 
         XMLSize_t readBytes(XMLByte* const toFill, const XMLSize_t maxToRead);
 

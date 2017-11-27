@@ -132,11 +132,7 @@ protected:
     void marshallAttributes(xercesc::DOMElement* domElement) const {
         if(getId()) {
             domElement->setAttributeNS(nullptr, SimpleXMLObject::ID_ATTRIB_NAME, getId());
-#ifdef XMLTOOLING_XERCESC_BOOLSETIDATTRIBUTE
             domElement->setIdAttributeNS(nullptr, SimpleXMLObject::ID_ATTRIB_NAME, true);
-#else
-            domElement->setIdAttributeNS(nullptr, SimpleXMLObject::ID_ATTRIB_NAME);
-#endif
         }
         marshallExtensionAttributes(domElement);
     }

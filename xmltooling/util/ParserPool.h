@@ -56,12 +56,7 @@ namespace xmltooling {
     /**
      * A thread-safe pool of DOMBuilders that share characteristics.
      */
-    class XMLTOOL_API ParserPool :
-#ifdef XMLTOOLING_XERCESC_COMPLIANT_DOMLS
-        public xercesc::DOMLSResourceResolver
-#else
-        public xercesc::DOMEntityResolver
-#endif
+    class XMLTOOL_API ParserPool : public xercesc::DOMLSResourceResolver
     {
         MAKE_NONCOPYABLE(ParserPool);
     public:
@@ -89,13 +84,7 @@ namespace xmltooling {
          * @return The DOM document resulting from the parse
          * @throws XMLParserException thrown if there was a problem reading, parsing, or validating the XML
          */
-        xercesc::DOMDocument* parse(
-#ifdef XMLTOOLING_XERCESC_COMPLIANT_DOMLS
-            xercesc::DOMLSInput& domsrc
-#else
-            xercesc::DOMInputSource& domsrc
-#endif
-            );
+        xercesc::DOMDocument* parse(xercesc::DOMLSInput& domsrc);
 
         /**
          * Parses a document using a pooled parser with the proper settings
@@ -156,7 +145,6 @@ namespace xmltooling {
         /**
          * Supplies all external entities (primarily schemas) to the parser
          */
-#ifdef XMLTOOLING_XERCESC_COMPLIANT_DOMLS
         xercesc::DOMLSInput* resolveResource(
             const XMLCh *const resourceType,
             const XMLCh *const namespaceUri,
@@ -164,32 +152,17 @@ namespace xmltooling {
             const XMLCh *const systemId,
             const XMLCh *const baseURI
             );
-#else
-        xercesc::DOMInputSource* resolveEntity(
-            const XMLCh* const publicId, const XMLCh* const systemId, const XMLCh* const baseURI
-            );
-#endif
 
     private:
-#ifdef XMLTOOLING_XERCESC_COMPLIANT_DOMLS
         xercesc::DOMLSParser* createBuilder();
         xercesc::DOMLSParser* checkoutBuilder();
         void checkinBuilder(xercesc::DOMLSParser* builder);
-#else
-        xercesc::DOMBuilder* createBuilder();
-        xercesc::DOMBuilder* checkoutBuilder();
-        void checkinBuilder(xercesc::DOMBuilder* builder);
-#endif
 
         xstring m_schemaLocations;
         std::map<xstring,xstring> m_schemaLocMap;
 
         bool m_namespaceAware,m_schemaAware;
-#ifdef XMLTOOLING_XERCESC_COMPLIANT_DOMLS
         std::stack<xercesc::DOMLSParser*> m_pool;
-#else
-        std::stack<xercesc::DOMBuilder*> m_pool;
-#endif
         std::auto_ptr<Mutex> m_lock;
         std::auto_ptr<xercesc::SecurityManager> m_security;
     };
@@ -225,12 +198,8 @@ namespace xmltooling {
              */
             StreamBinInputStream(std::istream& is);
             /// @cond off
-#ifdef XMLTOOLING_XERCESC_64BITSAFE
             XMLFilePos curPos() const;
             const XMLCh* getContentType() const;
-#else
-            unsigned int curPos() const;
-#endif
             XMLSize_t readBytes(XMLByte* const toFill, const XMLSize_t maxToRead);
             /// @endcond
         private:

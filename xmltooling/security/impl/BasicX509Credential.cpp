@@ -204,19 +204,11 @@ void BasicX509Credential::initKeyInfo(unsigned int types)
         XMLByte* decoded = Base64::decode(reinterpret_cast<const XMLByte*>(buf.rawCharBuffer()), &x);
         if (decoded) {
             string xdig = SecurityHelper::doHash("SHA1", reinterpret_cast<char*>(decoded), x, false);
-#ifdef XMLTOOLING_XERCESC_HAS_XMLBYTE_RELEASE
-            XMLString::release(&decoded);
-#else
             XMLString::release((char**)&decoded);
-#endif
             XMLByte* encoded = Base64::encode(reinterpret_cast<const XMLByte*>(xdig.c_str()), xdig.length(), &x);
             if (encoded) {
                 auto_ptr_XMLCh widenit(reinterpret_cast<char*>(encoded));
-#ifdef XMLTOOLING_XERCESC_HAS_XMLBYTE_RELEASE
-                XMLString::release(&encoded);
-#else
                 XMLString::release((char**)&encoded);
-#endif
                 X509Digest* x509dig = X509DigestBuilder::buildX509Digest();
                 x509dig->setValue(widenit.get());
                 x509dig->setAlgorithm(DSIGConstants::s_unicodeStrURISHA1);

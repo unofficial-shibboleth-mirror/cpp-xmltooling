@@ -404,7 +404,6 @@ void XMLHelper::serialize(const DOMNode* n, std::string& buf, bool pretty)
     MemBufFormatTarget target;
     DOMImplementation* impl=DOMImplementationRegistry::getDOMImplementation(impltype);
 
-#ifdef XMLTOOLING_XERCESC_COMPLIANT_DOMLS
     DOMLSSerializer* serializer = static_cast<DOMImplementationLS*>(impl)->createLSSerializer();
     XercesJanitor<DOMLSSerializer> janitor(serializer);
     if (pretty && serializer->getDomConfig()->canSetParameter(XMLUni::fgDOMWRTFormatPrettyPrint, pretty))
@@ -415,15 +414,6 @@ void XMLHelper::serialize(const DOMNode* n, std::string& buf, bool pretty)
     theOutput->setByteStream(&target);
     if (!serializer->write(n, theOutput))
         throw XMLParserException("unable to serialize XML");
-#else
-    DOMWriter* serializer = static_cast<DOMImplementationLS*>(impl)->createDOMWriter();
-    XercesJanitor<DOMWriter> janitor(serializer);
-    serializer->setEncoding(UTF8);
-    if (pretty && serializer->canSetFeature(XMLUni::fgDOMWRTFormatPrettyPrint, pretty))
-        serializer->setFeature(XMLUni::fgDOMWRTFormatPrettyPrint, pretty);
-    if (!serializer->writeNode(&target, *n))
-        throw XMLParserException("unable to serialize XML");
-#endif
 
     buf.erase();
     buf.append(reinterpret_cast<const char*>(target.getRawBuffer()),target.getLen());
@@ -457,7 +447,6 @@ ostream& XMLHelper::serialize(const DOMNode* n, ostream& out, bool pretty)
     StreamFormatTarget target(out);
     DOMImplementation* impl=DOMImplementationRegistry::getDOMImplementation(impltype);
 
-#ifdef XMLTOOLING_XERCESC_COMPLIANT_DOMLS
     DOMLSSerializer* serializer = static_cast<DOMImplementationLS*>(impl)->createLSSerializer();
     XercesJanitor<DOMLSSerializer> janitor(serializer);
     if (pretty && serializer->getDomConfig()->canSetParameter(XMLUni::fgDOMWRTFormatPrettyPrint, pretty))
@@ -468,15 +457,6 @@ ostream& XMLHelper::serialize(const DOMNode* n, ostream& out, bool pretty)
     theOutput->setByteStream(&target);
     if (!serializer->write(n, theOutput))
         throw XMLParserException("unable to serialize XML");
-#else
-    DOMWriter* serializer=(static_cast<DOMImplementationLS*>(impl))->createDOMWriter();
-    XercesJanitor<DOMWriter> janitor(serializer);
-    serializer->setEncoding(UTF8);
-    if (pretty && serializer->canSetFeature(XMLUni::fgDOMWRTFormatPrettyPrint, pretty))
-        serializer->setFeature(XMLUni::fgDOMWRTFormatPrettyPrint, pretty);
-    if (!serializer->writeNode(&target,*n))
-        throw XMLParserException("unable to serialize XML");
-#endif
 
     return out;
 }
