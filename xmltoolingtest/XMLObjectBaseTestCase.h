@@ -18,6 +18,10 @@
  * language governing permissions and limitations under the License.
  */
 
+#ifdef WIN32
+# define XSEC_HAVE_OPENSSL 1
+#endif
+
 #include <cxxtest/TestSuite.h>
 #include <xmltooling/AbstractAttributeExtensibleXMLObject.h>
 #include <xmltooling/AbstractComplexElement.h>

@@ -29,8 +29,6 @@
 #include <xmltooling/security/CredentialResolver.h>
 #include <xmltooling/signature/KeyInfo.h>
 
-#include <xsec/enc/XSECCryptoKey.hpp>
-
 #include <xsec/dsig/DSIGReference.hpp>
 #include <xsec/dsig/DSIGSignature.hpp>
 extern "C" {
