@@ -155,13 +155,13 @@ namespace {
             m_log.debug("\n----- BEGIN SIGNATURE DEBUG -----\n");
         }
 
-	    TXFMBase::ioType getInputType() {
+	    TXFMBase::ioType getInputType() const {
             return TXFMBase::BYTE_STREAM;
         }
-	    TXFMBase::ioType getOutputType() {
+	    TXFMBase::ioType getOutputType() const {
             return TXFMBase::BYTE_STREAM;
         }
-	    TXFMBase::nodeType getNodeType() {
+	    TXFMBase::nodeType getNodeType() const {
             return TXFMBase::DOM_NODE_NONE;
         }
 
@@ -169,16 +169,6 @@ namespace {
 	        unsigned int sz = input->readBytes(toFill, maxToFill);
             m_log.debug(string(reinterpret_cast<char* const>(toFill), sz));
 	        return sz;
-        }
-
-	    DOMDocument* getDocument() {
-            return nullptr;
-        }
-	    DOMNode* getFragmentNode() {
-            return nullptr;
-        }
-	    const XMLCh* getFragmentId() {
-            return nullptr;
         }
 	
     private:
