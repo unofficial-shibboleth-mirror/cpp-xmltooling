@@ -146,7 +146,7 @@ EncryptedData* Encrypter::encryptElement(DOMElement* element, EncryptionParams& 
     
     try {
         checkParams(encParams,kencParams);
-        m_cipher->encryptElementDetached(element, ENCRYPT_NONE, encParams.m_algorithm);
+        m_cipher->encryptElementDetached(element, encParams.m_algorithm);
         return decorateAndUnmarshall(encParams, kencParams);
     }
     catch(XSECException& e) {
@@ -174,7 +174,7 @@ EncryptedData* Encrypter::encryptElementContent(DOMElement* element, EncryptionP
     
     try {
         checkParams(encParams,kencParams);
-        m_cipher->encryptElementContentDetached(element, ENCRYPT_NONE, encParams.m_algorithm);
+        m_cipher->encryptElementContentDetached(element, encParams.m_algorithm);
         return decorateAndUnmarshall(encParams, kencParams);
     }
     catch(XSECException& e) {
@@ -204,7 +204,7 @@ EncryptedData* Encrypter::encryptStream(istream& input, EncryptionParams& encPar
         
         checkParams(encParams,kencParams);
         StreamInputSource::StreamBinInputStream xstream(input);
-        m_cipher->encryptBinInputStream(&xstream, ENCRYPT_NONE, encParams.m_algorithm);
+        m_cipher->encryptBinInputStream(&xstream, encParams.m_algorithm);
         return decorateAndUnmarshall(encParams, kencParams);
     }
     catch(XSECException& e) {
@@ -249,7 +249,7 @@ EncryptedData* Encrypter::decorateAndUnmarshall(EncryptionParams& encParams, Key
         m_cipher->setKEK(kek->clone());
         // ownership of this belongs to us, for some reason...
         auto_ptr<XENCEncryptedKey> encKey(
-            m_cipher->encryptKey(encParams.m_keyBuffer, encParams.m_keyBufferSize, ENCRYPT_NONE, kencParams->m_algorithm)
+            m_cipher->encryptKey(encParams.m_keyBuffer, encParams.m_keyBufferSize, kencParams->m_algorithm)
             );
         EncryptedKey* xmlEncKey=nullptr;
         auto_ptr<XMLObject> xmlObjectKey(XMLObjectBuilder::buildOneFromElement(encKey->getElement()));
@@ -303,7 +303,7 @@ EncryptedKey* Encrypter::encryptKey(
         m_cipher=XMLToolingInternalConfig::getInternalConfig().m_xsecProvider->newCipher(doc);
         m_cipher->setExclusiveC14nSerialisation(false);
         m_cipher->setKEK(kek->clone());
-        auto_ptr<XENCEncryptedKey> encKey(m_cipher->encryptKey(keyBuffer, keyBufferSize, ENCRYPT_NONE, kencParams.m_algorithm));
+        auto_ptr<XENCEncryptedKey> encKey(m_cipher->encryptKey(keyBuffer, keyBufferSize, kencParams.m_algorithm));
         
         EncryptedKey* xmlEncKey=nullptr;
         auto_ptr<XMLObject> xmlObjectKey(XMLObjectBuilder::buildOneFromElement(encKey->getElement()));
