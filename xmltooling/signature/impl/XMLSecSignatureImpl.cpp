@@ -90,7 +90,7 @@ namespace xmlsignature {
         // Getters
         const XMLCh* getCanonicalizationMethod() const {
             if (m_signature)
-                return canonicalizationMethod2UNICODEURI(m_signature->getCanonicalizationMethod());
+                return m_signature->getCanonicalizationMethod();
             return m_c14n ? m_c14n : DSIGConstants::s_unicodeStrURIEXC_C14N_NOC;
         }
         const XMLCh* getSignatureAlgorithm() const {

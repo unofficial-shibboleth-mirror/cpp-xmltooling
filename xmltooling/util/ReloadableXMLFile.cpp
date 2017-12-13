@@ -581,12 +581,9 @@ void ReloadableXMLFile::validateSignature(Signature& sigObj) const
                         if (dynamic_cast<const DSIGTransformEnvelope*>(t)) {
                             valid=true;
                         }
-                        else {
-                            const DSIGTransformC14n* ct = dynamic_cast<const DSIGTransformC14n*>(t);
-                            if (!ct || ct->getCanonicalizationMethod() == CANON_NONE) {
-                                valid = false;
-                                break;
-                            }
+                        else if (!dynamic_cast<const DSIGTransformC14n*>(t)) {
+                            valid = false;
+                            break;
                         }
                     }
                 }
