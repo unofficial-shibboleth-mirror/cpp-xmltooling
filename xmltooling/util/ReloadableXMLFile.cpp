@@ -59,6 +59,8 @@
 #ifndef XMLTOOLING_LITE
 # include <xsec/dsig/DSIGReference.hpp>
 # include <xsec/dsig/DSIGTransformList.hpp>
+# include <xsec/dsig/DSIGTransformEnvelope.hpp>
+# include <xsec/dsig/DSIGTransformC14n.hpp>
 using namespace xmlsignature;
 #endif
 
@@ -560,29 +562,31 @@ void ReloadableXMLFile::preserveCacheTag()
 
 void ReloadableXMLFile::validateSignature(Signature& sigObj) const
 {
-    DSIGSignature* sig=sigObj.getXMLSignature();
+    const DSIGSignature* sig=sigObj.getXMLSignature();
     if (!sig)
         throw XMLSecurityException("Signature does not exist yet.");
 
     // Make sure the whole document was signed.
     bool valid=false;
-    DSIGReferenceList* refs=sig->getReferenceList();
+    const DSIGReferenceList* refs=sig->getReferenceList();
     if (refs && refs->getSize()==1) {
-        DSIGReference* ref=refs->item(0);
+        const DSIGReference* ref=refs->item(0);
         if (ref) {
             const XMLCh* URI=ref->getURI();
             if (URI==nullptr || *URI==0) {
-                DSIGTransformList* tlist=ref->getTransforms();
+                const DSIGTransformList* tlist=ref->getTransforms();
                 if (tlist->getSize() <= 2) { 
                     for (unsigned int i=0; tlist && i<tlist->getSize(); i++) {
-                        if (tlist->item(i)->getTransformType()==TRANSFORM_ENVELOPED_SIGNATURE)
+                        const DSIGTransform* t = tlist->item(i);
+                        if (dynamic_cast<const DSIGTransformEnvelope*>(t)) {
                             valid=true;
-                        else if (tlist->item(i)->getTransformType()!=TRANSFORM_EXC_C14N &&
-                                 tlist->item(i)->getTransformType()!=TRANSFORM_C14N &&
-                                 tlist->item(i)->getTransformType()!=TRANSFORM_C14N11
-                                 ) {
-                            valid=false;
-                            break;
+                        }
+                        else {
+                            const DSIGTransformC14n* ct = dynamic_cast<const DSIGTransformC14n*>(t);
+                            if (!ct || ct->getCanonicalizationMethod() == CANON_NONE) {
+                                valid = false;
+                                break;
+                            }
                         }
                     }
                 }
