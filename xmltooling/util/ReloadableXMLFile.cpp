@@ -289,25 +289,27 @@ void* ReloadableXMLFile::reload_fn(void* pv)
             r->m_reload_wait->timedwait(mutex.get(), r->m_reloadInterval);
         if (r->m_shutdown)
             break;
-		
-#ifdef WIN32
-        struct _stat stat_buf;
-        if (_stat(r->m_source.c_str(), &stat_buf) != 0)
-            continue;
-#else
-        struct stat stat_buf;
-        if (stat(r->m_source.c_str(), &stat_buf) != 0)
-	    continue;
-#endif
-        if (r->m_filestamp >= stat_buf.st_mtime)
-            continue;
 
-        // Grab lock to protect m_filestamp.
-        r->m_log.debug("timestamp of local resource changed, obtaining write lock");
-        r->m_lock->wrlock();
-        r->m_filestamp = stat_buf.st_mtime;
-        r->m_log.debug("timestamp of local resource changed, releasing write lock");
-        r->m_lock->unlock();
+        if (r->m_local) {
+#ifdef WIN32
+            struct _stat stat_buf;
+            if (_stat(r->m_source.c_str(), &stat_buf) != 0)
+                continue;
+#else
+            struct stat stat_buf;
+            if (stat(r->m_source.c_str(), &stat_buf) != 0)
+                continue;
+#endif
+            if (r->m_filestamp >= stat_buf.st_mtime)
+                continue;
+
+            // Grab lock to protect m_filestamp.
+            r->m_log.debug("timestamp of local resource changed, obtaining write lock");
+            r->m_lock->wrlock();
+            r->m_filestamp = stat_buf.st_mtime;
+            r->m_log.debug("timestamp of local resource changed, releasing write lock");
+            r->m_lock->unlock();
+        }
 		
         try {
             r->m_log.info("reloading %s resource...", r->m_local ? "local" : "remote");
