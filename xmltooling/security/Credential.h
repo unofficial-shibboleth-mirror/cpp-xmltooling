@@ -144,7 +144,7 @@ namespace xmltooling {
          *
          * @return resolution context of the credential
          */
-        virtual const CredentialContext* getCredentalContext() const;
+        virtual const CredentialContext* getCredentialContext() const;
     };
 };
 

@@ -50,7 +50,7 @@ Credential::~Credential()
 {
 }
 
-const CredentialContext* Credential::getCredentalContext() const
+const CredentialContext* Credential::getCredentialContext() const
 {
     return nullptr;
 }

@@ -102,7 +102,7 @@ namespace xmltooling {
             return ret;
         }
         
-        const CredentialContext* getCredentalContext() const {
+        const CredentialContext* getCredentialContext() const {
             return m_credctx.get();
         }
 
