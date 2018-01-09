@@ -47,9 +47,9 @@ public:
     }
 
     void createReferences(DSIGSignature* sig) {
-        DSIGReference* ref=sig->createReference(m_uri);
+        DSIGReference* ref=sig->createReference(m_uri, DSIGConstants::s_unicodeStrURISHA1);
         ref->appendEnvelopedSignatureTransform();
-        ref->appendCanonicalizationTransform(CANON_C14NE_NOC);
+        ref->appendCanonicalizationTransform(DSIGConstants::s_unicodeStrURIEXC_C14N_NOC);
     }
 };
 
@@ -145,7 +145,7 @@ public:
                                     "3Q03BRauYYexXQBoP/K5irtkyLWEun4tVhIePOUvl90=\n";
         unsigned int len;
 
-        len = rsaCred->signSHA1PKCS1Base64Signature(toSign, 20, &outSig[0], bufferSize, HASH_SHA1);
+        len = rsaCred->signSHA1PKCS1Base64Signature(toSign, 20, &outSig[0], bufferSize, XSECCryptoHash::HASH_SHA1);
 
         const int diffLen = memcmp(outSig, knownGoodSig, len);
         TSM_ASSERT("RSA Signature Failed", diffLen == 0);
