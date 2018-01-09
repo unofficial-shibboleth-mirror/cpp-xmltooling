@@ -216,7 +216,6 @@
     <ClCompile Include="..\..\..\XMLTooling\XMLObjectBuilder.cpp" />
     <ClCompile Include="..\..\..\XMLTooling\XMLToolingConfig.cpp" />
     <ClCompile Include="..\..\..\XMLTooling\util\CurlURLInputStream.cpp" />
-    <ClCompile Include="..\..\..\XMLTooling\util\DateTime.cpp" />
     <ClCompile Include="..\..\..\XMLTooling\util\NDC.cpp" />
     <ClCompile Include="..\..\..\XMLTooling\util\ParserPool.cpp" />
     <ClCompile Include="..\..\..\XMLTooling\util\PathResolver.cpp" />
@@ -296,7 +295,6 @@
     <ClInclude Include="..\..\..\XMLTooling\XMLObjectBuilder.h" />
     <ClInclude Include="..\..\..\XMLTooling\XMLToolingConfig.h" />
     <ClInclude Include="..\..\..\XMLTooling\util\CurlURLInputStream.h" />
-    <ClInclude Include="..\..\..\XMLTooling\util\DateTime.h" />
     <ClInclude Include="..\..\..\XMLTooling\util\NDC.h" />
     <ClInclude Include="..\..\..\XMLTooling\util\ParserPool.h" />
     <ClInclude Include="..\..\..\XMLTooling\util\PathResolver.h" />
