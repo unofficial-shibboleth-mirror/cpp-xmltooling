@@ -32,6 +32,7 @@
 #include <xmltooling/XMLObject.h>
 
 #include <memory>
+#include <xercesc/util/XMLDateTime.hpp>
 
 #if defined (_MSC_VER)
     #pragma warning( push )
@@ -39,8 +40,6 @@
 #endif
 
 namespace xmltooling {
-
-    class XMLTOOL_API DateTime;
 
     /**
      * An abstract implementation of XMLObject.
@@ -108,7 +107,7 @@ namespace xmltooling {
          *
          * @return the value that should be assigned
          */
-        DateTime* prepareForAssignment(DateTime* oldValue, const DateTime* newValue);
+        xercesc::XMLDateTime* prepareForAssignment(xercesc::XMLDateTime* oldValue, const xercesc::XMLDateTime* newValue);
 
         /**
          * A helper function for derived classes, for assignment of date/time data.
@@ -121,7 +120,7 @@ namespace xmltooling {
          *
          * @return the value that should be assigned
          */
-        DateTime* prepareForAssignment(DateTime* oldValue, time_t newValue, bool duration=false);
+        xercesc::XMLDateTime* prepareForAssignment(xercesc::XMLDateTime* oldValue, time_t newValue, bool duration=false);
 
         /**
          * A helper function for derived classes, for assignment of date/time data.
@@ -134,7 +133,7 @@ namespace xmltooling {
          *
          * @return the value that should be assigned
          */
-        DateTime* prepareForAssignment(DateTime* oldValue, const XMLCh* newValue, bool duration=false);
+        xercesc::XMLDateTime* prepareForAssignment(xercesc::XMLDateTime* oldValue, const XMLCh* newValue, bool duration=false);
 
         /**
          * A helper function for derived classes, for assignment of QName data.

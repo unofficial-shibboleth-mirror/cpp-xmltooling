@@ -575,7 +575,7 @@
  * @param upcased   the upcased name of the attribute
  */
 #define DECL_INHERITED_DATETIME_ATTRIB(proper,upcased) \
-    DECL_INHERITED_XMLOBJECT_ATTRIB(proper,upcased,xmltooling::DateTime); \
+    DECL_INHERITED_XMLOBJECT_ATTRIB(proper,upcased,xercesc::XMLDateTime); \
     XMLTOOLING_DOXYGEN(Sets the proper attribute.) \
     virtual void set##proper(time_t proper)=0; \
     XMLTOOLING_DOXYGEN(Sets the proper attribute.) \
@@ -588,7 +588,7 @@
  * @param upcased   the upcased name of the attribute
  */
 #define DECL_DATETIME_ATTRIB(proper,upcased) \
-    DECL_XMLOBJECT_ATTRIB(proper,upcased,xmltooling::DateTime); \
+    DECL_XMLOBJECT_ATTRIB(proper,upcased,xercesc::XMLDateTime); \
     XMLTOOLING_DOXYGEN(Returns the proper attribute in epoch form.) \
     virtual time_t get##proper##Epoch() const=0; \
     XMLTOOLING_DOXYGEN(Sets the proper attribute.) \
@@ -768,16 +768,16 @@
  */
 #define IMPL_DATETIME_ATTRIB_EX(proper,fallback,duration) \
     protected: \
-        DateTime* m_##proper; \
+        XMLDateTime* m_##proper; \
         time_t m_##proper##Epoch; \
     public: \
-        const DateTime* get##proper() const { \
+        const XMLDateTime* get##proper() const { \
             return m_##proper; \
         } \
         time_t get##proper##Epoch() const { \
             return m_##proper ? m_##proper##Epoch : fallback; \
         } \
-        void set##proper(const DateTime* proper) { \
+        void set##proper(const XMLDateTime* proper) { \
             m_##proper = prepareForAssignment(m_##proper,proper); \
             if (m_##proper) \
                 m_##proper##Epoch=m_##proper->getEpoch(duration); \

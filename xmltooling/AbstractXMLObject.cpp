@@ -27,7 +27,6 @@
 #include "internal.h"
 #include "exceptions.h"
 #include "AbstractXMLObject.h"
-#include "util/DateTime.h"
 
 #include <algorithm>
 
@@ -35,6 +34,7 @@ using namespace xmltooling;
 using std::set;
 
 using xercesc::XMLString;
+using xercesc::XMLDateTime;
 
 XMLObject::XMLObject()
 {
@@ -239,26 +239,26 @@ QName* AbstractXMLObject::prepareForAssignment(QName* oldValue, const QName* new
     return nullptr;
 }
 
-DateTime* AbstractXMLObject::prepareForAssignment(DateTime* oldValue, const DateTime* newValue)
+XMLDateTime* AbstractXMLObject::prepareForAssignment(XMLDateTime* oldValue, const XMLDateTime* newValue)
 {
     if (!oldValue) {
         if (newValue) {
             releaseThisandParentDOM();
-            return new DateTime(*newValue);
+            return new XMLDateTime(*newValue);
         }
         return nullptr;
     }
 
     delete oldValue;
     releaseThisandParentDOM();
-    return newValue ? new DateTime(*newValue) : nullptr;
+    return newValue ? new XMLDateTime(*newValue) : nullptr;
 }
 
-DateTime* AbstractXMLObject::prepareForAssignment(DateTime* oldValue, time_t newValue, bool duration)
+XMLDateTime* AbstractXMLObject::prepareForAssignment(XMLDateTime* oldValue, time_t newValue, bool duration)
 {
     delete oldValue;
     releaseThisandParentDOM();
-    DateTime* ret = new DateTime(newValue, duration);
+    XMLDateTime* ret = new XMLDateTime(newValue, duration);
     if (duration)
         ret->parseDuration();
     else
@@ -266,13 +266,13 @@ DateTime* AbstractXMLObject::prepareForAssignment(DateTime* oldValue, time_t new
     return ret;
 }
 
-DateTime* AbstractXMLObject::prepareForAssignment(DateTime* oldValue, const XMLCh* newValue, bool duration)
+XMLDateTime* AbstractXMLObject::prepareForAssignment(XMLDateTime* oldValue, const XMLCh* newValue, bool duration)
 {
     delete oldValue;
     releaseThisandParentDOM();
     if (!newValue || !*newValue)
         return nullptr;
-    DateTime* ret = new DateTime(newValue);
+    XMLDateTime* ret = new XMLDateTime(newValue);
     if (duration)
         ret->parseDuration();
     else

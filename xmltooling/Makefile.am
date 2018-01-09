@@ -108,7 +108,6 @@ soapinclude_HEADERS = \
 utilinclude_HEADERS = \
 	util/CloneInputStream.h \
 	util/CurlURLInputStream.h \
-	util/DateTime.h \
 	util/NDC.h \
 	util/ParserPool.h \
 	util/PathResolver.h \
@@ -195,7 +194,6 @@ common_sources = \
 	soap/impl/SOAPImpl.cpp \
 	soap/impl/SOAPSchemaValidators.cpp \
 	util/CloneInputStream.cpp \
-	util/DateTime.cpp \
 	util/NDC.cpp \
 	util/ParserPool.cpp \
 	util/PathResolver.cpp \
