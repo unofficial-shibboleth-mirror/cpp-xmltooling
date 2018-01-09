@@ -72,6 +72,12 @@ public:
         XMLObjectBuilder::deregisterBuilder(qtype);
     }
 
+    void testUnmarshallingWithDTD() {
+        string path=data_path + "DTD.xml";
+        ifstream fs(path.c_str());
+        TS_ASSERT_THROWS(XMLToolingConfig::getConfig().getParser().parse(fs),XMLParserException);
+    }
+
     void testUnmarshallingWithAttributes() {
         string path=data_path + "SimpleXMLObjectWithAttribute.xml";
         ifstream fs(path.c_str());

@@ -1,0 +1,3 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE SimpleElement PUBLIC "simple" "simple.dtd">
+<test:SimpleElement xmlns:test="http://www.example.org/testObjects" />
