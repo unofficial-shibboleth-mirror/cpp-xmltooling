@@ -98,7 +98,7 @@ namespace xmltooling {
          * 
          * @return true the name check succeeds, false if not
          */
-        bool checkEntityNames(X509* certEE, const CredentialResolver& credResolver, const CredentialCriteria& criteria) const;
+        virtual bool checkEntityNames(X509* certEE, const CredentialResolver& credResolver, const CredentialCriteria& criteria) const;
 
     public:
         virtual ~AbstractPKIXTrustEngine();
