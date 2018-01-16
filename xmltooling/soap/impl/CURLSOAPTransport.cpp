@@ -506,7 +506,7 @@ void CURLSOAPTransport::send(istream* in)
 
     // Setup standard per-call curl properties.
     curl_easy_setopt(m_handle,CURLOPT_DEBUGDATA,&log_curl);
-    curl_easy_setopt(m_handle,CURLOPT_FILE,&m_stream);
+    curl_easy_setopt(m_handle,CURLOPT_WRITEDATA,&m_stream);
     if (m_chunked && in) {
         curl_easy_setopt(m_handle,CURLOPT_POST,1);
         m_headers=curl_slist_append(m_headers,"Transfer-Encoding: chunked");

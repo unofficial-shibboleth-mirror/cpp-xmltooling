@@ -93,6 +93,9 @@
 /* Define to 1 if you have support for the CURLINFO_TLS_SSL_PTR feature. */
 #define HAVE_CURLINFO_TLS_SSL_PTR 1
 
+/* Define to 1 if you have support for the CURLOPT_ACCEPT_ENCODING option. */
+#define HAVE_CURLOPT_ACCEPT_ENCODING 1
+
 /* Name of package */
 #define PACKAGE "xmltooling"
 

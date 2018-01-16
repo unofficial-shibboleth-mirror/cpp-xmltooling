@@ -309,6 +309,9 @@ int i = 0;
         [AC_LANG_PROGRAM([[#include <curl/curl.h>]],
             [[curl_global_init(CURL_GLOBAL_ALL)]])],,
         [AC_MSG_ERROR([unable to link with libcurl])])
+    AC_MSG_CHECKING([for CURLOPT_ACCEPT_ENCODING in curl.h])
+    AC_EGREP_HEADER([CURLOPT_ACCEPT_ENCODING], [curl/curl.h],
+        [AC_DEFINE([HAVE_CURLOPT_ACCEPT_ENCODING],[1],[Define to 1 if you have support for the CURLOPT_ACCEPT_ENCODING option.])])
     AC_MSG_CHECKING([for CURLOPT_SSL_CTX_FUNCTION in curl.h])
     AC_EGREP_HEADER([CURLOPT_SSL_CTX_FUNCTION], [curl/curl.h],
         [AC_MSG_RESULT(yes)],

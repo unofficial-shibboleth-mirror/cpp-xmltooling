@@ -4,6 +4,8 @@
 	<comment></comment>
 	<projects>
 		<project>cpp-log4shib</project>
+		<project>xerces-trunk</project>
+		<project>xml-security-cpp</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
