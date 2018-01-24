@@ -118,6 +118,15 @@ namespace xmltooling {
             return (curl_easy_setopt(m_handle,CURLOPT_TIMEOUT,timeout)==CURLE_OK);
         }
 
+        bool setAcceptEncoding(const char *value)
+        {
+#ifdef HAVE_CURLOPT_ACCEPT_ENCODING
+            return (curl_easy_setopt(m_handle, CURLOPT_ACCEPT_ENCODING, value) == CURLE_OK);
+#else
+            return (curl_easy_setopt(m_handle, CURLOPT_ENCODING, value) == CURLE_OK);
+#endif
+        }
+
         bool setAuth(transport_auth_t authType, const char* username=nullptr, const char* password=nullptr);
 
         bool setVerifyHost(bool verify) {

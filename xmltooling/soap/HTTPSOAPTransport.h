@@ -62,6 +62,14 @@ namespace xmltooling {
         virtual bool setRequestHeader(const char* name, const char* value)=0;
 
         /**
+        * Sets the Accept-Encoding header.
+        *
+        * @param value the encoding to accept and decode, or "" for all supported encodings
+        * @return  true iff the encoding is successfully set
+        */
+        virtual bool setAcceptEncoding(const char* value)=0;
+
+        /**
          * Controls redirect behavior.
          *
          * @param follow    true iff Location-based redirects should be honored
