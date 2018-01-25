@@ -32,6 +32,7 @@
 #include "util/XMLHelper.h"
 #include "util/XMLConstants.h"
 
+#include <strstream>
 #include <boost/lambda/bind.hpp>
 #include <boost/lambda/if.hpp>
 #include <boost/lambda/lambda.hpp>
@@ -394,6 +395,37 @@ bool XMLHelper::getCaseSensitive(const xercesc::DOMElement* e, bool defValue, co
         }
     }
     return result;
+}
+
+void XMLHelper::encode(std::ostream& os, const char* str)
+{
+    size_t pos;
+    while (str && *str) {
+        pos = strcspn(str, "\"<>&");
+        if (pos > 0) {
+            os.write(str, pos);
+            str += pos;
+        }
+        else {
+            switch (*str) {
+            case '"':   os << "&quot;";     break;
+            case '<':   os << "&lt;";       break;
+            case '>':   os << "&gt;";       break;
+            case '&':   os << "&amp;";      break;
+            default:    os << *str;
+            }
+            str++;
+        }
+    }
+}
+
+std::string XMLHelper::encode(const char* str)
+{
+    ostrstream stream;
+
+    encode(stream, str);
+    stream << ends;
+    return std::string(stream.str());
 }
 
 void XMLHelper::serialize(const DOMNode* n, std::string& buf, bool pretty)

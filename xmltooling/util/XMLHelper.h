@@ -347,6 +347,26 @@ namespace xmltooling {
             );
 
         /**
+         *
+         * Perform XMLEncoding on the inout string into the provided stream.
+         * Handled (output) symbols are &quot; &lt; &gt; &amp;
+         *
+         * @param os  where to put the encoded string
+         * @param str what to encode
+         */
+        static void encode(std::ostream& os, const char* str);
+
+        /**
+        *
+        * Perform XMLEncoding on the inout string into the provided stream.
+        * Handled (output) symbols are &quot; &lt; &gt; &amp;
+        *
+        * @param  str what to encode
+        * @return the encoded input
+        */
+        static std::string encode(const char* str);
+
+        /**
          * Serializes the DOM node provided into a buffer using UTF-8 encoding and
          * the default XML serializer available. No manipulation or formatting is applied.
          *

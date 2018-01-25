@@ -165,6 +165,11 @@ public:
         el = XMLHelper::getFirstChildElement(parent, Test, Default);
         TS_ASSERT(!XMLHelper::getCaseSensitive(el, false));
         TS_ASSERT(XMLHelper::getCaseSensitive(el, true));
+
+        static const std::string input("&thing>thong\"<thang");
+        static const std::string output("&amp;thing&gt;thong&quot;&lt;thang");
+        TS_ASSERT(output == XMLHelper::encode(input.c_str()));
+
     }
 };
 
