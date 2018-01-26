@@ -348,8 +348,8 @@ namespace xmltooling {
 
         /**
          *
-         * Perform XMLEncoding on the inout string into the provided stream.
-         * Handled (output) symbols are &quot; &lt; &gt; &amp;
+         * Perform XMLEncoding on the input string into the provided stream.
+         * Symbols handled: " (&quot;) < (&lt;) > (&gt;) & (&amp;)
          *
          * @param os  where to put the encoded string
          * @param str what to encode
@@ -358,8 +358,8 @@ namespace xmltooling {
 
         /**
         *
-        * Perform XMLEncoding on the inout string into the provided stream.
-        * Handled (output) symbols are &quot; &lt; &gt; &amp;
+        * Perform XMLEncoding on the input string.
+        * Symbols handled: " (&quot;) < (&lt;) > (&gt;) & (&amp;)
         *
         * @param  str what to encode
         * @return the encoded input
