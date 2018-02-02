@@ -127,7 +127,7 @@ namespace xmltooling {
         bool isXMLAlgorithmSupported(const XMLCh* xmlAlgorithm, XMLSecurityAlgorithmType type=ALGTYPE_UNK);
         void registerXMLAlgorithms();
 
-        XSECProvider* m_xsecProvider;
+        std::auto_ptr<XSECProvider> m_xsecProvider;
     private:
         typedef std::map<XMLSecurityAlgorithmType, std::map< xstring,std::pair<std::string,unsigned int> > > algmap_t;
         algmap_t m_algorithmMap;
@@ -138,8 +138,8 @@ namespace xmltooling {
         std::auto_ptr<Mutex> m_lock;
         std::map<std::string,Mutex*> m_namedLocks;
         std::vector<void*> m_libhandles;
-        ParserPool* m_parserPool;
-        ParserPool* m_validatingPool;
+        std::auto_ptr<ParserPool> m_parserPool;
+        std::auto_ptr<ParserPool> m_validatingPool;
     };
     
 #ifndef XMLTOOLING_NO_XMLSEC

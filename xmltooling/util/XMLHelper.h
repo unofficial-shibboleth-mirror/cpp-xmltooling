@@ -386,7 +386,29 @@ namespace xmltooling {
          * @return reference to output stream
          */
         static std::ostream& serialize(const xercesc::DOMNode* n, std::ostream& out, bool pretty=false);
-    };
+ 
+        /**
+        * Deflates data in accordance with RFC1951. The caller must free the
+        * resulting buffer using delete[]
+        *
+        * @param in        the data to compress
+        * @param in_len    length of input data
+        * @param out_len   will contain the length of the resulting data
+        * @return  allocated buffer of out_len bytes containing deflated data
+        */
+        static char* deflate(char* in, unsigned int in_len, unsigned int* out_len);
+
+        /**
+        * Inflates data compressed in accordance with RFC1951 and sends the
+        * results to an output stream.
+        *
+        * @param in        the data to inflate
+        * @param in_len    length of input data
+        * @param out       reference to output stream to receive data
+        * @return  number of bytes written to stream
+        */
+        static unsigned int inflate(char* in, unsigned int in_len, std::ostream& out);
+   };
 
     /**
      * Serializes the DOM node provided to a stream using UTF-8 encoding and

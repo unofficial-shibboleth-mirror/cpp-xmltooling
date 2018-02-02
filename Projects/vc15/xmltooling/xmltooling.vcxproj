@@ -116,7 +116,7 @@
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>wsock32.lib;log4shib1D.lib;xerces-c_3D.lib;xsec_2D.lib;$(SSLLibD);$(LibCurlLibD);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>wsock32.lib;log4shib1D.lib;zlib1D.lib;xerces-c_3D.lib;xsec_2D.lib;$(SSLLibD);$(LibCurlLibD);%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <DataExecutionPrevention>
@@ -145,7 +145,7 @@
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>wsock32.lib;log4shib1D.lib;xerces-c_3D.lib;xsec_2D.lib;$(SSLLibD);$(LibCurlLibD);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>wsock32.lib;log4shib1D.lib;zlib1D.lib;xerces-c_3D.lib;xsec_2D.lib;$(SSLLibD);$(LibCurlLibD);%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <DataExecutionPrevention>
@@ -164,7 +164,7 @@
       <DisableSpecificWarnings>4275</DisableSpecificWarnings>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>wsock32.lib;log4shib1.lib;xerces-c_3.lib;xsec_2.lib;$(SSLLib);$(LibCurlLib);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>wsock32.lib;log4shib1.lib;zlib1.lib;xerces-c_3.lib;xsec_2.lib;$(SSLLib);$(LibCurlLib);%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
@@ -188,7 +188,7 @@
       <DisableSpecificWarnings>4275</DisableSpecificWarnings>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>wsock32.lib;log4shib1.lib;xerces-c_3.lib;xsec_2.lib;$(SSLLib);$(LibCurlLib);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>wsock32.lib;log4shib1.lib;zlib1.lib;xerces-c_3.lib;xsec_2.lib;$(SSLLib);$(LibCurlLib);%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
@@ -212,6 +212,7 @@
     <ClCompile Include="..\..\..\XMLTooling\security\impl\PKIXPathValidator.cpp" />
     <ClCompile Include="..\..\..\XMLTooling\unicode.cpp" />
     <ClCompile Include="..\..\..\XMLTooling\util\CloneInputStream.cpp" />
+    <ClCompile Include="..\..\..\xmltooling\util\DataSealer.cpp" />
     <ClCompile Include="..\..\..\XMLTooling\version.cpp" />
     <ClCompile Include="..\..\..\XMLTooling\XMLObjectBuilder.cpp" />
     <ClCompile Include="..\..\..\XMLTooling\XMLToolingConfig.cpp" />
@@ -290,6 +291,7 @@
     <ClInclude Include="..\..\..\XMLTooling\security\PKIXPathValidatorParams.h" />
     <ClInclude Include="..\..\..\XMLTooling\unicode.h" />
     <ClInclude Include="..\..\..\XMLTooling\util\CloneInputStream.h" />
+    <ClInclude Include="..\..\..\xmltooling\util\DataSealer.h" />
     <ClInclude Include="..\..\..\XMLTooling\version.h" />
     <ClInclude Include="..\..\..\XMLTooling\XMLObject.h" />
     <ClInclude Include="..\..\..\XMLTooling\XMLObjectBuilder.h" />

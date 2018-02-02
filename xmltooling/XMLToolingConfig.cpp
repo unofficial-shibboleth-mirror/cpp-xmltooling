@@ -41,6 +41,7 @@
 #include "signature/Signature.h"
 #include "soap/SOAP.h"
 #include "soap/SOAPTransport.h"
+#include "util/DataSealer.h"
 #include "util/NDC.h"
 #include "util/PathResolver.h"
 #include "util/ReplayCache.h"
@@ -210,13 +211,7 @@ XMLToolingInternalConfig& XMLToolingInternalConfig::getInternalConfig()
     return g_config;
 }
 
-#ifndef XMLTOOLING_NO_XMLSEC
-XMLToolingConfig::XMLToolingConfig()
-    : m_keyInfoResolver(nullptr), m_replayCache(nullptr), m_pathResolver(nullptr), m_templateEngine(nullptr), m_urlEncoder(nullptr), clock_skew_secs(180)
-#else
-XMLToolingConfig::XMLToolingConfig()
-    : m_pathResolver(nullptr), m_templateEngine(nullptr), m_urlEncoder(nullptr), clock_skew_secs(180)
-#endif
+XMLToolingConfig::XMLToolingConfig() : clock_skew_secs(180)
 {
 }
 
@@ -227,65 +222,66 @@ XMLToolingConfig::~XMLToolingConfig()
 #ifndef XMLTOOLING_LITE
 const KeyInfoResolver* XMLToolingConfig::getKeyInfoResolver() const
 {
-    return m_keyInfoResolver;
+    return m_keyInfoResolver.get();
 }
 
 ReplayCache* XMLToolingConfig::getReplayCache() const
 {
-    return m_replayCache;
+    return m_replayCache.get();
+}
+
+const DataSealer* XMLToolingConfig::getDataSealer() const
+{
+    return m_dataSealer.get();
 }
 
 void XMLToolingConfig::setKeyInfoResolver(xmltooling::KeyInfoResolver *keyInfoResolver)
 {
-    delete m_keyInfoResolver;
-    m_keyInfoResolver = keyInfoResolver;
+    m_keyInfoResolver.reset(keyInfoResolver);
 }
 
 void XMLToolingConfig::setReplayCache(ReplayCache* replayCache)
 {
-    delete m_replayCache;
-    m_replayCache = replayCache;
+    m_replayCache.reset(replayCache);
+}
+
+void XMLToolingConfig::setDataSealer(DataSealer* dataSealer)
+{
+    m_dataSealer.reset(dataSealer);
 }
 #endif
 
 PathResolver* XMLToolingConfig::getPathResolver() const
 {
-    return m_pathResolver;
+    return m_pathResolver.get();
 }
 
 TemplateEngine* XMLToolingConfig::getTemplateEngine() const
 {
-    return m_templateEngine;
+    return m_templateEngine.get();
 }
 
 const URLEncoder* XMLToolingConfig::getURLEncoder() const
 {
-    return m_urlEncoder;
+    return m_urlEncoder.get();
 }
 
 void XMLToolingConfig::setPathResolver(PathResolver* pathResolver)
 {
-    delete m_pathResolver;
-    m_pathResolver = pathResolver;
+    m_pathResolver.reset(pathResolver);
 }
 
 void XMLToolingConfig::setTemplateEngine(TemplateEngine* templateEngine)
 {
-    delete m_templateEngine;
-    m_templateEngine = templateEngine;
+    m_templateEngine.reset(templateEngine);
 }
 
 void XMLToolingConfig::setURLEncoder(URLEncoder* urlEncoder)
 {
-    delete m_urlEncoder;
-    m_urlEncoder = urlEncoder;
+    m_urlEncoder.reset(urlEncoder);
 }
 
-XMLToolingInternalConfig::XMLToolingInternalConfig() :
-#ifndef XMLTOOLING_NO_XMLSEC
-    m_xsecProvider(nullptr),
-#endif
-    m_initCount(0), m_lock(Mutex::create()), m_parserPool(nullptr), m_validatingPool(nullptr)
+XMLToolingInternalConfig::XMLToolingInternalConfig() : m_initCount(0), m_lock(Mutex::create())
 {
 }
 
@@ -344,7 +340,7 @@ bool XMLToolingInternalConfig::log_config(const char* config)
         }
         else {
             string path(config);
-            PropertyConfigurator::configure(m_pathResolver ? m_pathResolver->resolve(path, PathResolver::XMLTOOLING_CFG_FILE) : path);
+            PropertyConfigurator::configure(m_pathResolver.get() ? m_pathResolver->resolve(path, PathResolver::XMLTOOLING_CFG_FILE) : path);
         }
 
 #ifndef XMLTOOLING_NO_XMLSEC
@@ -410,15 +406,15 @@ bool XMLToolingInternalConfig::init()
 #ifndef XMLTOOLING_NO_XMLSEC
         XSECPlatformUtils::Initialise();
         XSECPlatformUtils::SetReferenceLoggingSink(TXFMOutputLogFactory);
-        m_xsecProvider = new XSECProvider();
+        m_xsecProvider.reset(new XSECProvider());
         log.debug("XML-Security %s initialization complete", XSEC_FULLVERSIONDOT);
 #endif
 
-        m_parserPool = new ParserPool();
-        m_validatingPool = new ParserPool(true,true);
+        m_parserPool.reset(new ParserPool());
+        m_validatingPool.reset(new ParserPool(true,true));
 
-        m_pathResolver = new PathResolver();
-        m_urlEncoder = new URLEncoder();
+        m_pathResolver.reset(new PathResolver());
+        m_urlEncoder.reset(new URLEncoder());
 
         // Load catalogs from deprecated path setting.
         if (!catalog_path.empty())
@@ -450,7 +446,7 @@ bool XMLToolingInternalConfig::init()
         registerPathValidators();
         registerTrustEngines();
         registerXMLAlgorithms();
-        m_keyInfoResolver = KeyInfoResolverManager.newPlugin(INLINE_KEYINFO_RESOLVER,nullptr);
+        m_keyInfoResolver.reset(KeyInfoResolverManager.newPlugin(INLINE_KEYINFO_RESOLVER,nullptr));
 #endif
 
 #ifndef XMLTOOLING_LITE
@@ -527,21 +523,14 @@ void XMLToolingInternalConfig::term()
     KeyInfoResolverManager.deregisterFactories();
     m_algorithmMap.clear();
 
-    delete m_keyInfoResolver;
-    m_keyInfoResolver = nullptr;
-
-    delete m_replayCache;
-    m_replayCache = nullptr;
+    m_keyInfoResolver.reset();
+    m_replayCache.reset();
+    m_dataSealer.reset();
 #endif
 
-    delete m_pathResolver;
-    m_pathResolver = nullptr;
-
-    delete m_templateEngine;
-    m_templateEngine = nullptr;
-
-    delete m_urlEncoder;
-    m_urlEncoder = nullptr;
+    m_pathResolver.reset();
+    m_templateEngine.reset();
+    m_urlEncoder.reset();
 
     for (vector<void*>::reverse_iterator i=m_libhandles.rbegin(); i!=m_libhandles.rend(); i++) {
 #if defined(WIN32)
@@ -560,17 +549,14 @@ void XMLToolingInternalConfig::term()
     }
     m_libhandles.clear();
 
-    delete m_parserPool;
-    m_parserPool=nullptr;
-    delete m_validatingPool;
-    m_validatingPool=nullptr;
+    m_parserPool.reset();
+    m_validatingPool.reset();
 
     for_each(m_namedLocks.begin(), m_namedLocks.end(), cleanup_pair<string,Mutex>());
     m_namedLocks.clear();
 
 #ifndef XMLTOOLING_NO_XMLSEC
-    delete m_xsecProvider;
-    m_xsecProvider=nullptr;
+    m_xsecProvider.reset();
     XSECPlatformUtils::Terminate();
 #endif
 

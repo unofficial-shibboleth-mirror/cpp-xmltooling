@@ -36,9 +36,12 @@
 #include <boost/lambda/bind.hpp>
 #include <boost/lambda/if.hpp>
 #include <boost/lambda/lambda.hpp>
+
 #include <xercesc/framework/MemBufFormatTarget.hpp>
 #include <xercesc/util/XMLUniDefs.hpp>
+#include <zlib.h>
 
+using namespace xmltooling::logging;
 using namespace xmltooling;
 using namespace xercesc;
 using namespace boost::lambda;
@@ -373,7 +376,7 @@ bool XMLHelper::getCaseSensitive(const xercesc::DOMElement* e, bool defValue, co
     if (e) {
         const XMLCh* ic = e->getAttributeNS(ns, ignoreCase);
         if (ic && * ic) {
-            logging::Category::getInstance(XMLTOOLING_LOGCAT ".XMLHelper").warn("Deprecated attribute \"ignoreCase\" encountered in configuration. Use \"caseSensitive\".");
+            Category::getInstance(XMLTOOLING_LOGCAT ".XMLHelper").warn("Deprecated attribute \"ignoreCase\" encountered in configuration. Use \"caseSensitive\".");
 
             // caseInsensitive = !"ignoreCase"
             if (*ic == chLatin_t || *ic == chDigit_1)
@@ -384,7 +387,7 @@ bool XMLHelper::getCaseSensitive(const xercesc::DOMElement* e, bool defValue, co
         const XMLCh* ci = e->getAttributeNS(ns, caseSensitive);
         if (ci && *ci) {
             if (ic && *ic) {
-                logging::Category::getInstance(XMLTOOLING_LOGCAT ".XMLHelper").warn("Attribute \"ignoreCase\" and \"caseSensitive\" should not be used in the same element.");
+                Category::getInstance(XMLTOOLING_LOGCAT ".XMLHelper").warn("Attribute \"ignoreCase\" and \"caseSensitive\" should not be used in the same element.");
             }
             if (*ci == chLatin_t || *ci == chDigit_1) {
                 result =  true;
@@ -507,4 +510,113 @@ ostream& xmltooling::operator<<(ostream& ostr, const XMLObject& obj)
         auto_ptr_char msg(ex.getMessage());
         throw XMLParserException(msg.get());
     }
+}
+
+namespace {
+    extern "C" {
+        voidpf saml_zalloc(void* opaque, uInt items, uInt size)
+        {
+            return malloc(items*size);
+        }
+
+        void saml_zfree(void* opaque, voidpf addr)
+        {
+            free(addr);
+        }
+    };
+};
+
+char* XMLHelper::deflate(char* in, unsigned int in_len, unsigned int* out_len)
+{
+    z_stream z;
+    memset(&z, 0, sizeof(z_stream));
+
+    z.zalloc = saml_zalloc;
+    z.zfree = saml_zfree;
+    z.opaque = nullptr;
+    z.next_in = (Bytef*)in;
+    z.avail_in = in_len;
+    *out_len = 0;
+
+    int ret = deflateInit2(&z, 9, Z_DEFLATED, -15, 9, Z_DEFAULT_STRATEGY);
+    if (ret != Z_OK) {
+        Category::getInstance(XMLTOOLING_LOGCAT ".XMLHelper").error("zlib deflateInit2 failed with error code (%d)", ret);
+        return nullptr;
+    }
+
+    int dlen = in_len + (in_len >> 8) + 12;  /* orig_size * 1.001 + 12 */
+    char* out = new char[dlen];
+    z.next_out = (Bytef*)out;
+    z.avail_out = dlen;
+
+    ret = ::deflate(&z, Z_FINISH);
+    if (ret != Z_STREAM_END) {
+        deflateEnd(&z);
+        Category::getInstance(XMLTOOLING_LOGCAT ".XMLHelper").error("zlib deflateInit2 failed with error code (%d)", ret);
+        delete[] out;
+    }
+
+    *out_len = z.total_out;
+    deflateEnd(&z);
+    return out;
+}
+
+unsigned int XMLHelper::inflate(char* in, unsigned int in_len, ostream& out)
+{
+    z_stream z;
+    memset(&z, 0, sizeof(z_stream));
+
+    z.zalloc = saml_zalloc;
+    z.zfree = saml_zfree;
+    z.opaque = nullptr;
+    z.next_in = (Bytef*)in;
+    z.avail_in = in_len;
+
+    int dlen = in_len << 3;  /* guess inflated size: orig_size * 8 */
+    Byte* buf = new Byte[dlen];
+    memset(buf, 0, dlen);
+    z.next_out = buf;
+    z.avail_out = dlen;
+
+    int ret = inflateInit2(&z, -15);
+    if (ret != Z_OK) {
+        Category::getInstance(XMLTOOLING_LOGCAT ".XMLHelper").error("zlib inflateInit2 failed with error code (%d)", ret);
+        delete[] buf;
+        return 0;
+    }
+
+    size_t diff;
+    int iter = 30;
+    while (--iter) {  /* Make sure we can never be caught in infinite loop */
+        ret = ::inflate(&z, Z_SYNC_FLUSH);
+        switch (ret) {
+        case Z_STREAM_END:
+            diff = z.next_out - buf;
+            z.next_out = buf;
+            while (diff--)
+                out << *(z.next_out++);
+            goto done;
+
+        case Z_OK:  /* avail_out should be 0 now. Time to dump the buffer. */
+            diff = z.next_out - buf;
+            z.next_out = buf;
+            while (diff--)
+                out << *(z.next_out++);
+            memset(buf, 0, dlen);
+            z.next_out = buf;
+            z.avail_out = dlen;
+            break;
+
+        default:
+            delete[] buf;
+            inflateEnd(&z);
+            Category::getInstance(XMLTOOLING_LOGCAT ".XMLHelper").error("zlib inflate failed with error code (%d)", ret);
+            return 0;
+        }
+    }
+done:
+    delete[] buf;
+    int out_len = z.total_out;
+    inflateEnd(&z);
+    return out_len;
 }

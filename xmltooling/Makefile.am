@@ -108,6 +108,7 @@ soapinclude_HEADERS = \
 utilinclude_HEADERS = \
 	util/CloneInputStream.h \
 	util/CurlURLInputStream.h \
+    util/DataSealer.h \
 	util/NDC.h \
 	util/ParserPool.h \
 	util/PathResolver.h \
@@ -161,6 +162,7 @@ xmlsec_sources = \
 	signature/impl/XMLSecSignatureImpl.cpp \
 	soap/impl/CURLSOAPTransport.cpp \
 	util/CurlURLInputStream.cpp \
+    util/DataSealer.cpp \
 	util/ReplayCache.cpp \
 	util/StorageService.cpp
 

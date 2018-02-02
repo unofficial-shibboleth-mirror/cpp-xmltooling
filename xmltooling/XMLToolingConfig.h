@@ -31,6 +31,7 @@
 #include <xmltooling/PluginManager.h>
 #include <xmltooling/soap/SOAPTransport.h>
 
+#include <memory>
 #include <string>
 #include <xercesc/dom/DOM.hpp>
 
@@ -52,6 +53,7 @@ namespace xmltooling {
 #endif
 #ifndef XMLTOOLING_NO_XMLSEC
     class XMLTOOL_API CredentialResolver;
+    class XMLTOOL_API DataSealer;
     class XMLTOOL_API KeyInfoResolver;
     class XMLTOOL_API PathValidator;
     class XMLTOOL_API TrustEngine;
@@ -73,20 +75,23 @@ namespace xmltooling {
 
 #ifndef XMLTOOLING_NO_XMLSEC
         /** Global KeyInfoResolver instance. */
-        KeyInfoResolver* m_keyInfoResolver;
+        std::auto_ptr<KeyInfoResolver> m_keyInfoResolver;
 
         /** Global ReplayCache instance. */
-        ReplayCache* m_replayCache;
+        std::auto_ptr<ReplayCache> m_replayCache;
+
+        /* Global DataSealer instance. */
+        std::auto_ptr<DataSealer> m_dataSealer;
 #endif
 
         /** Global PathResolver instance. */
-        PathResolver* m_pathResolver;
+        std::auto_ptr<PathResolver> m_pathResolver;
         
         /** Global TemplateEngine instance. */
-        TemplateEngine* m_templateEngine;
+        std::auto_ptr<TemplateEngine> m_templateEngine;
 
         /** Global URLEncoder instance for use by URL-related functions. */
-        URLEncoder* m_urlEncoder;
+        std::auto_ptr<URLEncoder> m_urlEncoder;
 
     public:
         virtual ~XMLToolingConfig();
@@ -183,6 +188,13 @@ namespace xmltooling {
         ReplayCache* getReplayCache() const;
 
         /**
+         * Returns the global DataSealer instance.
+         *
+         * @return global DataSealer or nullptr
+         */
+        const DataSealer* getDataSealer() const;
+
+        /**
          * Sets the global KeyInfoResolver instance.
          * <p>This method must be externally synchronized with any code that uses the object.
          * Any previously set object is destroyed.
@@ -199,6 +211,15 @@ namespace xmltooling {
          * @param replayCache   new ReplayCache instance to store
          */
         void setReplayCache(ReplayCache* replayCache);
+
+        /**
+        * Sets the global DataSealer instance.
+        * <p>This method must be externally synchronized with any code that uses the object.
+        * Any previously set object is destroyed.
+        *
+        * @param dataSealer   new DataSealer instance to store
+        */
+        void setDataSealer(DataSealer* dataSealer);
 #endif
 
         /**
