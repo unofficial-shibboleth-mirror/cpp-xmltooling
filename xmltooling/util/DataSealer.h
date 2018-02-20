@@ -66,11 +66,11 @@ namespace xmltooling {
         /**
         * Decrypts and verifies an encrypted bundle wrapped via this object.
         *
-        * @param wrapped the encoded blob
+        * @param s the encoded blob
         *
         * @return the decrypted data, if it's unexpired
         */
-        virtual std::string decode(const char* wrapped) const;
+        virtual std::string unwrap(const char* s) const;
 
     };
 

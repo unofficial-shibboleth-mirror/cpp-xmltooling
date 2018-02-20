@@ -84,22 +84,22 @@ string DataSealer::wrap(const char* s, time_t exp) const
     return wrapped;
 }
 
-string DataSealer::decode(const char* wrapped) const
+string DataSealer::unwrap(const char* s) const
 {
     XMLSize_t x;
-    XMLByte* decoded = Base64::decode(reinterpret_cast<const XMLByte*>(wrapped), &x);
+    XMLByte* decoded = Base64::decode(reinterpret_cast<const XMLByte*>(s), &x);
     if (!decoded)
         throw IOException("Unable to decode base64 data.");
 
     // Now we have to inflate it.
-    stringstream s;
-    if (XMLHelper::inflate(reinterpret_cast<char*>(decoded), x, s) == 0) {
+    stringstream in;
+    if (XMLHelper::inflate(reinterpret_cast<char*>(decoded), x, in) == 0) {
         XMLString::release((char**)&decoded);
         throw IOException("Unable to inflate wrapped data.");
     }
     XMLString::release((char**)&decoded);
 
-    string decrypted = s.str();
+    string decrypted = in.str();
     string dstr = decrypted.substr(0, 20);
     auto_ptr_XMLCh expstr(dstr.c_str());
     XMLDateTime exp(expstr.get());
