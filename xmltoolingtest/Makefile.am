@@ -19,6 +19,7 @@ endif
 
 if BUILD_XMLSEC
 xmlsec_sources = \
+    DataSealerTest.h \
     EncryptionTest.h \
     FilesystemCredentialResolverTest.h \
 	ExplicitKeyTrustEngineTest.h \

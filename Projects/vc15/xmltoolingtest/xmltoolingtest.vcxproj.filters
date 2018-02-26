@@ -68,6 +68,9 @@
     <ClCompile Include="ExplicitKeyTrustEngineTest.cpp">
       <Filter>Generated Code</Filter>
     </ClCompile>
+    <ClCompile Include="DataSealerTest.cpp">
+      <Filter>Generated Code</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\XMLToolingTest\XMLObjectBaseTestCase.h">
@@ -133,6 +136,9 @@
       <Filter>Unit Tests</Filter>
     </CustomBuild>
     <CustomBuild Include="..\..\..\XMLToolingTest\ExplicitKeyTrustEngineTest.h">
+      <Filter>Unit Tests</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\..\..\xmltoolingtest\DataSealerTest.h">
       <Filter>Unit Tests</Filter>
     </CustomBuild>
   </ItemGroup>

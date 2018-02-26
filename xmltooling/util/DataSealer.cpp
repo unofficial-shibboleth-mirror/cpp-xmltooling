@@ -105,7 +105,7 @@ string DataSealer::unwrap(const char* s) const
     XMLDateTime exp(expstr.get());
     exp.parseDateTime();
     if (exp.getEpoch() < time(nullptr) - XMLToolingConfig::getConfig().clock_skew_secs) {
-        logging::Category::getInstance(XMLTOOLING_LOGCAT ".DataSealer").debug("Decrypted data has expired");
+        throw IOException("Decrypted data has expired.");
     }
 
     return decrypted.substr(20);
