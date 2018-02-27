@@ -77,12 +77,18 @@ void AbstractSimpleElement::setTextContent(const XMLCh* value, unsigned int posi
     if (position > 0)
         throw XMLObjectException("Cannot set text content in simple element at position > 0.");
 
-    // We overwrite the "one" piece of Text content if:
-    //  - the new value is null
-    //  - there is no existing value
-    //  - the old value is all whitespace
-    // If there's a non-whitespace value set, we leave it alone unless we're clearing it with a null.
-
-    if (!value || !m_value || XMLChar1_0::isAllSpaces(m_value, XMLString::stringLen(m_value)))
-        m_value=prepareForAssignment(m_value, value);
+    // Merge if necessary.
+    if (value && *value) {
+        if (!m_value || !*m_value) {
+            m_value = prepareForAssignment(m_value, value);
+        }
+        else {
+            XMLSize_t initialLen = XMLString::stringLen(m_value);
+            XMLCh* merged = new XMLCh[initialLen + XMLString::stringLen(value) + 1];
+            auto_arrayptr<XMLCh> janitor(merged);
+            XMLString::copyString(merged, m_value);
+            XMLString::catString(merged + initialLen, value);
+            m_value = prepareForAssignment(m_value, merged);
+        }
+    }
 }

@@ -102,5 +102,19 @@ void AbstractComplexElement::setTextContent(const XMLCh* value, unsigned int pos
         m_text.push_back(nullptr);
         ++size;
     }
-    m_text[position] = prepareForAssignment(m_text[position], value);
+
+    // Merge if necessary.
+    if (value && *value) {
+        if (!m_text[position] || !*m_text[position]) {
+            m_text[position] = prepareForAssignment(m_text[position], value);
+        }
+        else {
+            XMLSize_t initialLen = XMLString::stringLen(m_text[position]);
+            XMLCh* merged = new XMLCh[initialLen + XMLString::stringLen(value) + 1];
+            auto_arrayptr<XMLCh> janitor(merged);
+            XMLString::copyString(merged, m_text[position]);
+            XMLString::catString(merged + initialLen, value);
+            m_text[position] = prepareForAssignment(m_text[position], merged);
+        }
+    }
 }

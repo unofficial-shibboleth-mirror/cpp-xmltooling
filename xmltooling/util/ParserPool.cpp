@@ -419,6 +419,7 @@ DOMLSParser* ParserPool::createBuilder()
     parser->getDomConfig()->setParameter(XMLUni::fgDOMResourceResolver, dynamic_cast<DOMLSResourceResolver*>(this));
     parser->getDomConfig()->setParameter(XMLUni::fgXercesSecurityManager, m_security.get());
     parser->getDomConfig()->setParameter(XMLUni::fgDOMDisallowDoctype, true);
+    parser->getDomConfig()->setParameter(XMLUni::fgDOMComments, false);
     return parser;
 }
 
@@ -465,6 +466,7 @@ DOMBuilder* ParserPool::createBuilder()
     parser->setProperty(XMLUni::fgXercesSecurityManager, m_security.get());
     parser->setFeature(XMLUni::fgXercesUserAdoptsDOMDocument, true);
     parser->setFeature(XMLUni::fgXercesDisableDefaultEntityResolution, true);
+    parser->setFeature(XMLUni::fgDOMComments, false);
     parser->setEntityResolver(this);
     return parser;
 }
