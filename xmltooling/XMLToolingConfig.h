@@ -54,6 +54,7 @@ namespace xmltooling {
 #ifndef XMLTOOLING_NO_XMLSEC
     class XMLTOOL_API CredentialResolver;
     class XMLTOOL_API DataSealer;
+    class XMLTOOL_API DataSealerKeyStrategy;
     class XMLTOOL_API KeyInfoResolver;
     class XMLTOOL_API PathValidator;
     class XMLTOOL_API TrustEngine;
@@ -319,6 +320,11 @@ namespace xmltooling {
          * Manages factories for TrustEngine plugins.
          */
         PluginManager<TrustEngine,std::string,const xercesc::DOMElement*> TrustEngineManager;
+
+        /**
+        * Manages factories for DataSealerKeyStrategy plugins.
+        */
+        PluginManager<DataSealerKeyStrategy, std::string, const xercesc::DOMElement*> DataSealerKeyStrategyManager;
 
         /**
          * Maps an XML Signature/Encryption algorithm identifier to a library-specific

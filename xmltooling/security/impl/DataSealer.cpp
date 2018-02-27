@@ -27,7 +27,7 @@
 
 #include "internal.h"
 #include "logging.h"
-#include "util/DataSealer.h"
+#include "security/DataSealer.h"
 #include "util/XMLHelper.h"
 
 #include <sstream>
@@ -39,8 +39,30 @@ using xercesc::Base64;
 using xercesc::XMLDateTime;
 using namespace std;
 
-DataSealer::DataSealer()
+namespace xmltooling {
+    XMLTOOL_DLLLOCAL PluginManager<DataSealerKeyStrategy, string, const xercesc::DOMElement*>::Factory StaticDataSealerKeyStrategyFactory;
+    //XMLTOOL_DLLLOCAL PluginManager<DataSealerKeyStrategy, string, const xercesc::DOMElement*>::Factory XMLDataSealerKeyStrategyFactory;
+};
+
+void XMLTOOL_API xmltooling::registerDataSealerKeyStrategies()
 {
+    XMLToolingConfig& conf = XMLToolingConfig::getConfig();
+    conf.DataSealerKeyStrategyManager.registerFactory(STATIC_DATA_SEALER_KEY_STRATEGY, StaticDataSealerKeyStrategyFactory);
+    //conf.DataSealerKeyStrategyManager.registerFactory(XML_DATA_SEALER_KEY_STRATEGY, XMLDataSealerKeyStrategyFactory);
+}
+
+DataSealerKeyStrategy::DataSealerKeyStrategy()
+{
+}
+
+DataSealerKeyStrategy::~DataSealerKeyStrategy()
+{
+}
+
+DataSealer::DataSealer(const DataSealerKeyStrategy* strategy) : m_strategy(strategy)
+{
+    if (!m_strategy)
+        throw XMLSecurityException("DataSealer requires DataSealerKeyStrategy");
 }
 
 DataSealer::~DataSealer()

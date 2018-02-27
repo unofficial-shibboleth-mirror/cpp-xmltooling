@@ -77,6 +77,7 @@ secinclude_HEADERS = \
 	security/CredentialContext.h \
 	security/CredentialCriteria.h \
 	security/CredentialResolver.h \
+    security/DataSealer.h \
 	security/KeyInfoCredentialContext.h \
 	security/KeyInfoResolver.h \
 	security/OpenSSLCredential.h \
@@ -108,7 +109,6 @@ soapinclude_HEADERS = \
 utilinclude_HEADERS = \
 	util/CloneInputStream.h \
 	util/CurlURLInputStream.h \
-    util/DataSealer.h \
 	util/NDC.h \
 	util/ParserPool.h \
 	util/PathResolver.h \
@@ -143,6 +143,7 @@ xmlsec_sources = \
 	security/impl/ChainingTrustEngine.cpp \
 	security/impl/CredentialCriteria.cpp \
 	security/impl/CredentialResolver.cpp \
+    security/impl/DataSealer.cpp \
 	security/impl/DummyCredentialResolver.cpp \
 	security/impl/ExplicitKeyTrustEngine.cpp \
 	security/impl/FilesystemCredentialResolver.cpp \
@@ -153,6 +154,7 @@ xmlsec_sources = \
 	security/impl/OpenSSLSecurityHelper.cpp \
 	security/impl/PKIXPathValidator.cpp \
 	security/impl/SecurityHelper.cpp \
+    security/impl/StaticDataSealerKeyStrategy.cpp \
 	security/impl/StaticPKIXTrustEngine.cpp \
 	security/impl/TrustEngine.cpp \
 	security/impl/XSECCryptoX509CRL.cpp \

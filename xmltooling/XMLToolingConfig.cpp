@@ -32,16 +32,16 @@
 #include "encryption/Encrypter.h"
 #include "impl/UnknownElement.h"
 #include "io/HTTPResponse.h"
-#include "security/TrustEngine.h"
-#include "security/OpenSSLCryptoX509CRL.h"
 #include "security/CredentialResolver.h"
+#include "security/DataSealer.h"
 #include "security/KeyInfoResolver.h"
+#include "security/OpenSSLCryptoX509CRL.h"
 #include "security/PathValidator.h"
+#include "security/TrustEngine.h"
 #include "signature/KeyInfo.h"
 #include "signature/Signature.h"
 #include "soap/SOAP.h"
 #include "soap/SOAPTransport.h"
-#include "util/DataSealer.h"
 #include "util/NDC.h"
 #include "util/PathResolver.h"
 #include "util/ReplayCache.h"
@@ -439,6 +439,7 @@ bool XMLToolingInternalConfig::init()
         REGISTER_XMLTOOLING_EXCEPTION_FACTORY(XMLSecurityException,xmltooling);
         REGISTER_XMLTOOLING_EXCEPTION_FACTORY(SignatureException,xmlsignature);
         REGISTER_XMLTOOLING_EXCEPTION_FACTORY(EncryptionException,xmlencryption);
+        registerDataSealerKeyStrategies();
         registerKeyInfoClasses();
         registerEncryptionClasses();
         registerCredentialResolvers();
@@ -521,6 +522,7 @@ void XMLToolingInternalConfig::term()
     TrustEngineManager.deregisterFactories();
     CredentialResolverManager.deregisterFactories();
     KeyInfoResolverManager.deregisterFactories();
+    DataSealerKeyStrategyManager.deregisterFactories();
     m_algorithmMap.clear();
 
     m_keyInfoResolver.reset();

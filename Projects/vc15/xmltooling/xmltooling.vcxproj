@@ -208,11 +208,12 @@
     <ClCompile Include="..\..\..\XMLTooling\Lockable.cpp" />
     <ClCompile Include="..\..\..\XMLTooling\Namespace.cpp" />
     <ClCompile Include="..\..\..\XMLTooling\QName.cpp" />
+    <ClCompile Include="..\..\..\xmltooling\security\impl\DataSealer.cpp" />
     <ClCompile Include="..\..\..\xmltooling\security\impl\OpenSSLSecurityHelper.cpp" />
     <ClCompile Include="..\..\..\XMLTooling\security\impl\PKIXPathValidator.cpp" />
+    <ClCompile Include="..\..\..\xmltooling\security\impl\StaticDataSealerKeyStrategy.cpp" />
     <ClCompile Include="..\..\..\XMLTooling\unicode.cpp" />
     <ClCompile Include="..\..\..\XMLTooling\util\CloneInputStream.cpp" />
-    <ClCompile Include="..\..\..\xmltooling\util\DataSealer.cpp" />
     <ClCompile Include="..\..\..\XMLTooling\version.cpp" />
     <ClCompile Include="..\..\..\XMLTooling\XMLObjectBuilder.cpp" />
     <ClCompile Include="..\..\..\XMLTooling\XMLToolingConfig.cpp" />
@@ -286,12 +287,12 @@
     <ClInclude Include="..\..\..\XMLTooling\Namespace.h" />
     <ClInclude Include="..\..\..\XMLTooling\PluginManager.h" />
     <ClInclude Include="..\..\..\XMLTooling\QName.h" />
+    <ClInclude Include="..\..\..\xmltooling\security\DataSealer.h" />
     <ClInclude Include="..\..\..\XMLTooling\security\OpenSSLPathValidator.h" />
     <ClInclude Include="..\..\..\XMLTooling\security\PathValidator.h" />
     <ClInclude Include="..\..\..\XMLTooling\security\PKIXPathValidatorParams.h" />
     <ClInclude Include="..\..\..\XMLTooling\unicode.h" />
     <ClInclude Include="..\..\..\XMLTooling\util\CloneInputStream.h" />
-    <ClInclude Include="..\..\..\xmltooling\util\DataSealer.h" />
     <ClInclude Include="..\..\..\XMLTooling\version.h" />
     <ClInclude Include="..\..\..\XMLTooling\XMLObject.h" />
     <ClInclude Include="..\..\..\XMLTooling\XMLObjectBuilder.h" />

@@ -32,7 +32,45 @@
 #include <ctime>
 #include <string>
 
+#include <xsec/enc/XSECCryptoSymmetricKey.hpp>
+
 namespace xmltooling {
+
+    class XMLTOOL_API DataSealerKeyStrategy {
+        MAKE_NONCOPYABLE(DataSealerKeyStrategy);
+    public:
+        virtual ~DataSealerKeyStrategy();
+
+        /**
+        * Get the default/current key to use for new operations, returned along with an identifier for it.
+        *
+        * @return  the key and its label
+        */
+        virtual std::pair<std::string, const XSECCryptoSymmetricKey*> getDefaultKey() const=0;
+
+        /**
+        * Get a specifically named key.
+        *
+        * @param name name of the key to retrieve
+        *
+        * @return  the key
+        */
+        virtual const XSECCryptoSymmetricKey* getKey(const char* name) const=0;
+
+    protected:
+        DataSealerKeyStrategy();
+    };
+
+    /**
+    * Registers DataSealerKeyStrategy classes into the runtime.
+    */
+    void XMLTOOL_API registerDataSealerKeyStrategies();
+
+    /** DataSealerKeyStrategy based on a single statically-defined key. */
+    #define STATIC_DATA_SEALER_KEY_STRATEGY  "Static"
+
+    /** DataSealerKeyStrategy based on versioned keys in an XML file. */
+    #define VERSIONED_DATA_SEALER_KEY_STRATEGY  "Versioned"
 
     /**
     * Interface to a data integrity and confidentiality tool, and a default implementation.
@@ -40,7 +78,16 @@ namespace xmltooling {
     class XMLTOOL_API DataSealer {
         MAKE_NONCOPYABLE(DataSealer);
     public:
-        DataSealer();
+
+        /**
+        * Creates a data sealer on top of a particular key strategy.
+        *
+        * The lifetime of the DataSealerKeyStrategy <strong>MUST</strong> be longer than
+        * the lifetime of the DataSealer.
+        *
+        * @param strategy       pointer to a DataSealerKeyStrategy
+        */
+        DataSealer(const DataSealerKeyStrategy* strategy);
 
         virtual ~DataSealer();
 
@@ -72,6 +119,8 @@ namespace xmltooling {
         */
         virtual std::string unwrap(const char* s) const;
 
+    private:
+        const DataSealerKeyStrategy* m_strategy;
     };
 
 };
