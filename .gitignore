@@ -73,5 +73,6 @@ xmltooling-lite-Release
 /schemas/catalog.xml
 /xmltooling/config_pub.h
 /xmltoolingtest/xmltoolingtest
+/xmltoolingtest/*.cpp
 /xmltoolingtest/data/*bak
 /xmltoolingtest/data/clonedfile.xml
