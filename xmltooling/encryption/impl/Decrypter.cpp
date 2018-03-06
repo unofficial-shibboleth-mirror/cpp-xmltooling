@@ -294,7 +294,7 @@ XSECCryptoKey* Decrypter::decryptKey(const EncryptedKey& encryptedKey, const XML
     if (encryptedKey.getDOM()==nullptr)
         throw DecryptionException("The object must be marshalled before decryption.");
 
-    XSECAlgorithmHandler* handler;
+    const XSECAlgorithmHandler* handler;
     try {
         handler = XSECPlatformUtils::g_algorithmMapper->mapURIToHandler(algorithm);
         if (!handler)

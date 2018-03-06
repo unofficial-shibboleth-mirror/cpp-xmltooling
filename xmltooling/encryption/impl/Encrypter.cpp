@@ -102,7 +102,7 @@ void Encrypter::checkParams(EncryptionParams& encParams, KeyEncryptionParams* ke
     }
     else {
         // We have to have a raw key now, so we need to build a wrapper around it.
-        XSECAlgorithmHandler* handler =XSECPlatformUtils::g_algorithmMapper->mapURIToHandler(encParams.m_algorithm);
+        const XSECAlgorithmHandler* handler =XSECPlatformUtils::g_algorithmMapper->mapURIToHandler(encParams.m_algorithm);
         if (handler != nullptr)
             key = handler->createKeyForURI(
                 encParams.m_algorithm,const_cast<unsigned char*>(encParams.m_keyBuffer),encParams.m_keyBufferSize

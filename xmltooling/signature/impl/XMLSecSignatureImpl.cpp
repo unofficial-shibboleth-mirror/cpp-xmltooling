@@ -515,7 +515,7 @@ unsigned int Signature::createRawSignature(
     )
 {
     try {
-        XSECAlgorithmHandler* handler = XSECPlatformUtils::g_algorithmMapper->mapURIToHandler(sigAlgorithm);
+        const XSECAlgorithmHandler* handler = XSECPlatformUtils::g_algorithmMapper->mapURIToHandler(sigAlgorithm);
         if (!handler) {
             auto_ptr_char alg(sigAlgorithm);
             throw SignatureException("Unsupported signature algorithm ($1).", params(1,alg.get()));
@@ -561,7 +561,7 @@ bool Signature::verifyRawSignature(
     )
 {
     try {
-        XSECAlgorithmHandler* handler = XSECPlatformUtils::g_algorithmMapper->mapURIToHandler(sigAlgorithm);
+        const XSECAlgorithmHandler* handler = XSECPlatformUtils::g_algorithmMapper->mapURIToHandler(sigAlgorithm);
         if (!handler) {
             auto_ptr_char alg(sigAlgorithm);
             throw SignatureException("Unsupported signature algorithm ($1).", params(1,alg.get()));
