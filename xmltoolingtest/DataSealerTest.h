@@ -68,5 +68,9 @@ public:
 
         wrapped = sealer->wrap(data.c_str(), time(nullptr) - 500);
         TSM_ASSERT_THROWS("DataSealer did not throw on expired data.", sealer->unwrap(wrapped.c_str()), IOException);
-    }
+
+		wrapped = sealer->wrap(data.c_str(), time(nullptr) - 500);
+		wrapped.insert(0, "invalid");
+		TSM_ASSERT_THROWS("DataSealer did not throw on wrong key label.", sealer->unwrap(wrapped.c_str()), IOException);
+	}
 };

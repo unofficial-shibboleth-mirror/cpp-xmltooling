@@ -32,7 +32,7 @@
 #include <ctime>
 #include <string>
 
-#include <xsec/enc/XSECCryptoSymmetricKey.hpp>
+class XSECCryptoSymmetricKey;
 
 namespace xmltooling {
 
@@ -120,7 +120,7 @@ namespace xmltooling {
         virtual std::string unwrap(const char* s) const;
 
     private:
-        const DataSealerKeyStrategy* m_strategy;
+		const DataSealerKeyStrategy* m_strategy;
     };
 
 };
