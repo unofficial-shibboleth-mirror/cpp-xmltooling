@@ -39,7 +39,7 @@
 #include <xsec/framework/XSECException.hpp>
 #include <xsec/transformers/TXFMChain.hpp>
 #include <xsec/transformers/TXFMBase64.hpp>
-#include <xsec/transformers/TXFMSB.hpp>
+#include <xsec/transformers/TXFMChar.hpp>
 #include <xsec/xenc/XENCEncryptionMethod.hpp>
 
 using namespace xmltooling;
@@ -130,6 +130,7 @@ string DataSealer::wrap(const char* s, time_t exp) const
     char* deflated = XMLHelper::deflate(const_cast<char*>(sb.c_str()), sb.length(), &len);
     if (!deflated || !len)
         throw IOException("Failed to deflate data.");
+	auto_arrayptr<char> arrayjan(deflated);
 
     // Finally we encrypt the data. We have to hack this a bit to reuse the xmlsec routines.
 
@@ -137,12 +138,9 @@ string DataSealer::wrap(const char* s, time_t exp) const
 	Janitor<DOMDocument> docjan(dummydoc);
 	auto_ptr<XSECEnv> env(new XSECEnv(dummydoc));
 
-    safeBuffer plaintext;
-    plaintext.sbMemcpyIn(deflated, len);
-    delete[] deflated;
-    TXFMSB* sbt = new TXFMSB(dummydoc);
-    sbt->setInput(plaintext, len);
-    TXFMChain tx(sbt);
+    TXFMChar* ct = new TXFMChar(dummydoc);
+    ct->setInput(deflated, len);
+    TXFMChain tx(ct);
 
 	safeBuffer ciphertext;
 	try {
@@ -205,11 +203,9 @@ string DataSealer::unwrap(const char* s) const
 	Janitor<DOMDocument> docjan(dummydoc);
 	auto_ptr<XSECEnv> env(new XSECEnv(dummydoc));
 
-	safeBuffer ciphertext;
-	ciphertext.sbStrcpyIn(++delim);
-	TXFMSB* sbt = new TXFMSB(dummydoc);
-	sbt->setInput(ciphertext, ciphertext.sbStrlen());
-	TXFMChain tx(sbt);
+	TXFMChar* ct = new TXFMChar(dummydoc);
+	ct->setInput(++delim);
+	TXFMChain tx(ct);
 	TXFMBase64* b64 = new TXFMBase64(dummydoc, true); // decodes
 	tx.appendTxfm(b64);
 
