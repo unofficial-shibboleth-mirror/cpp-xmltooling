@@ -26,7 +26,6 @@
  */
 
 #include "internal.h"
-#include "logging.h"
 #include "security/DataSealer.h"
 #include "util/XMLHelper.h"
 
@@ -42,6 +41,7 @@
 #include <xsec/transformers/TXFMChar.hpp>
 #include <xsec/xenc/XENCEncryptionMethod.hpp>
 
+using namespace xmltooling::logging;
 using namespace xmltooling;
 using xercesc::Base64;
 using xercesc::DOMDocument;
@@ -51,14 +51,14 @@ using namespace std;
 
 namespace xmltooling {
     XMLTOOL_DLLLOCAL PluginManager<DataSealerKeyStrategy, string, const xercesc::DOMElement*>::Factory StaticDataSealerKeyStrategyFactory;
-    //XMLTOOL_DLLLOCAL PluginManager<DataSealerKeyStrategy, string, const xercesc::DOMElement*>::Factory XMLDataSealerKeyStrategyFactory;
+    XMLTOOL_DLLLOCAL PluginManager<DataSealerKeyStrategy, string, const xercesc::DOMElement*>::Factory VersionedDataSealerKeyStrategyFactory;
 };
 
 void XMLTOOL_API xmltooling::registerDataSealerKeyStrategies()
 {
     XMLToolingConfig& conf = XMLToolingConfig::getConfig();
     conf.DataSealerKeyStrategyManager.registerFactory(STATIC_DATA_SEALER_KEY_STRATEGY, StaticDataSealerKeyStrategyFactory);
-    //conf.DataSealerKeyStrategyManager.registerFactory(XML_DATA_SEALER_KEY_STRATEGY, XMLDataSealerKeyStrategyFactory);
+    conf.DataSealerKeyStrategyManager.registerFactory(VERSIONED_DATA_SEALER_KEY_STRATEGY, VersionedDataSealerKeyStrategyFactory);
 }
 
 DataSealerKeyStrategy::DataSealerKeyStrategy()
@@ -69,9 +69,9 @@ DataSealerKeyStrategy::~DataSealerKeyStrategy()
 {
 }
 
-DataSealer::DataSealer(const DataSealerKeyStrategy* strategy) : m_strategy(strategy)
+DataSealer::DataSealer(DataSealerKeyStrategy* strategy) : m_log(Category::getInstance(XMLTOOLING_LOGCAT".DataSealer")), m_strategy(strategy)
 {
-    if (!m_strategy)
+    if (!strategy)
         throw XMLSecurityException("DataSealer requires DataSealerKeyStrategy");
 }
 
@@ -81,6 +81,10 @@ DataSealer::~DataSealer()
 
 string DataSealer::wrap(const char* s, time_t exp) const
 {
+	Locker locker(m_strategy.get());
+
+	m_log.debug("wrapping data with default key");
+
     // Get default key to use.
     pair<string,const XSECCryptoSymmetricKey*> defaultKey = m_strategy->getDefaultKey();
 
@@ -116,6 +120,8 @@ string DataSealer::wrap(const char* s, time_t exp) const
     char timebuf[32];
     strftime(timebuf, 32, "%Y-%m-%dT%H:%M:%SZ", ptime);
 
+	m_log.debug("using key (%s), data will expire on %s", defaultKey.first.c_str(), timebuf);
+
 	// The data format of the plaintext packet is:
 	//    PLAINTEXT := KEYLABEL + ':' + ISOEXPTIME + DATA
 	// The plaintext is zipped, encrypted, base64'd, and prefixed with the
@@ -125,6 +131,8 @@ string DataSealer::wrap(const char* s, time_t exp) const
 	string sb(defaultKey.first);
 	sb = sb + ':' + timebuf + s;
 
+	m_log.debug("deflating data");
+
     // zip the plaintext packet
     unsigned int len;
     char* deflated = XMLHelper::deflate(const_cast<char*>(sb.c_str()), sb.length(), &len);
@@ -133,6 +141,8 @@ string DataSealer::wrap(const char* s, time_t exp) const
 	auto_arrayptr<char> arrayjan(deflated);
 
     // Finally we encrypt the data. We have to hack this a bit to reuse the xmlsec routines.
+
+	m_log.debug("encrypting data");
 
 	DOMDocument* dummydoc = XMLToolingConfig::getConfig().getParser().newDocument();
 	Janitor<DOMDocument> docjan(dummydoc);
@@ -156,11 +166,16 @@ string DataSealer::wrap(const char* s, time_t exp) const
 
 	defaultKey.first.append(":");
 	defaultKey.first.append(ciphertext.rawCharBuffer(), ciphertext.sbRawBufferSize());
+
+	m_log.debug("final data size: %lu", defaultKey.first.length());
+
 	return defaultKey.first;
 }
 
 string DataSealer::unwrap(const char* s) const
 {
+	Locker locker(m_strategy.get());
+
 	// The data format of the plaintext packet is:
 	//    PLAINTEXT := KEYLABEL + ':' + ISOEXPTIME + DATA
 	// The plaintext is zipped, encrypted, base64'd, and prefixed with the
@@ -175,6 +190,8 @@ string DataSealer::unwrap(const char* s) const
 	}
 	if (!requiredKey.second)
 		throw IOException("Required decryption key not available.");
+
+	m_log.debug("decrypting data with key (%s)", requiredKey.first.c_str());
 
 	const XMLCh* algorithm = nullptr;
 	switch (requiredKey.second->getSymmetricKeyType()) {
@@ -224,7 +241,10 @@ string DataSealer::unwrap(const char* s) const
 		throw XMLSecurityException("No decrypted data available.");
 
     // Now we have to inflate it.
-    stringstream out;
+
+	m_log.debug("inflating data");
+
+	stringstream out;
     if (XMLHelper::inflate(const_cast<char*>(plaintext.rawCharBuffer()), len, out) == 0) {
         throw IOException("Unable to inflate wrapped data.");
     }
@@ -236,14 +256,17 @@ string DataSealer::unwrap(const char* s) const
 	if (i == string::npos)
 		throw IOException("Unable to verify key used to decrypt data.");
 	string keyLabel = decrypted.substr(0, i);
-	if (keyLabel != requiredKey.first)
+	if (keyLabel != requiredKey.first) {
+		m_log.warn("key mismatch, outside (%s), inside (%s)", requiredKey.first, keyLabel);
 		throw IOException("Embedded key label does not match key used to decrypt data.");
+	}
 
     string dstr = decrypted.substr(++i, 20);
     auto_ptr_XMLCh expstr(dstr.c_str());
     XMLDateTime exp(expstr.get());
     exp.parseDateTime();
     if (exp.getEpoch() < time(nullptr) - XMLToolingConfig::getConfig().clock_skew_secs) {
+		m_log.debug("decrypted data expired at %s", dstr.c_str());
         throw IOException("Decrypted data has expired.");
     }
 

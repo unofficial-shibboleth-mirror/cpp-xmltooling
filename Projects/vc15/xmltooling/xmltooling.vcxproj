@@ -210,8 +210,10 @@
     <ClCompile Include="..\..\..\XMLTooling\QName.cpp" />
     <ClCompile Include="..\..\..\xmltooling\security\impl\DataSealer.cpp" />
     <ClCompile Include="..\..\..\xmltooling\security\impl\OpenSSLSecurityHelper.cpp" />
+    <ClCompile Include="..\..\..\xmltooling\security\impl\OpenSSLSupport.cpp" />
     <ClCompile Include="..\..\..\XMLTooling\security\impl\PKIXPathValidator.cpp" />
     <ClCompile Include="..\..\..\xmltooling\security\impl\StaticDataSealerKeyStrategy.cpp" />
+    <ClCompile Include="..\..\..\xmltooling\security\impl\VersionedDataSealerKeyStrategy.cpp" />
     <ClCompile Include="..\..\..\XMLTooling\unicode.cpp" />
     <ClCompile Include="..\..\..\XMLTooling\util\CloneInputStream.cpp" />
     <ClCompile Include="..\..\..\XMLTooling\version.cpp" />
@@ -257,7 +259,6 @@
     <ClCompile Include="..\..\..\XMLTooling\security\impl\FilesystemCredentialResolver.cpp" />
     <ClCompile Include="..\..\..\XMLTooling\security\impl\InlineKeyResolver.cpp" />
     <ClCompile Include="..\..\..\XMLTooling\security\impl\KeyInfoResolver.cpp" />
-    <ClCompile Include="..\..\..\xmltooling\security\impl\OpenSSLSupport.cpp" />
     <ClCompile Include="..\..\..\XMLTooling\security\impl\OpenSSLCryptoX509CRL.cpp" />
     <ClCompile Include="..\..\..\XMLTooling\security\impl\SecurityHelper.cpp" />
     <ClCompile Include="..\..\..\XMLTooling\security\impl\StaticPKIXTrustEngine.cpp" />
@@ -288,6 +289,8 @@
     <ClInclude Include="..\..\..\XMLTooling\PluginManager.h" />
     <ClInclude Include="..\..\..\XMLTooling\QName.h" />
     <ClInclude Include="..\..\..\xmltooling\security\DataSealer.h" />
+    <ClInclude Include="..\..\..\xmltooling\security\impl\ManagedResource.h" />
+    <ClInclude Include="..\..\..\xmltooling\security\impl\OpenSSLSupport.h" />
     <ClInclude Include="..\..\..\XMLTooling\security\OpenSSLPathValidator.h" />
     <ClInclude Include="..\..\..\XMLTooling\security\PathValidator.h" />
     <ClInclude Include="..\..\..\XMLTooling\security\PKIXPathValidatorParams.h" />

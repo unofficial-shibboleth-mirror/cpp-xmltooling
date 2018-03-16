@@ -27,7 +27,8 @@
 #if !defined(__xmltooling_sealer_h__) && !defined(XMLTOOLING_NO_XMLSEC)
 #define __xmltooling_sealer_h__
 
-#include <xmltooling/base.h>
+#include <xmltooling/logging.h>
+#include <xmltooling/Lockable.h>
 
 #include <ctime>
 #include <string>
@@ -36,7 +37,7 @@ class XSECCryptoSymmetricKey;
 
 namespace xmltooling {
 
-    class XMLTOOL_API DataSealerKeyStrategy {
+    class XMLTOOL_API DataSealerKeyStrategy : public virtual Lockable {
         MAKE_NONCOPYABLE(DataSealerKeyStrategy);
     public:
         virtual ~DataSealerKeyStrategy();
@@ -69,7 +70,7 @@ namespace xmltooling {
     /** DataSealerKeyStrategy based on a single statically-defined key. */
     #define STATIC_DATA_SEALER_KEY_STRATEGY  "Static"
 
-    /** DataSealerKeyStrategy based on versioned keys in an XML file. */
+    /** DataSealerKeyStrategy based on versioned keys in a file. */
     #define VERSIONED_DATA_SEALER_KEY_STRATEGY  "Versioned"
 
     /**
@@ -82,12 +83,12 @@ namespace xmltooling {
         /**
         * Creates a data sealer on top of a particular key strategy.
         *
-        * The lifetime of the DataSealerKeyStrategy <strong>MUST</strong> be longer than
-        * the lifetime of the DataSealer.
+        * <p>Ownership of the DataSealerKeyStrategy is assumed by this object upon
+		* successful construction.</p>
         *
         * @param strategy       pointer to a DataSealerKeyStrategy
         */
-        DataSealer(const DataSealerKeyStrategy* strategy);
+        DataSealer(DataSealerKeyStrategy* strategy);
 
         virtual ~DataSealer();
 
@@ -120,7 +121,8 @@ namespace xmltooling {
         virtual std::string unwrap(const char* s) const;
 
     private:
-		const DataSealerKeyStrategy* m_strategy;
+		logging::Category& m_log;
+		std::auto_ptr<DataSealerKeyStrategy> m_strategy;
     };
 
 };

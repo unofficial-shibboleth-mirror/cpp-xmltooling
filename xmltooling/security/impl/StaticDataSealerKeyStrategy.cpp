@@ -26,7 +26,6 @@
  */
 
 #include "internal.h"
-#include "logging.h"
 #include "security/DataSealer.h"
 #include "util/XMLHelper.h"
 
@@ -39,10 +38,13 @@ using namespace std;
 
 namespace xmltooling {
 
-    class StaticDataSealerKeyStrategy : public DataSealerKeyStrategy {
+    class XMLTOOL_DLLLOCAL StaticDataSealerKeyStrategy : public DataSealerKeyStrategy {
     public:
         StaticDataSealerKeyStrategy(const DOMElement* e);
         virtual ~StaticDataSealerKeyStrategy();
+
+		Lockable* lock() { return this; }
+		void unlock() {}
 
         pair<string,const XSECCryptoSymmetricKey*> getDefaultKey() const;
         const XSECCryptoSymmetricKey* getKey(const char* name) const;

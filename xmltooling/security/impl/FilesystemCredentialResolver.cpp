@@ -25,7 +25,6 @@
  */
 
 #include "internal.h"
-#include "logging.h"
 #include "io/HTTPResponse.h"
 #include "security/BasicX509Credential.h"
 #include "security/CredentialCriteria.h"
@@ -34,10 +33,10 @@
 #include "security/OpenSSLCredential.h"
 #include "security/SecurityHelper.h"
 #include "security/XSECCryptoX509CRL.h"
+#include "security/impl/ManagedResource.h"
 #include "security/impl/OpenSSLSupport.h"
 #include "util/NDC.h"
 #include "util/PathResolver.h"
-#include "util/Threads.h"
 #include "util/XMLHelper.h"
 
 #include <memory>
@@ -58,89 +57,6 @@ using xercesc::chLatin_f;
 using xercesc::chDigit_0;
 
 namespace xmltooling {
-
-    // The ManagedResource classes handle memory management, loading of the files
-    // and staleness detection. A copy of the active objects is always stored in
-    // these instances.
-
-    class XMLTOOL_DLLLOCAL ManagedResource {
-    protected:
-        ManagedResource() : local(true), reloadChanges(true), filestamp(0), reloadInterval(0) {}
-        ~ManagedResource() {}
-
-        SOAPTransport* getTransport() {
-            SOAPTransport::Address addr("FilesystemCredentialResolver", source.c_str(), source.c_str());
-            string scheme(addr.m_endpoint, strchr(addr.m_endpoint,':') - addr.m_endpoint);
-            SOAPTransport* ret = XMLToolingConfig::getConfig().SOAPTransportManager.newPlugin(scheme.c_str(), addr);
-            if (ret)
-                ret->setCacheTag(&cacheTag);
-            return ret;
-        }
-
-    public:
-        bool stale(Category& log, RWLock* lock=nullptr) {
-            if (local) {
-#ifdef WIN32
-                struct _stat stat_buf;
-                if (_stat(source.c_str(), &stat_buf) != 0)
-                    return false;
-#else
-                struct stat stat_buf;
-                if (stat(source.c_str(), &stat_buf) != 0)
-                    return false;
-#endif
-                if (filestamp >= stat_buf.st_mtime)
-                    return false;
-
-                // If necessary, elevate lock and recheck.
-                if (lock) {
-                    log.debug("timestamp of local resource changed, elevating to a write lock");
-                    lock->unlock();
-                    lock->wrlock();
-                    if (filestamp >= stat_buf.st_mtime) {
-                        // Somebody else handled it, just downgrade.
-                        log.debug("update of local resource handled by another thread, downgrading lock");
-                        lock->unlock();
-                        lock->rdlock();
-                        return false;
-                    }
-                }
-
-                // Update the timestamp regardless. No point in repeatedly trying.
-                filestamp = stat_buf.st_mtime;
-                log.info("change detected, reloading local resource...");
-            }
-            else {
-                time_t now = time(nullptr);
-
-                // Time to reload?
-                if (now - filestamp < reloadInterval)
-                    return false;
-
-                // If necessary, elevate lock and recheck.
-                if (lock) {
-                    log.debug("reload interval for remote resource elapsed, elevating to a write lock");
-                    lock->unlock();
-                    lock->wrlock();
-                    if (now - filestamp < reloadInterval) {
-                        // Somebody else handled it, just downgrade.
-                        log.debug("update of remote resource handled by another thread, downgrading lock");
-                        lock->unlock();
-                        lock->rdlock();
-                        return false;
-                    }
-                }
-
-                filestamp = now;
-                log.info("reloading remote resource...");
-            }
-            return true;
-        }
-
-        bool local,reloadChanges;
-        string format,source,backing,cacheTag;
-        time_t filestamp,reloadInterval;
-    };
 
     class XMLTOOL_DLLLOCAL ManagedKey : public ManagedResource {
     public:
@@ -164,6 +80,7 @@ namespace xmltooling {
                 format = SecurityHelper::guessEncodingFormat(local ? source.c_str() : backing.c_str());
         }
 
+		string format;
         XSECCryptoKey* key;
     };
 
@@ -188,6 +105,8 @@ namespace xmltooling {
             if (format.empty())
                 format = SecurityHelper::guessEncodingFormat(local ? source.c_str() : backing.c_str());
         }
+
+		string format;
         vector<XSECCryptoX509*> certs;
     };
 
@@ -212,6 +131,8 @@ namespace xmltooling {
             if (format.empty())
                 format = SecurityHelper::guessEncodingFormat(local ? source.c_str() : backing.c_str());
         }
+
+		string format;
         vector<XSECCryptoX509CRL*> crls;
     };
 
@@ -421,7 +342,7 @@ FilesystemCredentialResolver::FilesystemCredentialResolver(const DOMElement* e)
         while (e) {
             if (e->hasChildNodes()) {
                 m_crls.push_back(ManagedCRL());
-                ManagedResource& crl = m_crls.back();
+                ManagedCRL& crl = m_crls.back();
                 crl.format = crlformat;
                 prop = e->getFirstChild()->getNodeValue();
                 auto_ptr_char crlpath(prop);
@@ -437,7 +358,7 @@ FilesystemCredentialResolver::FilesystemCredentialResolver(const DOMElement* e)
         while (e) {
             if (e->hasChildNodes()) {
                 m_crls.push_back(ManagedCRL());
-                ManagedResource& crl = m_crls.back();
+                ManagedCRL& crl = m_crls.back();
                 crl.format = crlformat;
                 prop = e->getFirstChild()->getNodeValue();
                 auto_ptr_char crlpath(prop);
@@ -468,7 +389,7 @@ FilesystemCredentialResolver::FilesystemCredentialResolver(const DOMElement* e)
         while (e) {
             if (e->hasChildNodes() && (XMLString::equals(e->getLocalName(), Path) || XMLString::equals(e->getLocalName(), CAPath))) {
                 m_certs.push_back(ManagedCert());
-                ManagedResource& cert = m_certs.back();
+                ManagedCert& cert = m_certs.back();
                 cert.format = certformat;
                 prop = e->getFirstChild()->getNodeValue();
                 auto_ptr_char certpath(prop);
@@ -479,7 +400,7 @@ FilesystemCredentialResolver::FilesystemCredentialResolver(const DOMElement* e)
             }
             else if (e->hasChildNodes() && XMLString::equals(e->getLocalName(), _URL)) {
                 m_certs.push_back(ManagedCert());
-                ManagedResource& cert = m_certs.back();
+                ManagedCert& cert = m_certs.back();
                 cert.format = certformat;
                 prop = e->getFirstChild()->getNodeValue();
                 auto_ptr_char certpath(prop);

@@ -23,6 +23,7 @@
 #include <xmltooling/exceptions.h>
 #include <xmltooling/security/DataSealer.h>
 
+#include <fstream>
 #include <xercesc/util/Base64.hpp>
 #include <xsec/utils/XSECPlatformUtils.hpp>
 
@@ -53,11 +54,14 @@ public:
                 )
             );
 
+		keyStrategy->lock();
         pair<string,const XSECCryptoSymmetricKey*> key = keyStrategy->getDefaultKey();
         TS_ASSERT_EQUALS("static", key.first);
         TSM_ASSERT_EQUALS("Wrong key type", key.second->getSymmetricKeyType(), XSECCryptoSymmetricKey::KEY_AES_256);
+		keyStrategy->unlock();
 
         auto_ptr<DataSealer> sealer(new DataSealer(keyStrategy.get()));
+		keyStrategy.release();
 
         string data = "this is a test";
 
@@ -68,6 +72,53 @@ public:
 
         wrapped = sealer->wrap(data.c_str(), time(nullptr) - 500);
         TSM_ASSERT_THROWS("DataSealer did not throw on expired data.", sealer->unwrap(wrapped.c_str()), IOException);
+
+		wrapped = sealer->wrap(data.c_str(), time(nullptr) - 500);
+		wrapped.insert(0, "invalid");
+		TSM_ASSERT_THROWS("DataSealer did not throw on wrong key label.", sealer->unwrap(wrapped.c_str()), IOException);
+	}
+
+	void testVersionedDataSealer() {
+
+		DOMDocument* doc = XMLToolingConfig::getConfig().getParser().newDocument();
+		Janitor<DOMDocument> jdoc(doc);
+
+		static const XMLCh _path[] = UNICODE_LITERAL_4(p, a, t, h);
+		DOMElement* root = doc->createElementNS(nullptr, _path);
+		auto_ptr_XMLCh widepath("../xmltoolingtest/data/sealer.keys");
+		root->setAttributeNS(nullptr, _path, widepath.get());
+		doc->appendChild(root);
+
+		auto_ptr<DataSealerKeyStrategy> keyStrategy(
+			XMLToolingConfig::getConfig().DataSealerKeyStrategyManager.newPlugin(
+				VERSIONED_DATA_SEALER_KEY_STRATEGY, doc->getDocumentElement()
+			)
+		);
+
+		keyStrategy->lock();
+		
+		pair<string, const XSECCryptoSymmetricKey*> key = keyStrategy->getDefaultKey();
+		TS_ASSERT_EQUALS("4", key.first);
+		TSM_ASSERT_EQUALS("Wrong key type", key.second->getSymmetricKeyType(), XSECCryptoSymmetricKey::KEY_AES_128);
+
+		key.second = keyStrategy->getKey("1");
+		TS_ASSERT(key.second != nullptr);
+		TSM_ASSERT_EQUALS("Wrong key type", key.second->getSymmetricKeyType(), XSECCryptoSymmetricKey::KEY_AES_128);
+
+		keyStrategy->unlock();
+
+		auto_ptr<DataSealer> sealer(new DataSealer(keyStrategy.get()));
+		keyStrategy.release();
+
+		string data = "this is a test";
+
+		string wrapped = sealer->wrap(data.c_str(), time(nullptr) + 500);
+		string unwrapped = sealer->unwrap(wrapped.c_str());
+
+		TSM_ASSERT_EQUALS("DataSealer output did not match.", data, unwrapped);
+
+		wrapped = sealer->wrap(data.c_str(), time(nullptr) - 500);
+		TSM_ASSERT_THROWS("DataSealer did not throw on expired data.", sealer->unwrap(wrapped.c_str()), IOException);
 
 		wrapped = sealer->wrap(data.c_str(), time(nullptr) - 500);
 		wrapped.insert(0, "invalid");
