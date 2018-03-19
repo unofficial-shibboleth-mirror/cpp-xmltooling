@@ -189,7 +189,7 @@ string DataSealer::unwrap(const char* s) const
 		requiredKey.second = m_strategy->getKey(requiredKey.first.c_str());
 	}
 	if (!requiredKey.second)
-		throw IOException("Required decryption key not available.");
+		throw IOException("Required decryption key ($1) not available.", params(1, requiredKey.first.c_str()));
 
 	m_log.debug("decrypting data with key (%s)", requiredKey.first.c_str());
 
