@@ -71,6 +71,7 @@ xmltooling-lite-Release
 /m4/ltversion.m4
 /schemas/catalog.xml
 /xmltooling/config_pub.h
+/xmltoolingtest/*.cpp
 /xmltoolingtest/xmltoolingtest
 /xmltoolingtest/data/*bak
 /xmltoolingtest/data/clonedfile.xml
