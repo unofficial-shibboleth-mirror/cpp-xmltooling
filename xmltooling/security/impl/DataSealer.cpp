@@ -115,7 +115,7 @@ string DataSealer::wrap(const char* s, time_t exp) const
     struct tm* ptime = gmtime(&exp);
 #else
     struct tm res;
-    struct tm* ptime = gmtime_r(exp, &res);
+    struct tm* ptime = gmtime_r(&exp, &res);
 #endif
     char timebuf[32];
     strftime(timebuf, 32, "%Y-%m-%dT%H:%M:%SZ", ptime);
@@ -257,7 +257,7 @@ string DataSealer::unwrap(const char* s) const
 		throw IOException("Unable to verify key used to decrypt data.");
 	string keyLabel = decrypted.substr(0, i);
 	if (keyLabel != requiredKey.first) {
-		m_log.warn("key mismatch, outside (%s), inside (%s)", requiredKey.first, keyLabel);
+		m_log.warn("key mismatch, outside (%s), inside (%s)", requiredKey.first.c_str(), keyLabel.c_str());
 		throw IOException("Embedded key label does not match key used to decrypt data.");
 	}
 

@@ -143,7 +143,7 @@ xmlsec_sources = \
 	security/impl/ChainingTrustEngine.cpp \
 	security/impl/CredentialCriteria.cpp \
 	security/impl/CredentialResolver.cpp \
-    security/impl/DataSealer.cpp \
+	security/impl/DataSealer.cpp \
 	security/impl/DummyCredentialResolver.cpp \
 	security/impl/ExplicitKeyTrustEngine.cpp \
 	security/impl/FilesystemCredentialResolver.cpp \
@@ -154,9 +154,10 @@ xmlsec_sources = \
 	security/impl/OpenSSLSecurityHelper.cpp \
 	security/impl/PKIXPathValidator.cpp \
 	security/impl/SecurityHelper.cpp \
-    security/impl/StaticDataSealerKeyStrategy.cpp \
+	security/impl/StaticDataSealerKeyStrategy.cpp \
 	security/impl/StaticPKIXTrustEngine.cpp \
 	security/impl/TrustEngine.cpp \
+	security/impl/VersionedDataSealerKeyStrategy.cpp \
 	security/impl/XSECCryptoX509CRL.cpp \
 	signature/impl/KeyInfoImpl.cpp \
 	signature/impl/KeyInfoSchemaValidators.cpp \
@@ -164,7 +165,6 @@ xmlsec_sources = \
 	signature/impl/XMLSecSignatureImpl.cpp \
 	soap/impl/CURLSOAPTransport.cpp \
 	util/CurlURLInputStream.cpp \
-    util/DataSealer.cpp \
 	util/ReplayCache.cpp \
 	util/StorageService.cpp
 

@@ -45,8 +45,6 @@ namespace xmltooling {
     static const XMLCh _CredentialResolver[] =  UNICODE_LITERAL_18(C,r,e,d,e,n,t,i,a,l,R,e,s,o,l,v,e,r);
     static const XMLCh type[] =                 UNICODE_LITERAL_4(t,y,p,e);
     static const XMLCh certificate[] =          UNICODE_LITERAL_11(c,e,r,t,i,f,i,c,a,t,e);
-    static const XMLCh Certificate[] =          UNICODE_LITERAL_11(C,e,r,t,i,f,i,c,a,t,e);
-    static const XMLCh Path[] =                 UNICODE_LITERAL_4(P,a,t,h);
     static const XMLCh verifyDepth[] =          UNICODE_LITERAL_11(v,e,r,i,f,y,D,e,p,t,h);
 
     class XMLTOOL_DLLLOCAL StaticPKIXTrustEngine : public AbstractPKIXTrustEngine
