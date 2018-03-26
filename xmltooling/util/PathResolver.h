@@ -32,6 +32,12 @@
 #include <string>
 
 namespace xmltooling {
+
+#if defined (_MSC_VER)
+#    pragma warning( push )
+#    pragma warning( disable : 4251 )
+#endif
+
     /**
      * Resolves local filenames into absolute pathnames.
      */
@@ -131,6 +137,10 @@ namespace xmltooling {
 
         std::string m_defaultPackage,m_defaultPrefix,m_lib,m_log,m_xml,m_run,m_cfg,m_cache;
     };
+
+#if defined (_MSC_VER)
+#   pragma warning( pop )
+#endif
 };
 
 #endif /* __xmltooling_pathres_h__ */
