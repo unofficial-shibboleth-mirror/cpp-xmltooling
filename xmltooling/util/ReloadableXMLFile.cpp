@@ -81,12 +81,14 @@ static const XMLCh reloadChanges[] =    UNICODE_LITERAL_13(r,e,l,o,a,d,C,h,a,n,g
 static const XMLCh reloadInterval[] =   UNICODE_LITERAL_14(r,e,l,o,a,d,I,n,t,e,r,v,a,l);
 static const XMLCh maxRefreshDelay[] =  UNICODE_LITERAL_15(m,a,x,R,e,f,r,e,s,h,D,e,l,a,y);
 static const XMLCh backingFilePath[] =  UNICODE_LITERAL_15(b,a,c,k,i,n,g,F,i,l,e,P,a,t,h);
+
+#ifndef XMLTOOLING_LITE
 static const XMLCh type[] =             UNICODE_LITERAL_4(t,y,p,e);
 static const XMLCh certificate[] =      UNICODE_LITERAL_11(c,e,r,t,i,f,i,c,a,t,e);
 static const XMLCh signerName[] =       UNICODE_LITERAL_10(s,i,g,n,e,r,N,a,m,e);
 static const XMLCh _TrustEngine[] =     UNICODE_LITERAL_11(T,r,u,s,t,E,n,g,i,n,e);
 static const XMLCh _CredentialResolver[] = UNICODE_LITERAL_18(C,r,e,d,e,n,t,i,a,l,R,e,s,o,l,v,e,r);
-
+#endif
 
 ReloadableXMLFile::ReloadableXMLFile(const DOMElement* e, Category& log, bool startReloadThread)
     : m_root(e), m_local(true), m_validate(false), m_filestamp(0), m_reloadInterval(0),

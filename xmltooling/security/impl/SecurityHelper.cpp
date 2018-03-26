@@ -288,7 +288,7 @@ vector<XSECCryptoX509*>::size_type SecurityHelper::loadCertificatesFromFile(
 
         // The format should be known, so parse accordingly.
         if (!strcmp(format, "PEM")) {
-            while (x=PEM_read_bio_X509(in, nullptr, nullptr, nullptr)) {
+            while ((x=PEM_read_bio_X509(in, nullptr, nullptr, nullptr))) {
                 certs.push_back(new OpenSSLCryptoX509(x));
                 X509_free(x);
             }
@@ -382,7 +382,7 @@ vector<XSECCryptoX509CRL*>::size_type SecurityHelper::loadCRLsFromFile(
 
         X509_CRL* crl=nullptr;
         if (!strcmp(format, "PEM")) {
-            while (crl=PEM_read_bio_X509_CRL(in, nullptr, nullptr, nullptr)) {
+            while ((crl=PEM_read_bio_X509_CRL(in, nullptr, nullptr, nullptr))) {
                 crls.push_back(new OpenSSLCryptoX509CRL(crl));
                 X509_CRL_free(crl);
             }
