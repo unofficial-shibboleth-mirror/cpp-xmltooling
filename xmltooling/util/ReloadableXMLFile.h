@@ -214,7 +214,7 @@ namespace xmltooling {
         time_t m_filestamp;
 
         /** Time in seconds to wait before trying for new copy of remote resource. */
-        time_t m_reloadInterval;
+        long m_reloadInterval;
 
         /** Caching tag associated with remote resource. */
         std::string m_cacheTag;

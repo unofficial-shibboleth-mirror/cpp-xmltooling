@@ -99,11 +99,11 @@ namespace xmltooling {
             return pthread_cond_wait(&cond, &(mutex->mutex));
         }
         
-        int timedwait(Mutex* mutex, int delay_seconds) {
+        int timedwait(Mutex* mutex, long delay_seconds) {
             return timedwait(static_cast<MutexImpl*>(mutex), delay_seconds);
         }
         
-        int timedwait(MutexImpl* mutex, int delay_seconds) {
+        int timedwait(MutexImpl* mutex, long delay_seconds) {
             struct timespec ts;
             memset(&ts, 0, sizeof(ts));
             ts.tv_sec = time(nullptr) + delay_seconds;

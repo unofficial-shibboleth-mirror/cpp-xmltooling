@@ -205,17 +205,17 @@ namespace xmltooling {
         }
 
         // wait for myself to signal and this mutex or the timeout
-        int timedwait(Mutex* mutex, int delay_seconds) {
-            int rc=mutex->unlock();
-            if(rc!=0)
+        int timedwait(Mutex* mutex, long delay_seconds) {
+            int rc = mutex->unlock();
+            if (rc != 0)
                 return rc;
 
-            int delay_ms=delay_seconds;
-            if(delay_seconds!=INFINITE)
-                delay_ms*=1000;
-            rc=WaitForSingleObject(cond,delay_ms);
-            int rc2=mutex->lock();
-            if(rc2!=0)
+            long delay_ms = delay_seconds;
+            if (delay_seconds != INFINITE)
+                delay_ms *= 1000;
+            rc = WaitForSingleObject(cond, delay_ms);
+            int rc2 = mutex->lock();
+            if(rc2 != 0)
                 return rc2;
             switch(rc) {
                 case WAIT_ABANDONED:

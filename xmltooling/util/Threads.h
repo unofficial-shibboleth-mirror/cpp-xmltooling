@@ -257,7 +257,7 @@ namespace xmltooling
          * @param delay_seconds maximum time to wait before waking up
          * @return 0 for success, non-zero for failure
          */
-        virtual int timedwait(Mutex* lock, int delay_seconds)=0;
+        virtual int timedwait(Mutex* lock, long delay_seconds)=0;
 
         /**
          * Signal a single thread to wake up if a condition changes.
