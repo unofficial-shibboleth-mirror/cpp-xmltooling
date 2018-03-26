@@ -93,7 +93,7 @@ void HTTPResponse::setCookie(const char* name, const char* value)
     setResponseHeader("Set-Cookie", cookie.c_str());
 }
 
-void HTTPResponse::setResponseHeader(const char* name, const char* value)
+void HTTPResponse::setResponseHeader(const char* name, const char* value, bool replace)
 {
     if (name) {
         for (const char* ch=name; *ch; ++ch) {

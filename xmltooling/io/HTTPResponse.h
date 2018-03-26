@@ -57,12 +57,13 @@ namespace xmltooling {
         void setContentType(const char* type);
         
         /**
-         * Sets or clears a response header.
+         * Sets, adds, or clears a response header.
          * 
          * @param name  header name
          * @param value value to set, or nullptr to clear
+         * @param replace true iff this should replace existing header(s)
          */
-        virtual void setResponseHeader(const char* name, const char* value);
+        virtual void setResponseHeader(const char* name, const char* value, bool replace = false);
 
         /**
          * Sets a client cookie.
