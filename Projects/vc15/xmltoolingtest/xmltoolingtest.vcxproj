@@ -108,7 +108,7 @@
       <DisableSpecificWarnings>4275</DisableSpecificWarnings>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>xerces-c_3D.lib;xsec_2D.lib;$(SSLLib);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>log4shib1D.lib;xerces-c_3D.lib;xsec_2D.lib;$(SSLLib);%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
@@ -133,7 +133,7 @@
       <DisableSpecificWarnings>4275</DisableSpecificWarnings>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>xerces-c_3D.lib;xsec_2D.lib;$(SSLLibD);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>log4shib1D.lib;xerces-c_3D.lib;xsec_2D.lib;$(SSLLibD);%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <DataExecutionPrevention>
@@ -150,7 +150,7 @@
       <DisableSpecificWarnings>4275</DisableSpecificWarnings>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>xerces-c_3.lib;xsec_2.lib;$(SSLLib);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>log4shib1.lib;xerces-c_3.lib;xsec_2.lib;$(SSLLib);%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
@@ -174,7 +174,7 @@
       <DisableSpecificWarnings>4275</DisableSpecificWarnings>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>xerces-c_3.lib;xsec_2.lib;$(SSLLib);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>log4shib1.lib;xerces-c_3.lib;xsec_2.lib;$(SSLLib);%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
@@ -188,6 +188,7 @@
     <ClCompile Include="ComplexXMLObjectTest.cpp" />
     <ClCompile Include="DataSealerTest.cpp" />
     <ClCompile Include="DateTimeTest.cpp" />
+    <ClCompile Include="DirectoryWalkerTest.cpp" />
     <ClCompile Include="EncryptionTest.cpp" />
     <ClCompile Include="ExceptionTest.cpp" />
     <ClCompile Include="ExplicitKeyTrustEngineTest.cpp" />
@@ -477,6 +478,16 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(Filename).cpp;%(Outputs)</Outputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename).cpp;%(Outputs)</Outputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Filename).cpp;%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\..\xmltoolingtest\DirectoryWalkerTest.h">
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(Filename).cpp;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(Filename).cpp;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename).cpp;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Filename).cpp;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"</Command>
     </CustomBuild>
     <ClInclude Include="..\..\..\XMLToolingTest\XMLObjectBaseTestCase.h" />
   </ItemGroup>

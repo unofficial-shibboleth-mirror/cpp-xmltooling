@@ -85,7 +85,8 @@ public:
 
 		static const XMLCh _path[] = UNICODE_LITERAL_4(p, a, t, h);
 		DOMElement* root = doc->createElementNS(nullptr, _path);
-		auto_ptr_XMLCh widepath("../xmltoolingtest/data/sealer.keys");
+        string sealerpath = data_path + "sealer.keys";
+		auto_ptr_XMLCh widepath(sealerpath.c_str());
 		root->setAttributeNS(nullptr, _path, widepath.get());
 		doc->appendChild(root);
 

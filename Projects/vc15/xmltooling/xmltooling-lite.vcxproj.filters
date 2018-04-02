@@ -147,6 +147,9 @@
     <ClCompile Include="..\..\..\xmltooling\util\CloneInputStream.cpp">
       <Filter>Source Files\util</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\xmltooling\util\DirectoryWalker.cpp">
+      <Filter>Source Files\util</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\XMLTooling\AbstractAttributeExtensibleXMLObject.h">
@@ -282,6 +285,9 @@
       <Filter>Header Files\soap</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\xmltooling\util\CloneInputStream.h">
+      <Filter>Header Files\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\xmltooling\util\DirectoryWalker.h">
       <Filter>Header Files\util</Filter>
     </ClInclude>
   </ItemGroup>

@@ -216,6 +216,7 @@
     <ClCompile Include="..\..\..\xmltooling\security\impl\VersionedDataSealerKeyStrategy.cpp" />
     <ClCompile Include="..\..\..\XMLTooling\unicode.cpp" />
     <ClCompile Include="..\..\..\XMLTooling\util\CloneInputStream.cpp" />
+    <ClCompile Include="..\..\..\xmltooling\util\DirectoryWalker.cpp" />
     <ClCompile Include="..\..\..\XMLTooling\version.cpp" />
     <ClCompile Include="..\..\..\XMLTooling\XMLObjectBuilder.cpp" />
     <ClCompile Include="..\..\..\XMLTooling\XMLToolingConfig.cpp" />
@@ -296,6 +297,7 @@
     <ClInclude Include="..\..\..\XMLTooling\security\PKIXPathValidatorParams.h" />
     <ClInclude Include="..\..\..\XMLTooling\unicode.h" />
     <ClInclude Include="..\..\..\XMLTooling\util\CloneInputStream.h" />
+    <ClInclude Include="..\..\..\xmltooling\util\DirectoryWalker.h" />
     <ClInclude Include="..\..\..\XMLTooling\version.h" />
     <ClInclude Include="..\..\..\XMLTooling\XMLObject.h" />
     <ClInclude Include="..\..\..\XMLTooling\XMLObjectBuilder.h" />

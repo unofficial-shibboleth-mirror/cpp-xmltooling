@@ -71,6 +71,9 @@
     <ClCompile Include="DataSealerTest.cpp">
       <Filter>Generated Code</Filter>
     </ClCompile>
+    <ClCompile Include="DirectoryWalkerTest.cpp">
+      <Filter>Generated Code</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\XMLToolingTest\XMLObjectBaseTestCase.h">
@@ -139,6 +142,9 @@
       <Filter>Unit Tests</Filter>
     </CustomBuild>
     <CustomBuild Include="..\..\..\xmltoolingtest\DataSealerTest.h">
+      <Filter>Unit Tests</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\..\..\xmltoolingtest\DirectoryWalkerTest.h">
       <Filter>Unit Tests</Filter>
     </CustomBuild>
   </ItemGroup>

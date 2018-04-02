@@ -19,35 +19,36 @@ endif
 
 if BUILD_XMLSEC
 xmlsec_sources = \
-    DataSealerTest.h \
-    EncryptionTest.h \
-    FilesystemCredentialResolverTest.h \
+	DataSealerTest.h \
+	EncryptionTest.h \
+	FilesystemCredentialResolverTest.h \
 	ExplicitKeyTrustEngineTest.h \
-    InlineKeyResolverTest.h \
-    MemoryStorageServiceTest.h \
-    PKIXEngineTest.h \
-    SecurityHelperTest.h \
-    SignatureTest.h
+	InlineKeyResolverTest.h \
+	MemoryStorageServiceTest.h \
+	PKIXEngineTest.h \
+	SecurityHelperTest.h \
+	SignatureTest.h
 else
 xmlsec_sources =
 endif
 
 xmltoolingtest_h = \
-    ComplexXMLObjectTest.h \
-    DateTimeTest.h \
-    ExceptionTest.h \
-    KeyInfoTest.h \
-    MarshallingTest.h \
-    NonVisibleNamespaceTest.h \
-    SOAPTest.h \
-    UnmarshallingTest.h \
-    TemplateEngineTest.h \
-    xmltoolingtest.h \
-    ${xmlsec_sources}
+	ComplexXMLObjectTest.h \
+	DateTimeTest.h \
+	DirectoryWalkerTest.h \
+	ExceptionTest.h \
+	KeyInfoTest.h \
+	MarshallingTest.h \
+	NonVisibleNamespaceTest.h \
+	SOAPTest.h \
+	UnmarshallingTest.h \
+	TemplateEngineTest.h \
+	xmltoolingtest.h \
+	${xmlsec_sources}
 
 noinst_HEADERS = \
-    XMLObjectBaseTestCase.h \
-    $(xmltoolingtest_h)
+	XMLObjectBaseTestCase.h \
+	$(xmltoolingtest_h)
 
 nodist_xmltoolingtest_SOURCES = $(xmltoolingtest_h:.h=.cpp)
 
