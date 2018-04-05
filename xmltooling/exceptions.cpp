@@ -185,24 +185,7 @@ const char* XMLToolingException::getMessage() const
 void xml_encode(string& s, const char* pre, const char* start, const char* post)
 {
     s += pre;
-    size_t pos;
-    while (start && *start) {
-        pos = strcspn(start, "\"<>&");
-        if (pos > 0) {
-            s.append(start, pos);
-            start += pos;
-        }
-        else {
-            switch (*start) {
-                case '\'':  s += "&apos;";     break;
-                case '<':   s += "&lt;";       break;
-                case '>':   s += "&gt;";       break;
-                case '&':   s += "&amp;";      break;
-                default:    s += *start;
-            }
-            start++;
-        }
-    }
+    s += XMLHelper::encode(start);
     s += post;
 }
 
