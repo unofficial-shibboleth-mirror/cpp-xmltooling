@@ -26,14 +26,8 @@
 
 class TemplateEngineTest : public CxxTest::TestSuite {
 public:
-    void setUp() {
-    }
-    
-    void tearDown() {
-    }
-
     void testTemplateEngine() {
-        auto_ptr<TemplateEngine> engine(new TemplateEngine());
+        scoped_ptr<TemplateEngine> engine(new TemplateEngine());
 
         TemplateEngine::TemplateParameters p;
         p.m_map["foo1"] = "bar1";

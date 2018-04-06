@@ -47,7 +47,7 @@ public:
         const XMLObjectBuilder* b = XMLObjectBuilder::getBuilder(doc->getDocumentElement());
         TS_ASSERT(b!=nullptr);
 
-        auto_ptr<KeyInfo> kiObject(dynamic_cast<KeyInfo*>(b->buildFromDocument(doc)));
+        scoped_ptr<KeyInfo> kiObject(dynamic_cast<KeyInfo*>(b->buildFromDocument(doc)));
         TS_ASSERT(kiObject.get()!=nullptr);
         TSM_ASSERT_EQUALS("Number of child elements was not expected value",
             4, kiObject->getOrderedChildren().size());
@@ -71,7 +71,7 @@ public:
         const XMLObjectBuilder* b = XMLObjectBuilder::getBuilder(doc->getDocumentElement());
         TS_ASSERT(b!=nullptr);
 
-        auto_ptr<KeyInfo> kiObject(dynamic_cast<KeyInfo*>(b->buildFromDocument(doc)));
+        scoped_ptr<KeyInfo> kiObject(dynamic_cast<KeyInfo*>(b->buildFromDocument(doc)));
         TS_ASSERT(kiObject.get()!=nullptr);
         TSM_ASSERT_EQUALS("Number of child elements was not expected value",
             2, kiObject->getOrderedChildren().size());
@@ -92,7 +92,7 @@ public:
         const XMLObjectBuilder* b = XMLObjectBuilder::getBuilder(doc->getDocumentElement());
         TS_ASSERT(b!=nullptr);
 
-        auto_ptr<KeyInfo> kiObject(dynamic_cast<KeyInfo*>(b->buildFromDocument(doc)));
+        scoped_ptr<KeyInfo> kiObject(dynamic_cast<KeyInfo*>(b->buildFromDocument(doc)));
         TS_ASSERT(kiObject.get()!=nullptr);
         TS_ASSERT_THROWS(SchemaValidators.validate(kiObject.get()),ValidationException);
     }
@@ -106,7 +106,7 @@ public:
         const XMLObjectBuilder* b = XMLObjectBuilder::getBuilder(doc->getDocumentElement());
         TS_ASSERT(b!=nullptr);
 
-        auto_ptr<KeyInfo> kiObject(dynamic_cast<KeyInfo*>(b->buildFromDocument(doc)));
+        scoped_ptr<KeyInfo> kiObject(dynamic_cast<KeyInfo*>(b->buildFromDocument(doc)));
         TS_ASSERT(kiObject.get()!=nullptr);
         TSM_ASSERT_EQUALS("Number of child elements was not expected value",
             1, kiObject->getKeyValues().size());

@@ -60,7 +60,7 @@ public:
         TSM_ASSERT_EQUALS("Wrong key type", key.second->getSymmetricKeyType(), XSECCryptoSymmetricKey::KEY_AES_256);
 		keyStrategy->unlock();
 
-        auto_ptr<DataSealer> sealer(new DataSealer(keyStrategy.get()));
+        scoped_ptr<DataSealer> sealer(new DataSealer(keyStrategy.get()));
 		keyStrategy.release();
 
         string data = "this is a test";
@@ -108,7 +108,7 @@ public:
 
 		keyStrategy->unlock();
 
-		auto_ptr<DataSealer> sealer(new DataSealer(keyStrategy.get()));
+		scoped_ptr<DataSealer> sealer(new DataSealer(keyStrategy.get()));
 		keyStrategy.release();
 
 		string data = "this is a test";

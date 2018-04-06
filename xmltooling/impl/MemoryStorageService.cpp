@@ -36,6 +36,7 @@
 
 using namespace xmltooling::logging;
 using namespace xmltooling;
+using boost::scoped_ptr;
 using namespace std;
 
 using xercesc::DOMElement;
@@ -116,9 +117,9 @@ namespace xmltooling {
         }
 
         map<string,Context> m_contextMap;
-        auto_ptr<RWLock> m_lock;
-        auto_ptr<CondWait> shutdown_wait;
-        auto_ptr<Thread> cleanup_thread;
+        scoped_ptr<RWLock> m_lock;
+        scoped_ptr<CondWait> shutdown_wait;
+        scoped_ptr<Thread> cleanup_thread;
         static void* cleanup_fn(void*);
         bool shutdown;
         int m_cleanupInterval;
@@ -162,7 +163,7 @@ void* MemoryStorageService::cleanup_fn(void* pv)
     NDC ndc("cleanup");
 #endif
 
-    auto_ptr<Mutex> mutex(Mutex::create());
+    scoped_ptr<Mutex> mutex(Mutex::create());
     mutex->lock();
 
     cache->m_log.info("cleanup thread started...running every %d seconds", cache->m_cleanupInterval);

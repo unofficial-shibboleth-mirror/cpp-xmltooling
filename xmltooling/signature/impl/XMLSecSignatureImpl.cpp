@@ -214,7 +214,7 @@ void XMLSecSignatureImpl::sign(const Credential* credential)
     else if (!m_reference)
         throw SignatureException("No ContentReference object set for signature creation.");
 
-    XSECCryptoKey* key = credential ? credential->getPrivateKey() : m_key;
+    const XSECCryptoKey* key = credential ? credential->getPrivateKey() : m_key;
     if (!key)
         throw SignatureException("No signing key available for signature creation.");
 
@@ -229,11 +229,11 @@ void XMLSecSignatureImpl::sign(const Credential* credential)
         m_signature->setSigningKey(key->clone());
         m_signature->sign();
     }
-    catch(XSECException& e) {
+    catch(const XSECException& e) {
         auto_ptr_char temp(e.getMsg());
         throw SignatureException(string("Caught an XMLSecurity exception while signing: ") + temp.get());
     }
-    catch(XSECCryptoException& e) {
+    catch(const XSECCryptoException& e) {
         throw SignatureException(string("Caught an XMLSecurity exception while signing: ") + e.getMsg());
     }
 }
@@ -319,13 +319,13 @@ DOMElement* XMLSecSignatureImpl::marshall(DOMDocument* document, const vector<Si
                 );
             m_signature->load();
         }
-        catch(XSECException& e) {
+        catch(const XSECException& e) {
             if (bindDocument)
                 document->release();
             auto_ptr_char temp(e.getMsg());
             throw MarshallingException(string("Caught an XMLSecurity exception while loading signature: ") + temp.get());
         }
-        catch(XSECCryptoException& e) {
+        catch(const XSECCryptoException& e) {
             if (bindDocument)
                 document->release();
             throw MarshallingException(string("Caught an XMLSecurity exception while loading signature: ") + e.getMsg());
@@ -402,7 +402,7 @@ DOMElement* XMLSecSignatureImpl::marshall(DOMElement* parentElement, const vecto
         try {
             cachedDOM=static_cast<DOMElement*>(parentElement->getOwnerDocument()->importNode(internalDoc->getDocumentElement(),true));
         }
-        catch (XMLException& ex) {
+        catch (const XMLException& ex) {
             internalDoc->release();
             auto_ptr_char temp(ex.getMessage());
             throw XMLParserException(
@@ -418,11 +418,11 @@ DOMElement* XMLSecSignatureImpl::marshall(DOMElement* parentElement, const vecto
                 );
             m_signature->load();
         }
-        catch(XSECException& e) {
+        catch(const XSECException& e) {
             auto_ptr_char temp(e.getMsg());
             throw MarshallingException(string("Caught an XMLSecurity exception while loading signature: ") + temp.get());
         }
-        catch(XSECCryptoException& e) {
+        catch(const XSECCryptoException& e) {
             throw MarshallingException(string("Caught an XMLSecurity exception while loading signature: ") + e.getMsg());
         }
     }
@@ -456,11 +456,11 @@ XMLObject* XMLSecSignatureImpl::unmarshall(DOMElement* element, bool bindDocumen
             );
         m_signature->load();
     }
-    catch(XSECException& e) {
+    catch(const XSECException& e) {
         auto_ptr_char temp(e.getMsg());
         throw UnmarshallingException(string("Caught an XMLSecurity exception while loading signature: ") + temp.get());
     }
-    catch(XSECCryptoException& e) {
+    catch(const XSECCryptoException& e) {
         throw UnmarshallingException(string("Caught an XMLSecurity exception while loading signature: ") + e.getMsg());
     }
 
@@ -511,7 +511,7 @@ const XMLCh Signature::LOCAL_NAME[] = UNICODE_LITERAL_9(S,i,g,n,a,t,u,r,e);
 // Raw signature methods.
 
 unsigned int Signature::createRawSignature(
-    XSECCryptoKey* key, const XMLCh* sigAlgorithm, const char* in, unsigned int in_len, char* out, unsigned int out_len
+    const XSECCryptoKey* key, const XMLCh* sigAlgorithm, const char* in, unsigned int in_len, char* out, unsigned int out_len
     )
 {
     try {
@@ -547,17 +547,17 @@ unsigned int Signature::createRawSignature(
         *out = 0;
         return ret_len;
     }
-    catch(XSECException& e) {
+    catch(const XSECException& e) {
         auto_ptr_char temp(e.getMsg());
         throw SignatureException(string("Caught an XMLSecurity exception while creating raw signature: ") + temp.get());
     }
-    catch(XSECCryptoException& e) {
+    catch(const XSECCryptoException& e) {
         throw SignatureException(string("Caught an XMLSecurity exception while creating raw signature: ") + e.getMsg());
     }
 }
 
 bool Signature::verifyRawSignature(
-    XSECCryptoKey* key, const XMLCh* sigAlgorithm, const char* signature, const char* in, unsigned int in_len
+    const XSECCryptoKey* key, const XMLCh* sigAlgorithm, const char* signature, const char* in, unsigned int in_len
     )
 {
     try {
@@ -577,11 +577,11 @@ bool Signature::verifyRawSignature(
         // Verify the chain.
         return handler->verifyBase64Signature(&tx, sigAlgorithm, signature, 0, key);
     }
-    catch(XSECException& e) {
+    catch(const XSECException& e) {
         auto_ptr_char temp(e.getMsg());
         throw SignatureException(string("Caught an XMLSecurity exception while verifying raw signature: ") + temp.get());
     }
-    catch(XSECCryptoException& e) {
+    catch(const XSECCryptoException& e) {
         throw SignatureException(string("Caught an XMLSecurity exception while verifying raw signature: ") + e.getMsg());
     }
 }

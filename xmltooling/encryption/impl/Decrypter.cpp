@@ -46,6 +46,7 @@ using namespace xmlencryption;
 using namespace xmlsignature;
 using namespace xmltooling;
 using namespace xercesc;
+using boost::scoped_ptr;
 using namespace std;
 
 
@@ -76,7 +77,7 @@ void Decrypter::setKEKResolver(const CredentialResolver* resolver, CredentialCri
     m_criteria=criteria;
 }
 
-DOMDocumentFragment* Decrypter::decryptData(const EncryptedData& encryptedData, XSECCryptoKey* key)
+DOMDocumentFragment* Decrypter::decryptData(const EncryptedData& encryptedData, const XSECCryptoKey* key)
 {
     if (encryptedData.getDOM() == nullptr)
         throw DecryptionException("The object must be marshalled before decryption.");
@@ -144,7 +145,7 @@ DOMDocumentFragment* Decrypter::decryptData(const EncryptedData& encryptedData, 
     }
 
     // Loop over them and try each one.
-    XSECCryptoKey* key;
+    const XSECCryptoKey* key;
     for (vector<const Credential*>::const_iterator cred = creds.begin(); cred != creds.end(); ++cred) {
         try {
             key = (*cred)->getPrivateKey();
@@ -152,7 +153,7 @@ DOMDocumentFragment* Decrypter::decryptData(const EncryptedData& encryptedData, 
                 continue;
             return decryptData(encryptedData, key);
         }
-        catch(DecryptionException& ex) {
+        catch(const DecryptionException& ex) {
             logging::Category::getInstance(XMLTOOLING_LOGCAT ".Decrypter").warn(ex.what());
         }
     }
@@ -175,13 +176,13 @@ DOMDocumentFragment* Decrypter::decryptData(const EncryptedData& encryptedData, 
     if (!encKey)
         throw DecryptionException("Unable to locate an encrypted key.");
 
-    auto_ptr<XSECCryptoKey> keywrapper(decryptKey(*encKey, algorithm));
-    if (!keywrapper.get())
+    scoped_ptr<XSECCryptoKey> keywrapper(decryptKey(*encKey, algorithm));
+    if (!keywrapper)
         throw DecryptionException("Unable to decrypt the encrypted key.");
     return decryptData(encryptedData, keywrapper.get());
 }
 
-void Decrypter::decryptData(ostream& out, const EncryptedData& encryptedData, XSECCryptoKey* key)
+void Decrypter::decryptData(ostream& out, const EncryptedData& encryptedData, const XSECCryptoKey* key)
 {
     if (encryptedData.getDOM() == nullptr)
         throw DecryptionException("The object must be marshalled before decryption.");
@@ -206,18 +207,18 @@ void Decrypter::decryptData(ostream& out, const EncryptedData& encryptedData, XS
 
     try {
         m_cipher->setKey(key->clone());
-        auto_ptr<XSECBinTXFMInputStream> in(m_cipher->decryptToBinInputStream(encryptedData.getDOM()));
+        scoped_ptr<XSECBinTXFMInputStream> in(m_cipher->decryptToBinInputStream(encryptedData.getDOM()));
         
         XMLByte buf[8192];
         XMLSize_t count = in->readBytes(buf, sizeof(buf));
         while (count > 0)
             out.write(reinterpret_cast<char*>(buf),count);
     }
-    catch(XSECException& e) {
+    catch(const XSECException& e) {
         auto_ptr_char temp(e.getMsg());
         throw DecryptionException(string("XMLSecurity exception while decrypting: ") + temp.get());
     }
-    catch(XSECCryptoException& e) {
+    catch(const XSECCryptoException& e) {
         throw DecryptionException(string("XMLSecurity exception while decrypting: ") + e.getMsg());
     }
 }
@@ -249,7 +250,7 @@ void Decrypter::decryptData(ostream& out, const EncryptedData& encryptedData, co
     }
 
     // Loop over them and try each one.
-    XSECCryptoKey* key;
+    const XSECCryptoKey* key;
     for (vector<const Credential*>::const_iterator cred = creds.begin(); cred != creds.end(); ++cred) {
         try {
             key = (*cred)->getPrivateKey();
@@ -257,7 +258,7 @@ void Decrypter::decryptData(ostream& out, const EncryptedData& encryptedData, co
                 continue;
             return decryptData(out, encryptedData, key);
         }
-        catch(DecryptionException& ex) {
+        catch(const DecryptionException& ex) {
             logging::Category::getInstance(XMLTOOLING_LOGCAT ".Decrypter").warn(ex.what());
         }
     }
@@ -280,8 +281,8 @@ void Decrypter::decryptData(ostream& out, const EncryptedData& encryptedData, co
     if (!encKey)
         throw DecryptionException("Unable to locate an encrypted key.");
 
-    auto_ptr<XSECCryptoKey> keywrapper(decryptKey(*encKey, algorithm));
-    if (!keywrapper.get())
+    scoped_ptr<XSECCryptoKey> keywrapper(decryptKey(*encKey, algorithm));
+    if (!keywrapper)
         throw DecryptionException("Unable to decrypt the encrypted key.");
     decryptData(out, encryptedData, keywrapper.get());
 }
@@ -300,11 +301,11 @@ XSECCryptoKey* Decrypter::decryptKey(const EncryptedKey& encryptedKey, const XML
         if (!handler)
             throw DecryptionException("Unrecognized algorithm, no way to build object around decrypted key.");
     }
-    catch(XSECException& e) {
+    catch(const XSECException& e) {
         auto_ptr_char temp(e.getMsg());
         throw DecryptionException(string("XMLSecurity exception while decrypting key: ") + temp.get());
     }
-    catch(XSECCryptoException& e) {
+    catch(const XSECCryptoException& e) {
         throw DecryptionException(string("XMLSecurity exception while decrypting key: ") + e.getMsg());
     }
     
@@ -357,15 +358,15 @@ XSECCryptoKey* Decrypter::decryptKey(const EncryptedKey& encryptedKey, const XML
                 // Try to wrap the key.
                 return handler->createKeyForURI(algorithm, buffer, keySize);
             }
-            catch(XSECException& e) {
+            catch(const XSECException& e) {
                 auto_ptr_char temp(e.getMsg());
                 throw DecryptionException(string("XMLSecurity exception while decrypting key: ") + temp.get());
             }
-            catch(XSECCryptoException& e) {
+            catch(const XSECCryptoException& e) {
                 throw DecryptionException(string("XMLSecurity exception while decrypting key: ") + e.getMsg());
             }
         }
-        catch(DecryptionException& ex) {
+        catch(const DecryptionException& ex) {
             logging::Category::getInstance(XMLTOOLING_LOGCAT ".Decrypter").warn(ex.what());
         }
     }
@@ -383,11 +384,11 @@ XSECCryptoKey* Decrypter::decryptKey(const EncryptedKey& encryptedKey, const XML
             throw DecryptionException("Unable to generate random data; was PRNG seeded?");
         return handler->createKeyForURI(algorithm, buffer, mapped.second);
     }
-    catch(XSECException& e) {
+    catch(const XSECException& e) {
         auto_ptr_char temp(e.getMsg());
         throw DecryptionException(string("XMLSecurity exception while generating key: ") + temp.get());
     }
-    catch (XSECCryptoException& e) {
+    catch (const XSECCryptoException& e) {
         throw DecryptionException(string("XMLSecurity exception while generating key: ") + e.getMsg());
     }
 }

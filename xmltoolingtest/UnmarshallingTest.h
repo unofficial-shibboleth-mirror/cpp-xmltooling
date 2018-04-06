@@ -87,7 +87,7 @@ public:
         const XMLObjectBuilder* b = XMLObjectBuilder::getBuilder(doc->getDocumentElement());
         TS_ASSERT(b!=nullptr);
 
-        auto_ptr<SimpleXMLObject> sxObject(
+        scoped_ptr<SimpleXMLObject> sxObject(
             dynamic_cast<SimpleXMLObject*>(b->buildFromDocument(doc))
             );
         TS_ASSERT(sxObject.get()!=nullptr);
@@ -105,7 +105,7 @@ public:
         const XMLObjectBuilder* b = XMLObjectBuilder::getBuilder(doc->getDocumentElement());
         TS_ASSERT(b!=nullptr);
 
-        auto_ptr<SimpleXMLObject> sxObject(
+        scoped_ptr<SimpleXMLObject> sxObject(
             dynamic_cast<SimpleXMLObject*>(b->buildFromDocument(doc))
             );
         TS_ASSERT(sxObject.get()!=nullptr);
@@ -123,7 +123,7 @@ public:
         const XMLObjectBuilder* b = XMLObjectBuilder::getBuilder(doc->getDocumentElement());
         TS_ASSERT(b!=nullptr);
 
-        auto_ptr<SimpleXMLObject> sxObject(
+        scoped_ptr<SimpleXMLObject> sxObject(
             dynamic_cast<SimpleXMLObject*>(b->buildFromDocument(doc))
             );
         TS_ASSERT(sxObject.get()!=nullptr);
@@ -143,13 +143,13 @@ public:
         const XMLObjectBuilder* b = XMLObjectBuilder::getBuilder(doc->getDocumentElement());
         TS_ASSERT(b!=nullptr);
 
-        auto_ptr<SimpleXMLObject> sxObject(
+        scoped_ptr<SimpleXMLObject> sxObject(
             dynamic_cast<SimpleXMLObject*>(b->buildFromDocument(doc))
             );
         TS_ASSERT(sxObject.get()!=nullptr);
 
         sxObject->releaseThisAndChildrenDOM();
-        auto_ptr<SimpleXMLObject> clonedObject(dynamic_cast<SimpleXMLObject*>(sxObject->clone()));
+        scoped_ptr<SimpleXMLObject> clonedObject(dynamic_cast<SimpleXMLObject*>(sxObject->clone()));
 
         VectorOf(SimpleXMLObject) kids=clonedObject->getSimpleXMLObjects();
         TSM_ASSERT_EQUALS("Number of child elements was not expected value", 3, kids.size());

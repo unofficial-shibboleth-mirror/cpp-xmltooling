@@ -55,6 +55,7 @@ using namespace std;
 using xercesc::DOMElement;
 using xercesc::chLatin_f;
 using xercesc::chDigit_0;
+using boost::scoped_ptr;
 
 namespace xmltooling {
 
@@ -70,7 +71,7 @@ namespace xmltooling {
                 nkey = SecurityHelper::loadKeyFromFile(source.c_str(), format.c_str(), password);
             }
             else {
-                auto_ptr<SOAPTransport> t(getTransport());
+                scoped_ptr<SOAPTransport> t(getTransport());
                 log.info("loading private key from URL (%s)", source.c_str());
                 nkey = SecurityHelper::loadKeyFromURL(*t.get(), backing.c_str(), format.c_str(), password);
             }
@@ -96,7 +97,7 @@ namespace xmltooling {
                 SecurityHelper::loadCertificatesFromFile(ncerts, source.c_str(), format.c_str(), password);
             }
             else {
-                auto_ptr<SOAPTransport> t(getTransport());
+                scoped_ptr<SOAPTransport> t(getTransport());
                 log.info("loading certificate(s) from URL (%s)", source.c_str());
                 SecurityHelper::loadCertificatesFromURL(ncerts, *t.get(), backing.c_str(), format.c_str(), password);
             }
@@ -122,7 +123,7 @@ namespace xmltooling {
                 SecurityHelper::loadCRLsFromFile(ncrls, source.c_str(), format.c_str());
             }
             else {
-                auto_ptr<SOAPTransport> t(getTransport());
+                scoped_ptr<SOAPTransport> t(getTransport());
                 log.info("loading CRL(s) from URL (%s)", source.c_str());
                 SecurityHelper::loadCRLsFromURL(ncrls, *t.get(), backing.c_str(), format.c_str());
             }
@@ -157,8 +158,8 @@ namespace xmltooling {
     private:
         Credential* getCredential();
 
-        RWLock* m_lock;
-        Credential* m_credential;
+        scoped_ptr<RWLock> m_lock;
+        auto_ptr<Credential> m_credential;
         string m_keypass,m_certpass;
         unsigned int m_keyinfomask,m_usage;
         bool m_extractNames;
@@ -238,7 +239,7 @@ namespace xmltooling {
 };
 
 FilesystemCredentialResolver::FilesystemCredentialResolver(const DOMElement* e)
-    : m_lock(nullptr), m_credential(nullptr), m_keyinfomask(XMLHelper::getAttrInt(e, 0, keyInfoMask)),
+    : m_keyinfomask(XMLHelper::getAttrInt(e, 0, keyInfoMask)),
         m_usage(Credential::UNSPECIFIED_CREDENTIAL), m_extractNames(true)
 {
 #ifdef _DEBUG
@@ -435,9 +436,8 @@ FilesystemCredentialResolver::FilesystemCredentialResolver(const DOMElement* e)
     }
 
     // Load it all into a credential object and then create the lock.
-    auto_ptr<Credential> credential(getCredential());
-    m_lock = RWLock::create();
-    m_credential = credential.release();
+    m_credential.reset(getCredential());
+    m_lock.reset(RWLock::create());
     if (m_credential->getPrivateKey() == nullptr) {
         log.info("no private key resolved, usable for verification/trust only");
     }
@@ -445,15 +445,13 @@ FilesystemCredentialResolver::FilesystemCredentialResolver(const DOMElement* e)
 
 FilesystemCredentialResolver::~FilesystemCredentialResolver()
 {
-    delete m_credential;
-    delete m_lock;
 }
 
 Credential* FilesystemCredentialResolver::getCredential()
 {
     // First, verify that the key and certificate match.
     if (m_key.key && !m_certs.empty()) {
-        auto_ptr<XSECCryptoKey> temp(m_certs.front().certs.front()->clonePublicKey());
+        scoped_ptr<XSECCryptoKey> temp(m_certs.front().certs.front()->clonePublicKey());
         if (!SecurityHelper::matches(*m_key.key, *temp.get()))
             throw XMLSecurityException("FilesystemCredentialResolver given mismatched key/certificate, check for consistency.");
     }
@@ -511,7 +509,7 @@ Lockable* FilesystemCredentialResolver::lock()
 
     bool writelock = false, updated = false;
 
-    if (m_key.stale(log, m_lock)) {
+    if (m_key.stale(log, m_lock.get())) {
         writelock = true;
         try {
             m_key.load(log, m_keypass.c_str());
@@ -532,7 +530,7 @@ Lockable* FilesystemCredentialResolver::lock()
     }
 
     for (vector<ManagedCert>::iterator i = m_certs.begin(); i != m_certs.end(); ++i) {
-        if (i->stale(log, writelock ? nullptr : m_lock)) {
+        if (i->stale(log, writelock ? nullptr : m_lock.get())) {
             writelock = true;
             try {
                 i->load(log, (i==m_certs.begin()) ? m_certpass.c_str() : nullptr);
@@ -554,7 +552,7 @@ Lockable* FilesystemCredentialResolver::lock()
     }
 
     for (vector<ManagedCRL>::iterator j = m_crls.begin(); j != m_crls.end(); ++j) {
-        if (j->stale(log, writelock ? nullptr : m_lock)) {
+        if (j->stale(log, writelock ? nullptr : m_lock.get())) {
             writelock = true;
             try {
                 j->load(log);
@@ -578,8 +576,7 @@ Lockable* FilesystemCredentialResolver::lock()
     if (updated) {
         try {
             auto_ptr<Credential> credential(getCredential());
-            delete m_credential;
-            m_credential = credential.release();
+            m_credential = credential; // swap via auto_ptr
         }
         catch (exception& ex) {
             log.crit("maintaining existing credentials, error reloading: %s", ex.what());
@@ -595,7 +592,7 @@ Lockable* FilesystemCredentialResolver::lock()
 
 const Credential* FilesystemCredentialResolver::resolve(const CredentialCriteria* criteria) const
 {
-    return (criteria ? (criteria->matches(*m_credential) ? m_credential : nullptr) : m_credential);
+    return (criteria ? (criteria->matches(*m_credential) ? m_credential.get() : nullptr) : m_credential.get());
 }
 
 vector<const Credential*>::size_type FilesystemCredentialResolver::resolve(
@@ -603,7 +600,7 @@ vector<const Credential*>::size_type FilesystemCredentialResolver::resolve(
     ) const
 {
     if (!criteria || criteria->matches(*m_credential)) {
-        results.push_back(m_credential);
+        results.push_back(m_credential.get());
         return 1;
     }
     return 0;

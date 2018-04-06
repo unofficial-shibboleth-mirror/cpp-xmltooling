@@ -40,6 +40,8 @@ using namespace xmltooling;
 using namespace xercesc;
 using namespace std;
 
+using boost::scoped_ptr;
+
 namespace xmltooling {
 
     static const XMLCh _CredentialResolver[] =  UNICODE_LITERAL_18(C,r,e,d,e,n,t,i,a,l,R,e,s,o,l,v,e,r);
@@ -64,7 +66,7 @@ namespace xmltooling {
 
     private:
         int m_depth;
-        auto_ptr<CredentialResolver> m_credResolver;
+        scoped_ptr<CredentialResolver> m_credResolver;
         friend class XMLTOOL_DLLLOCAL StaticPKIXIterator;
     };
     

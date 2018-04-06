@@ -76,7 +76,7 @@ void SignatureValidator::validate(const Signature* sigObj) const
     else if (!m_key && !m_credential)
         throw ValidationException("No Credential or key set on Validator.");
 
-    XSECCryptoKey* key = m_key ? m_key : (m_credential ? m_credential->getPublicKey() : nullptr);
+    const XSECCryptoKey* key = m_key ? m_key : (m_credential ? m_credential->getPublicKey() : nullptr);
     if (!key)
         throw ValidationException("Credential did not contain a verification key.");
 
@@ -85,11 +85,11 @@ void SignatureValidator::validate(const Signature* sigObj) const
         if (!sig->verify())
             throw ValidationException("Digital signature does not validate with the supplied key.");
     }
-    catch(XSECException& e) {
+    catch(const XSECException& e) {
         auto_ptr_char temp(e.getMsg());
         throw ValidationException(string("Caught an XMLSecurity exception verifying signature: ") + temp.get());
     }
-    catch(XSECCryptoException& e) {
+    catch(const XSECCryptoException& e) {
         throw ValidationException(string("Caught an XMLSecurity exception verifying signature: ") + e.getMsg());
     }
 }

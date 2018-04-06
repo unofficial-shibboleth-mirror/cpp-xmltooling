@@ -32,6 +32,7 @@
 
 #include <ctime>
 #include <string>
+#include <boost/scoped_ptr.hpp>
 
 class XSECCryptoSymmetricKey;
 
@@ -122,7 +123,7 @@ namespace xmltooling {
 
     private:
 		logging::Category& m_log;
-		std::auto_ptr<DataSealerKeyStrategy> m_strategy;
+		boost::scoped_ptr<DataSealerKeyStrategy> m_strategy;
     };
 
 };

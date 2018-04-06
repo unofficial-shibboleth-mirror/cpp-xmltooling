@@ -68,8 +68,7 @@ XMLObject* AnyElementImpl::clone() const {
     auto_ptr<XMLObject> domClone(AbstractDOMCachingXMLObject::clone());
     AnyElementImpl* ret=dynamic_cast<AnyElementImpl*>(domClone.get());
     if (ret) {
-        domClone.release();
-        return ret;
+        return domClone.release();
     }
 
     auto_ptr<AnyElementImpl> ret2(new AnyElementImpl(*this));

@@ -37,6 +37,8 @@ using namespace xmltooling;
 using namespace xercesc;
 using namespace std;
 
+using boost::scoped_ptr;
+
 AbstractDOMCachingXMLObject::AbstractDOMCachingXMLObject() : m_dom(nullptr), m_document(nullptr)
 {
 }
@@ -156,10 +158,12 @@ XMLObject* AbstractDOMCachingXMLObject::clone() const
         // Seemed to work, so now we unmarshall the DOM to produce the clone.
         const XMLObjectBuilder* b=XMLObjectBuilder::getBuilder(domCopy);
         if (!b) {
-            auto_ptr<QName> q(XMLHelper::getNodeQName(domCopy));
-            m_log.error(
-                "DOM clone failed, unable to locate builder for element (%s)", q->toString().c_str()
-                );
+            if (m_log.isErrorEnabled()) {
+                scoped_ptr<QName> q(XMLHelper::getNodeQName(domCopy));
+                m_log.error(
+                    "DOM clone failed, unable to locate builder for element (%s)", q->toString().c_str()
+                   );
+            }
             domCopy->getOwnerDocument()->release();
             throw UnmarshallingException("Unable to locate builder for cloned element.");
         }

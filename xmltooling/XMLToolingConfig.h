@@ -33,6 +33,7 @@
 
 #include <memory>
 #include <string>
+#include <boost/scoped_ptr.hpp>
 #include <xercesc/dom/DOM.hpp>
 
 #if defined (_MSC_VER)
@@ -76,23 +77,23 @@ namespace xmltooling {
 
 #ifndef XMLTOOLING_NO_XMLSEC
         /** Global KeyInfoResolver instance. */
-        std::auto_ptr<KeyInfoResolver> m_keyInfoResolver;
+        boost::scoped_ptr<KeyInfoResolver> m_keyInfoResolver;
 
         /** Global ReplayCache instance. */
-        std::auto_ptr<ReplayCache> m_replayCache;
+        boost::scoped_ptr<ReplayCache> m_replayCache;
 
         /* Global DataSealer instance. */
-        std::auto_ptr<DataSealer> m_dataSealer;
+        boost::scoped_ptr<DataSealer> m_dataSealer;
 #endif
 
         /** Global PathResolver instance. */
-        std::auto_ptr<PathResolver> m_pathResolver;
+        boost::scoped_ptr<PathResolver> m_pathResolver;
         
         /** Global TemplateEngine instance. */
-        std::auto_ptr<TemplateEngine> m_templateEngine;
+        boost::scoped_ptr<TemplateEngine> m_templateEngine;
 
         /** Global URLEncoder instance for use by URL-related functions. */
-        std::auto_ptr<URLEncoder> m_urlEncoder;
+        boost::scoped_ptr<URLEncoder> m_urlEncoder;
 
     public:
         virtual ~XMLToolingConfig();

@@ -159,7 +159,7 @@ namespace xmlsignature {
          * <p>Allows specialized applications to create raw signatures over any input using
          * the same cryptography layer as XML Signatures use. 
          * 
-         * @param key               key to sign with, will <strong>NOT</strong> be freed
+         * @param key               key to sign with
          * @param sigAlgorithm      XML signature algorithm identifier
          * @param in                input data
          * @param in_len            size of input data in bytes
@@ -168,7 +168,7 @@ namespace xmlsignature {
          * @return  size in bytes of base64-encoded signature
          */
         static unsigned int createRawSignature(
-            XSECCryptoKey* key,
+            const XSECCryptoKey* key,
             const XMLCh* sigAlgorithm,
             const char* in,
             unsigned int in_len,
@@ -182,7 +182,7 @@ namespace xmlsignature {
          * <p>Allows specialized applications to verify raw signatures over any input using
          * the same cryptography layer as XML Signatures use. 
          * 
-         * @param key               key to verify with, will <strong>NOT</strong> be freed
+         * @param key               key to verify with
          * @param sigAlgorithm      XML signature algorithm identifier
          * @param signature         base64-encoded signature value
          * @param in                input data
@@ -190,7 +190,7 @@ namespace xmlsignature {
          * @return  true iff signature verifies
          */
         static bool verifyRawSignature(
-            XSECCryptoKey* key,
+            const XSECCryptoKey* key,
             const XMLCh* sigAlgorithm,
             const char* signature,
             const char* in,

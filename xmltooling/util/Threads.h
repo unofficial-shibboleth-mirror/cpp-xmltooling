@@ -311,16 +311,6 @@ namespace xmltooling
          *
          * @param mtx mutex to lock
          */
-        Lock(const std::auto_ptr<Mutex>& mtx) : mutex(mtx.get()) {
-            if (mutex)
-                mutex->lock();
-        }
-
-        /**
-         * Locks and wraps the designated mutex.
-         *
-         * @param mtx mutex to lock
-         */
         Lock(const boost::scoped_ptr<Mutex>& mtx) : mutex(mtx.get()) {
             if (mutex)
                 mutex->lock();
@@ -362,17 +352,6 @@ namespace xmltooling
          * @param lockit    true if the lock should be acquired here, false if already acquired
          */
         SharedLock(RWLock* lock, bool lockit=true) : rwlock(lock) {
-            if (rwlock && lockit)
-                rwlock->rdlock();
-        }
-
-        /**
-         * Locks and wraps the designated shared lock.
-         *
-         * @param lock      lock to acquire
-         * @param lockit    true if the lock should be acquired here, false if already acquired
-         */
-        SharedLock(const std::auto_ptr<RWLock>& lock, bool lockit=true) : rwlock(lock.get()) {
             if (rwlock && lockit)
                 rwlock->rdlock();
         }

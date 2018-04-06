@@ -39,7 +39,7 @@ public:
         const XMLObjectBuilder* b = XMLObjectBuilder::getBuilder(doc->getDocumentElement());
         TS_ASSERT(b!=nullptr);
 
-        auto_ptr<Envelope> envObject(dynamic_cast<Envelope*>(b->buildFromDocument(doc)));
+        scoped_ptr<Envelope> envObject(dynamic_cast<Envelope*>(b->buildFromDocument(doc)));
         TS_ASSERT(envObject.get()!=nullptr);
         TSM_ASSERT("SOAP Envelope missing Body", envObject->getBody() != nullptr);
         TSM_ASSERT_EQUALS("SOAP Body missing Fault", 1, envObject->getBody()->getOrderedChildren().size());

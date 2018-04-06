@@ -32,6 +32,7 @@
 #include <set>
 #include <vector>
 #include <string>
+#include <boost/scoped_ptr.hpp>
 
 namespace xmlsignature {
     class XMLTOOL_API KeyInfo;
@@ -71,7 +72,7 @@ namespace xmltooling {
         BasicX509Credential(XSECCryptoKey* key, const std::vector<XSECCryptoX509*>& certs, const std::vector<XSECCryptoX509CRL*>& crls);
 
         /** The private/secret key/keypair. */
-        XSECCryptoKey* m_key;
+        boost::scoped_ptr<XSECCryptoKey> m_key;
 
         /** Key names (derived from credential, KeyInfo, or both). */
         std::set<std::string> m_keyNames;
@@ -95,10 +96,10 @@ namespace xmltooling {
         std::vector<XSECCryptoX509CRL*> m_crls;
 
         /** The KeyInfo object representing the information. */
-        xmlsignature::KeyInfo* m_keyInfo;
+        boost::scoped_ptr<xmlsignature::KeyInfo> m_keyInfo;
 
         /** The KeyInfo object representing the information in compact form. */
-        xmlsignature::KeyInfo* m_compactKeyInfo;
+        boost::scoped_ptr<xmlsignature::KeyInfo> m_compactKeyInfo;
 
         /**
          * Initializes (or reinitializes) a ds:KeyInfo to represent the Credential.
@@ -114,12 +115,11 @@ namespace xmltooling {
         unsigned int getUsage() const;
         const char* getAlgorithm() const;
         unsigned int getKeySize() const;
-        XSECCryptoKey* getPrivateKey() const;
-        XSECCryptoKey* getPublicKey() const;
+        const XSECCryptoKey* getPrivateKey() const;
+        const XSECCryptoKey* getPublicKey() const;
         const std::set<std::string>& getKeyNames() const;
         xmlsignature::KeyInfo* getKeyInfo(bool compact=false) const;
         const std::vector<XSECCryptoX509*>& getEntityCertificateChain() const;
-        XSECCryptoX509CRL* getCRL() const;
         const std::vector<XSECCryptoX509CRL*>& getCRLs() const;
         const char* getSubjectName() const;
         const char* getIssuerName() const;

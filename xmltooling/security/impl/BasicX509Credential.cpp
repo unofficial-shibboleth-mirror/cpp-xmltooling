@@ -119,20 +119,15 @@ BasicX509Credential::BasicX509Credential(XSECCryptoKey* key, const vector<XSECCr
 
 BasicX509Credential::~BasicX509Credential()
 {
-    delete m_key;
     if (m_ownCerts)
         for_each(m_xseccerts.begin(), m_xseccerts.end(), xmltooling::cleanup<XSECCryptoX509>());
     for_each(m_crls.begin(), m_crls.end(), xmltooling::cleanup<XSECCryptoX509CRL>());
-    delete m_keyInfo;
-    delete m_compactKeyInfo;
 }
 
 void BasicX509Credential::initKeyInfo(unsigned int types)
 {
-    delete m_keyInfo;
-    m_keyInfo = nullptr;
-    delete m_compactKeyInfo;
-    m_compactKeyInfo = nullptr;
+    m_keyInfo.reset();
+    m_compactKeyInfo.reset();
 
     // Default will disable X509IssuerSerial due to schema validation issues.
     if (types == 0)
@@ -141,7 +136,7 @@ void BasicX509Credential::initKeyInfo(unsigned int types)
     if (types & KEYINFO_KEY_NAME) {
         const set<string>& names = getKeyNames();
         if (!names.empty()) {
-            m_compactKeyInfo = KeyInfoBuilder::buildKeyInfo();
+            m_compactKeyInfo.reset(KeyInfoBuilder::buildKeyInfo());
             VectorOf(KeyName) knames = m_compactKeyInfo->getKeyNames();
             for (set<string>::const_iterator n = names.begin(); n!=names.end(); ++n) {
                 if (*n == m_subjectName)
@@ -157,7 +152,7 @@ void BasicX509Credential::initKeyInfo(unsigned int types)
     if (types & KEYINFO_X509_SUBJECTNAME || types & KEYINFO_X509_ISSUERSERIAL) {
         if (!m_subjectName.empty() || (!m_issuerName.empty() && !m_serial.empty())) {
             if (!m_compactKeyInfo)
-                m_compactKeyInfo = KeyInfoBuilder::buildKeyInfo();
+                m_compactKeyInfo.reset(KeyInfoBuilder::buildKeyInfo());
             X509Data* x509Data=X509DataBuilder::buildX509Data();
             m_compactKeyInfo->getX509Datas().push_back(x509Data);
             if (types & KEYINFO_X509_SUBJECTNAME && !m_subjectName.empty()) {
@@ -183,7 +178,7 @@ void BasicX509Credential::initKeyInfo(unsigned int types)
     }
 
     if (types & KEYINFO_X509_CERTIFICATE && !m_xseccerts.empty()) {
-        m_keyInfo = m_compactKeyInfo ? m_compactKeyInfo->cloneKeyInfo() : KeyInfoBuilder::buildKeyInfo();
+        m_keyInfo.reset(m_compactKeyInfo ? m_compactKeyInfo->cloneKeyInfo() : KeyInfoBuilder::buildKeyInfo());
         if (m_keyInfo->getX509Datas().empty())
             m_keyInfo->getX509Datas().push_back(X509DataBuilder::buildX509Data());
         for (vector<XSECCryptoX509*>::const_iterator x = m_xseccerts.begin(); x!=m_xseccerts.end(); ++x) {
@@ -196,7 +191,7 @@ void BasicX509Credential::initKeyInfo(unsigned int types)
 
     if (types & KEYINFO_X509_DIGEST && !m_xseccerts.empty()) {
         if (!m_compactKeyInfo)
-            m_compactKeyInfo = KeyInfoBuilder::buildKeyInfo();
+            m_compactKeyInfo.reset(KeyInfoBuilder::buildKeyInfo());
         if (m_compactKeyInfo->getX509Datas().empty())
             m_compactKeyInfo->getX509Datas().push_back(X509DataBuilder::buildX509Data());
         safeBuffer& buf=m_xseccerts.front()->getDEREncodingSB();
@@ -246,7 +241,7 @@ const char* BasicX509Credential::getAlgorithm() const
                 return "HMAC";
 
             case XSECCryptoKey::KEY_SYMMETRIC: {
-                switch (static_cast<XSECCryptoSymmetricKey*>(m_key)->getSymmetricKeyType()) {
+                switch (static_cast<XSECCryptoSymmetricKey*>(m_key.get())->getSymmetricKeyType()) {
                     case XSECCryptoSymmetricKey::KEY_3DES_192:
                         return "DESede";
                     case XSECCryptoSymmetricKey::KEY_AES_128:
@@ -269,12 +264,12 @@ unsigned int BasicX509Credential::getKeySize() const
             case XSECCryptoKey::KEY_RSA_PRIVATE:
             case XSECCryptoKey::KEY_RSA_PUBLIC:
             case XSECCryptoKey::KEY_RSA_PAIR: {
-                XSECCryptoKeyRSA* rkey = static_cast<XSECCryptoKeyRSA*>(m_key);
+                XSECCryptoKeyRSA* rkey = static_cast<XSECCryptoKeyRSA*>(m_key.get());
                 return 8 * rkey->getLength();
             }
 
             case XSECCryptoKey::KEY_SYMMETRIC: {
-                switch (static_cast<XSECCryptoSymmetricKey*>(m_key)->getSymmetricKeyType()) {
+                switch (static_cast<XSECCryptoSymmetricKey*>(m_key.get())->getSymmetricKeyType()) {
                     case XSECCryptoSymmetricKey::KEY_3DES_192:
                         return 192;
                     case XSECCryptoSymmetricKey::KEY_AES_128:
@@ -290,26 +285,26 @@ unsigned int BasicX509Credential::getKeySize() const
     return 0;
 }
 
-XSECCryptoKey* BasicX509Credential::getPrivateKey() const
+const XSECCryptoKey* BasicX509Credential::getPrivateKey() const
 {
     if (m_key) {
         XSECCryptoKey::KeyType type = m_key->getKeyType();
         if (type != XSECCryptoKey::KEY_RSA_PUBLIC
-        	    && type != XSECCryptoKey::KEY_DSA_PUBLIC
+            && type != XSECCryptoKey::KEY_DSA_PUBLIC
             && type != XSECCryptoKey::KEY_EC_PUBLIC)
-            return m_key;
+            return m_key.get();
     }
     return nullptr;
 }
 
-XSECCryptoKey* BasicX509Credential::getPublicKey() const
+const XSECCryptoKey* BasicX509Credential::getPublicKey() const
 {
     if (m_key) {
         XSECCryptoKey::KeyType type = m_key->getKeyType();
         if (type != XSECCryptoKey::KEY_RSA_PRIVATE
             && type != XSECCryptoKey::KEY_DSA_PRIVATE
             && type != XSECCryptoKey::KEY_EC_PRIVATE)
-            return m_key;
+            return m_key.get();
     }
     return nullptr;
 }
@@ -329,11 +324,6 @@ KeyInfo* BasicX509Credential::getKeyInfo(bool compact) const
 const vector<XSECCryptoX509*>& BasicX509Credential::getEntityCertificateChain() const
 {
     return m_xseccerts;
-}
-
-XSECCryptoX509CRL* BasicX509Credential::getCRL() const
-{
-    return m_crls.empty() ? nullptr : m_crls.front();
 }
 
 const vector<XSECCryptoX509CRL*>& BasicX509Credential::getCRLs() const

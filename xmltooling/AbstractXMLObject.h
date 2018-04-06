@@ -31,7 +31,7 @@
 #include <xmltooling/QName.h>
 #include <xmltooling/XMLObject.h>
 
-#include <memory>
+#include <boost/scoped_ptr.hpp>
 #include <xercesc/util/XMLDateTime.hpp>
 
 #if defined (_MSC_VER)
@@ -191,7 +191,7 @@ namespace xmltooling {
     private:
         XMLObject* m_parent;
         QName m_elementQname;
-        std::auto_ptr<QName> m_typeQname;
+        boost::scoped_ptr<QName> m_typeQname;
     };
 
 };

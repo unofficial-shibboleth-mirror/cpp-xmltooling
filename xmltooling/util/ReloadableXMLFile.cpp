@@ -69,6 +69,8 @@ using namespace xmltooling;
 using namespace xercesc;
 using namespace std;
 
+using boost::scoped_ptr;
+
 static const XMLCh id[] =               UNICODE_LITERAL_2(i,d);
 static const XMLCh uri[] =              UNICODE_LITERAL_3(u,r,i);
 static const XMLCh url[] =              UNICODE_LITERAL_3(u,r,l);
@@ -276,7 +278,7 @@ void* ReloadableXMLFile::reload_fn(void* pv)
     NDC ndc("reload");
 #endif
 
-    auto_ptr<Mutex> mutex(Mutex::create());
+    scoped_ptr<Mutex> mutex(Mutex::create());
     mutex->lock();
 
     if (r->m_local)
@@ -456,7 +458,7 @@ pair<bool,DOMElement*> ReloadableXMLFile::load(bool backup, string backingFile)
                         throw XMLSecurityException("Signature validation required, but no signature found.");
 
                     // Wrap and unmarshall the signature for the duration of the check.
-                    auto_ptr<Signature> sigobj(dynamic_cast<Signature*>(SignatureBuilder::buildOneFromElement(sigel)));    // don't bind to document
+                    scoped_ptr<Signature> sigobj(dynamic_cast<Signature*>(SignatureBuilder::buildOneFromElement(sigel)));    // don't bind to document
                     validateSignature(*sigobj.get());
                 }
                 catch (exception&) {
@@ -626,10 +628,10 @@ void ReloadableXMLFile::validateSignature(Signature& sigObj) const
         }
     }
     else if (m_trust) {
-        auto_ptr<CredentialResolver> dummy(
+        scoped_ptr<CredentialResolver> dummy(
             XMLToolingConfig::getConfig().CredentialResolverManager.newPlugin(DUMMY_CREDENTIAL_RESOLVER, nullptr)
             );
-        if (m_trust->validate(sigObj, *(dummy.get()), &cc))
+        if (m_trust->validate(sigObj, *dummy, &cc))
             return;
         throw XMLSecurityException("TrustEngine unable to verify signature.");
     }

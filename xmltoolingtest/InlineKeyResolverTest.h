@@ -70,10 +70,10 @@ public:
         TS_ASSERT(doc!=nullptr);
         const XMLObjectBuilder* b = XMLObjectBuilder::getBuilder(doc->getDocumentElement());
         TS_ASSERT(b!=nullptr);
-        auto_ptr<KeyInfo> kiObject(dynamic_cast<KeyInfo*>(b->buildFromDocument(doc)));
+        scoped_ptr<KeyInfo> kiObject(dynamic_cast<KeyInfo*>(b->buildFromDocument(doc)));
         TS_ASSERT(kiObject.get()!=nullptr);
 
-        auto_ptr<X509Credential> cred(dynamic_cast<X509Credential*>(m_resolver->resolve(kiObject.get())));
+        scoped_ptr<X509Credential> cred(dynamic_cast<X509Credential*>(m_resolver->resolve(kiObject.get())));
         TSM_ASSERT("Unable to resolve KeyInfo into Credential.", cred.get()!=nullptr);
 
         TSM_ASSERT("Unable to resolve public key.", cred->getPublicKey()!=nullptr);
@@ -90,11 +90,11 @@ public:
         TS_ASSERT(doc!=nullptr);
         const XMLObjectBuilder* b = XMLObjectBuilder::getBuilder(doc->getDocumentElement());
         TS_ASSERT(b!=nullptr);
-        auto_ptr<KeyInfo> kiObject(dynamic_cast<KeyInfo*>(b->buildFromDocument(doc)));
+        scoped_ptr<KeyInfo> kiObject(dynamic_cast<KeyInfo*>(b->buildFromDocument(doc)));
         TS_ASSERT(kiObject.get()!=nullptr);
 
-        auto_ptr<X509Credential> credFromKeyInfo(dynamic_cast<X509Credential*>(m_resolver->resolve(kiObject.get())));
-        OpenSSLCryptoKeyDSA* keyInfoDSA = dynamic_cast<OpenSSLCryptoKeyDSA*>(credFromKeyInfo->getPublicKey());
+        scoped_ptr<X509Credential> credFromKeyInfo(dynamic_cast<X509Credential*>(m_resolver->resolve(kiObject.get())));
+        const OpenSSLCryptoKeyDSA* keyInfoDSA = dynamic_cast<const OpenSSLCryptoKeyDSA*>(credFromKeyInfo->getPublicKey());
 
         path = data_path + "FileSystemCredentialResolver.xml";
         ifstream in(path.c_str());
@@ -107,7 +107,7 @@ public:
         CredentialCriteria cc;
         cc.setUsage(Credential::SIGNING_CREDENTIAL);
         cc.setKeyAlgorithm("DSA");
-        OpenSSLCryptoKeyDSA* fileResolverDSA = dynamic_cast<OpenSSLCryptoKeyDSA*>(cresolver->resolve(&cc)->getPublicKey());
+        const OpenSSLCryptoKeyDSA* fileResolverDSA = dynamic_cast<const OpenSSLCryptoKeyDSA*>(cresolver->resolve(&cc)->getPublicKey());
 
         unsigned char toSign[] = "Nibble A Happy WartHog";
         const int bufferSize = 1024;
@@ -132,13 +132,13 @@ public:
         TS_ASSERT(doc!=nullptr);
         const XMLObjectBuilder* b = XMLObjectBuilder::getBuilder(doc->getDocumentElement());
         TS_ASSERT(b!=nullptr);
-        auto_ptr<KeyInfo> kiObject(dynamic_cast<KeyInfo*>(b->buildFromDocument(doc)));
+        scoped_ptr<KeyInfo> kiObject(dynamic_cast<KeyInfo*>(b->buildFromDocument(doc)));
         TS_ASSERT(kiObject.get()!=nullptr);
 
-        auto_ptr<X509Credential> credFromKeyInfo(dynamic_cast<X509Credential*>(m_resolver->resolve(kiObject.get())));
-        OpenSSLCryptoKeyEC* sslCredFromKeyInfo= dynamic_cast<OpenSSLCryptoKeyEC*>(credFromKeyInfo->getPublicKey());
+        scoped_ptr<X509Credential> credFromKeyInfo(dynamic_cast<X509Credential*>(m_resolver->resolve(kiObject.get())));
+        const OpenSSLCryptoKeyEC* sslCredFromKeyInfo= dynamic_cast<const OpenSSLCryptoKeyEC*>(credFromKeyInfo->getPublicKey());
 
-        const  EC_KEY* keyInfoEC = dynamic_cast<OpenSSLCryptoKeyEC*>(credFromKeyInfo->getPublicKey())->getOpenSSLEC();
+        const EC_KEY* keyInfoEC = dynamic_cast<const OpenSSLCryptoKeyEC*>(credFromKeyInfo->getPublicKey())->getOpenSSLEC();
 
         path = data_path + "FileSystemCredentialResolver.xml";
         ifstream in(path.c_str());
@@ -151,7 +151,7 @@ public:
         CredentialCriteria cc;
         cc.setUsage(Credential::SIGNING_CREDENTIAL);
         cc.setKeyAlgorithm("EC");
-        OpenSSLCryptoKeyEC* fileResolverCryptoKeyEC = dynamic_cast<OpenSSLCryptoKeyEC*>(cresolver->resolve(&cc)->getPublicKey());
+        const OpenSSLCryptoKeyEC* fileResolverCryptoKeyEC = dynamic_cast<const OpenSSLCryptoKeyEC*>(cresolver->resolve(&cc)->getPublicKey());
         const EC_KEY* fileResolverEC= fileResolverCryptoKeyEC->getOpenSSLEC();
 
         unsigned char toSign[] = "NibbleAHappyWartHog";
@@ -171,17 +171,17 @@ public:
         TS_ASSERT(doc!=nullptr);
         const XMLObjectBuilder* b = XMLObjectBuilder::getBuilder(doc->getDocumentElement());
         TS_ASSERT(b!=nullptr);
-        auto_ptr<KeyInfo> kiObject(dynamic_cast<KeyInfo*>(b->buildFromDocument(doc)));
+        scoped_ptr<KeyInfo> kiObject(dynamic_cast<KeyInfo*>(b->buildFromDocument(doc)));
         TS_ASSERT(kiObject.get()!=nullptr);
 
-        auto_ptr<X509Credential> cred(dynamic_cast<X509Credential*>(m_resolver->resolve(kiObject.get())));
-        auto_ptr<X509Credential> key(dynamic_cast<X509Credential*>(m_resolver->resolve(kiObject.get(), Credential::RESOLVE_KEYS)));
+        scoped_ptr<X509Credential> cred(dynamic_cast<X509Credential*>(m_resolver->resolve(kiObject.get())));
+        scoped_ptr<X509Credential> key(dynamic_cast<X509Credential*>(m_resolver->resolve(kiObject.get(), Credential::RESOLVE_KEYS)));
 
-        OpenSSLCryptoKeyRSA* sslCred = dynamic_cast<OpenSSLCryptoKeyRSA*>(cred->getPublicKey());
-        OpenSSLCryptoKeyRSA* sslKey = dynamic_cast<OpenSSLCryptoKeyRSA*>(key->getPublicKey());
+        const OpenSSLCryptoKeyRSA* sslCred = dynamic_cast<const OpenSSLCryptoKeyRSA*>(cred->getPublicKey());
+        const OpenSSLCryptoKeyRSA* sslKey = dynamic_cast<const OpenSSLCryptoKeyRSA*>(key->getPublicKey());
 
-        RSA* rsaCred = sslCred->getOpenSSLRSA();
-        RSA* rsaKey = sslKey->getOpenSSLRSA();
+        const RSA* rsaCred = sslCred->getOpenSSLRSA();
+        const RSA* rsaKey = sslKey->getOpenSSLRSA();
 
 #if (OPENSSL_VERSION_NUMBER < 0x10100000L)
         BIGNUM* n = rsaCred->n;
@@ -228,10 +228,10 @@ public:
         TS_ASSERT(doc!=nullptr);
         const XMLObjectBuilder* b = XMLObjectBuilder::getBuilder(doc->getDocumentElement());
         TS_ASSERT(b!=nullptr);
-        auto_ptr<KeyInfo> kiObject(dynamic_cast<KeyInfo*>(b->buildFromDocument(doc)));
+        scoped_ptr<KeyInfo> kiObject(dynamic_cast<KeyInfo*>(b->buildFromDocument(doc)));
         TS_ASSERT(kiObject.get()!=nullptr);
 
-        auto_ptr<X509Credential> cred(dynamic_cast<X509Credential*>(m_resolver->resolve(kiObject.get())));
+        scoped_ptr<X509Credential> cred(dynamic_cast<X509Credential*>(m_resolver->resolve(kiObject.get())));
         TSM_ASSERT("Unable to resolve KeyInfo into Credential.", cred.get()!=nullptr);
 
         TSM_ASSERT("Unable to resolve public key.", cred->getPublicKey()!=nullptr);

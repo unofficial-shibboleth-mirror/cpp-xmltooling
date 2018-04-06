@@ -110,14 +110,14 @@ namespace xmltooling {
          *
          * @return  a secret or private key
          */
-        virtual XSECCryptoKey* getPrivateKey() const=0;
+        virtual const XSECCryptoKey* getPrivateKey() const=0;
 
         /**
          * Returns a secret or public key to use for verification or encryption operations.
          *
          * @return  a secret or public key
          */
-        virtual XSECCryptoKey* getPublicKey() const=0;
+        virtual const XSECCryptoKey* getPublicKey() const=0;
 
         /**
          * Returns names representing the Credential.

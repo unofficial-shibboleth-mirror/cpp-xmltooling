@@ -1205,7 +1205,7 @@
  */
 #define PROC_QNAME_ATTRIB(proper,ucase,namespaceURI) \
     if (xmltooling::XMLHelper::isNodeNamed(attribute, namespaceURI, ucase##_ATTRIB_NAME)) { \
-        std::auto_ptr<xmltooling::QName> q(xmltooling::XMLHelper::getAttributeValueAsQName(attribute)); \
+        boost::scoped_ptr<xmltooling::QName> q(xmltooling::XMLHelper::getAttributeValueAsQName(attribute)); \
         set##proper(q.get()); \
         return; \
     }
@@ -1376,10 +1376,8 @@
     xmltooling::XMLObject* clone() const { \
         std::auto_ptr<xmltooling::XMLObject> domClone(xmltooling::AbstractDOMCachingXMLObject::clone()); \
         cname##Impl* ret=dynamic_cast<cname##Impl*>(domClone.get()); \
-        if (ret) { \
-            domClone.release(); \
-            return ret; \
-        } \
+        if (ret) \
+            return domClone.release(); \
         return new cname##Impl(*this); \
     }
 
@@ -1400,10 +1398,8 @@
     xmltooling::XMLObject* clone() const { \
         std::auto_ptr<xmltooling::XMLObject> domClone(xmltooling::AbstractDOMCachingXMLObject::clone()); \
         cname##Impl* ret=dynamic_cast<cname##Impl*>(domClone.get()); \
-        if (ret) { \
-            domClone.release(); \
-            return ret; \
-        } \
+        if (ret) \
+            return domClone.release(); \
         return new cname##Impl(*this); \
     }
 
@@ -1420,10 +1416,8 @@
     xmltooling::XMLObject* clone() const { \
         std::auto_ptr<xmltooling::XMLObject> domClone(xmltooling::AbstractDOMCachingXMLObject::clone()); \
         cname##Impl* ret=dynamic_cast<cname##Impl*>(domClone.get()); \
-        if (ret) { \
-            domClone.release(); \
-            return ret; \
-        } \
+        if (ret) \
+            return domClone.release(); \
         std::auto_ptr<cname##Impl> ret2(new cname##Impl(*this)); \
         ret2->_clone(*this); \
         return ret2.release(); \
@@ -1447,10 +1441,8 @@
     xmltooling::XMLObject* clone() const { \
         std::auto_ptr<xmltooling::XMLObject> domClone(xmltooling::AbstractDOMCachingXMLObject::clone()); \
         cname##Impl* ret=dynamic_cast<cname##Impl*>(domClone.get()); \
-        if (ret) { \
-            domClone.release(); \
-            return ret; \
-        } \
+        if (ret) \
+            return domClone.release(); \
         std::auto_ptr<cname##Impl> ret2(new cname##Impl(*this)); \
         ret2->_clone(*this); \
         return ret2.release(); \

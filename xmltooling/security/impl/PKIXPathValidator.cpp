@@ -49,6 +49,7 @@ using namespace xmltooling::logging;
 using namespace xmltooling;
 using namespace std;
 
+using boost::scoped_ptr;
 
 namespace {
     static int XMLTOOL_DLLLOCAL error_callback(int ok, X509_STORE_CTX* ctx)
@@ -377,7 +378,7 @@ bool PKIXPathValidator::validate(X509* EE, STACK_OF(X509)* untrusted, const Path
                     // Only consider URIs, and stop after the first one we find.
                     if (gen->type == GEN_URI) {
                         const char* cdpuri = (const char*)gen->d.ia5->data;
-                        auto_ptr<XSECCryptoX509CRL> crl(getRemoteCRLs(cdpuri));
+                        scoped_ptr<XSECCryptoX509CRL> crl(getRemoteCRLs(cdpuri));
                         if (crl.get() && crl->getProviderName()==DSIGConstants::s_unicodeStrPROVOpenSSL &&
                             (isFreshCRL(crl.get()) || (ii == sk_DIST_POINT_num(dps)-1 && iii == sk_GENERAL_NAME_num(dp->distpoint->name.fullname)-1))) {
                             // owned by store
@@ -507,7 +508,7 @@ XSECCryptoX509CRL* PKIXPathValidator::getRemoteCRLs(const char* cdpuri) const
             if (difftime(now, ts) > m_minRefreshDelay) {
                 SOAPTransport::Address addr("AbstractPKIXTrustEngine", cdpuri, cdpuri);
                 string scheme(addr.m_endpoint, strchr(addr.m_endpoint,':') - addr.m_endpoint);
-                auto_ptr<SOAPTransport> soap(XMLToolingConfig::getConfig().SOAPTransportManager.newPlugin(scheme.c_str(), addr));
+                scoped_ptr<SOAPTransport> soap(XMLToolingConfig::getConfig().SOAPTransportManager.newPlugin(scheme.c_str(), addr));
                 soap->send();
                 istream& msg = soap->receive();
                 Lock glock(m_lock);

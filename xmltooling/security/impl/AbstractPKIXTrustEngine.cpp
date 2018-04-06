@@ -49,6 +49,7 @@
 using namespace xmlsignature;
 using namespace xmltooling::logging;
 using namespace xmltooling;
+using boost::scoped_ptr;
 using namespace std;
 
 namespace xmltooling {
@@ -375,7 +376,7 @@ bool AbstractPKIXTrustEngine::validateWithCRLs(
     
     log.debug("performing certificate path validation...");
 
-    auto_ptr<PKIXValidationInfoIterator> pkix(getPKIXValidationInfoIterator(credResolver, criteria));
+    scoped_ptr<PKIXValidationInfoIterator> pkix(getPKIXValidationInfoIterator(credResolver, criteria));
     while (pkix->next()) {
         PKIXParams params(*this, *pkix.get(), inlineCRLs);
         for (vector< boost::shared_ptr<OpenSSLPathValidator> >::const_iterator v = m_pathValidators.begin(); v != m_pathValidators.end(); ++v) {
@@ -448,8 +449,8 @@ bool AbstractPKIXTrustEngine::validate(
 
     // Pull the certificate chain out of the signature.
     X509Credential* x509cred;
-    auto_ptr<Credential> cred(inlineResolver->resolve(&sig,X509Credential::RESOLVE_CERTS|X509Credential::RESOLVE_CRLS));
-    if (!cred.get() || !(x509cred=dynamic_cast<X509Credential*>(cred.get()))) {
+    scoped_ptr<Credential> cred(inlineResolver->resolve(&sig,X509Credential::RESOLVE_CERTS|X509Credential::RESOLVE_CRLS));
+    if (!cred || !(x509cred=dynamic_cast<X509Credential*>(cred.get()))) {
         log.error("unable to perform PKIX validation, signature does not contain any certificates");
         return false;
     }
@@ -467,7 +468,7 @@ bool AbstractPKIXTrustEngine::validate(
     SignatureValidator keyValidator;
     for (vector<XSECCryptoX509*>::const_iterator i=certs.begin(); !certEE && i!=certs.end(); ++i) {
         try {
-            auto_ptr<XSECCryptoKey> key((*i)->clonePublicKey());
+            scoped_ptr<XSECCryptoKey> key((*i)->clonePublicKey());
             keyValidator.setKey(key.get());
             keyValidator.validate(&sig);
             log.debug("signature verified with key inside signature, attempting certificate validation...");
@@ -526,8 +527,8 @@ bool AbstractPKIXTrustEngine::validate(
 
     // Pull the certificate chain out of the signature.
     X509Credential* x509cred;
-    auto_ptr<Credential> cred(inlineResolver->resolve(keyInfo,X509Credential::RESOLVE_CERTS));
-    if (!cred.get() || !(x509cred=dynamic_cast<X509Credential*>(cred.get()))) {
+    scoped_ptr<Credential> cred(inlineResolver->resolve(keyInfo,X509Credential::RESOLVE_CERTS));
+    if (!cred || !(x509cred=dynamic_cast<X509Credential*>(cred.get()))) {
         log.error("unable to perform PKIX validation, KeyInfo does not contain any certificates");
         return false;
     }
@@ -544,7 +545,7 @@ bool AbstractPKIXTrustEngine::validate(
     XSECCryptoX509* certEE=nullptr;
     for (vector<XSECCryptoX509*>::const_iterator i=certs.begin(); !certEE && i!=certs.end(); ++i) {
         try {
-            auto_ptr<XSECCryptoKey> key((*i)->clonePublicKey());
+            scoped_ptr<XSECCryptoKey> key((*i)->clonePublicKey());
             if (Signature::verifyRawSignature(key.get(), sigAlgorithm, sig, in, in_len)) {
                 log.debug("signature verified with key inside signature, attempting certificate validation...");
                 certEE=(*i);

@@ -90,10 +90,10 @@ public:
         const XMLObjectBuilder* b=XMLObjectBuilder::getBuilder(doc->getDocumentElement());
         TS_ASSERT(b!=nullptr);
 
-        auto_ptr<XMLObject> xmlObject(b->buildFromDocument(doc)); // bind document
+        scoped_ptr<XMLObject> xmlObject(b->buildFromDocument(doc)); // bind document
         TS_ASSERT(xmlObject.get()!=nullptr);
 
-        auto_ptr<XMLObject> clonedObject(xmlObject->clone());
+        scoped_ptr<XMLObject> clonedObject(xmlObject->clone());
         TS_ASSERT(clonedObject.get()!=nullptr);
 
         DOMElement* rootElement=clonedObject->marshall();
@@ -119,7 +119,7 @@ public:
         const XMLObjectBuilder* b=XMLObjectBuilder::getBuilder(doc->getDocumentElement());
         TS_ASSERT(b!=nullptr);
 
-        auto_ptr<XMLObject> xmlObject(b->buildFromDocument(doc)); // bind document
+        scoped_ptr<XMLObject> xmlObject(b->buildFromDocument(doc)); // bind document
         TS_ASSERT(xmlObject.get()!=nullptr);
 
         DOMDocument* newDoc=XMLToolingConfig::getConfig().getParser().newDocument();

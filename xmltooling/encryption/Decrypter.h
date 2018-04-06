@@ -99,10 +99,10 @@ namespace xmlencryption {
          * DOM can also be imported into a separately owned document.
          * 
          * @param encryptedData the data to decrypt
-         * @param key           the decryption key to use (it will not be freed internally)
+         * @param key           the decryption key to use
          * @return  the decrypted DOM fragment
          */
-        xercesc::DOMDocumentFragment* decryptData(const EncryptedData& encryptedData, XSECCryptoKey* key);
+        xercesc::DOMDocumentFragment* decryptData(const EncryptedData& encryptedData, const XSECCryptoKey* key);
 
         /**
          * Decrypts the supplied information and returns the resulting as a DOM
@@ -126,9 +126,9 @@ namespace xmlencryption {
          *
          * @param out           output stream to receive the decrypted data 
          * @param encryptedData the data to decrypt
-         * @param key           the decryption key to use (it will not be freed internally)
+         * @param key           the decryption key to use
          */
-        void decryptData(std::ostream& out, const EncryptedData& encryptedData, XSECCryptoKey* key);
+        void decryptData(std::ostream& out, const EncryptedData& encryptedData, const XSECCryptoKey* key);
 
         /**
          * Decrypts the supplied information to an output stream.

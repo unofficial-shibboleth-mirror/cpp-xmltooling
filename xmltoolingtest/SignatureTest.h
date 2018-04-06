@@ -111,7 +111,7 @@ public:
         cc.setKeyAlgorithm("EC");
 
         Locker locker(m_resolver);
-        XSECCryptoKeyEC* ecCred = dynamic_cast<XSECCryptoKeyEC*>(m_resolver->resolve(&cc)->getPrivateKey());
+        const XSECCryptoKeyEC* ecCred = dynamic_cast<const XSECCryptoKeyEC*>(m_resolver->resolve(&cc)->getPrivateKey());
 
         unsigned char toSign[] = "NibbleAHappyWartHog";
         const int bufferSize = 1024;
@@ -135,7 +135,7 @@ public:
         cc.setKeyAlgorithm("RSA");
 
         Locker locker(m_resolver);
-        XSECCryptoKeyRSA* rsaCred = dynamic_cast<XSECCryptoKeyRSA*>(m_resolver->resolve(&cc)->getPrivateKey());
+        const XSECCryptoKeyRSA* rsaCred = dynamic_cast<const XSECCryptoKeyRSA*>(m_resolver->resolve(&cc)->getPrivateKey());
 
         unsigned char toSign[] = "Nibble A Happy WartHog";
         const int bufferSize = 1024;
@@ -157,7 +157,7 @@ public:
         cc.setKeyAlgorithm("DSA");
 
         Locker locker(m_resolver);
-        XSECCryptoKeyDSA* dsaCred = dynamic_cast<XSECCryptoKeyDSA*>(m_resolver->resolve(&cc)->getPrivateKey());
+        const XSECCryptoKeyDSA* dsaCred = dynamic_cast<const XSECCryptoKeyDSA*>(m_resolver->resolve(&cc)->getPrivateKey());
 
         unsigned char toSign[] = "NibbleAHappyWartHog";
         const int bufferSize = 1024;
@@ -178,7 +178,7 @@ public:
         const SimpleXMLObjectBuilder* b=dynamic_cast<const SimpleXMLObjectBuilder*>(XMLObjectBuilder::getBuilder(qname));
         TS_ASSERT(b!=nullptr);
 
-        auto_ptr<SimpleXMLObject> sxObject(dynamic_cast<SimpleXMLObject*>(b->buildObject()));
+        scoped_ptr<SimpleXMLObject> sxObject(dynamic_cast<SimpleXMLObject*>(b->buildObject()));
         TS_ASSERT(sxObject.get()!=nullptr);
         VectorOf(SimpleXMLObject) kids=sxObject->getSimpleXMLObjects();
         kids.push_back(dynamic_cast<SimpleXMLObject*>(b->buildObject()));
@@ -220,7 +220,7 @@ public:
 
         istringstream in(buf);
         DOMDocument* doc=XMLToolingConfig::getConfig().getParser().parse(in);
-        auto_ptr<SimpleXMLObject> sxObject2(dynamic_cast<SimpleXMLObject*>(b->buildFromDocument(doc)));
+        scoped_ptr<SimpleXMLObject> sxObject2(dynamic_cast<SimpleXMLObject*>(b->buildFromDocument(doc)));
         TS_ASSERT(sxObject2.get()!=nullptr);
         TS_ASSERT(sxObject2->getSignature()!=nullptr);
 
@@ -240,7 +240,7 @@ public:
         const SimpleXMLObjectBuilder* b=dynamic_cast<const SimpleXMLObjectBuilder*>(XMLObjectBuilder::getBuilder(qname));
         TS_ASSERT(b!=nullptr);
 
-        auto_ptr<SimpleXMLObject> sxObject(dynamic_cast<SimpleXMLObject*>(b->buildObject()));
+        scoped_ptr<SimpleXMLObject> sxObject(dynamic_cast<SimpleXMLObject*>(b->buildObject()));
         TS_ASSERT(sxObject.get()!=nullptr);
         VectorOf(SimpleXMLObject) kids=sxObject->getSimpleXMLObjects();
         kids.push_back(dynamic_cast<SimpleXMLObject*>(b->buildObject()));
@@ -282,7 +282,7 @@ public:
 
         istringstream in(buf);
         DOMDocument* doc=XMLToolingConfig::getConfig().getParser().parse(in);
-        auto_ptr<SimpleXMLObject> sxObject2(dynamic_cast<SimpleXMLObject*>(b->buildFromDocument(doc)));
+        scoped_ptr<SimpleXMLObject> sxObject2(dynamic_cast<SimpleXMLObject*>(b->buildFromDocument(doc)));
         TS_ASSERT(sxObject2.get()!=nullptr);
         TS_ASSERT(sxObject2->getSignature()!=nullptr);
 
@@ -301,7 +301,7 @@ public:
         const SimpleXMLObjectBuilder* b=dynamic_cast<const SimpleXMLObjectBuilder*>(XMLObjectBuilder::getBuilder(qname));
         TS_ASSERT(b!=nullptr);
         
-        auto_ptr<SimpleXMLObject> sxObject(dynamic_cast<SimpleXMLObject*>(b->buildObject()));
+        scoped_ptr<SimpleXMLObject> sxObject(dynamic_cast<SimpleXMLObject*>(b->buildObject()));
         TS_ASSERT(sxObject.get()!=nullptr);
         VectorOf(SimpleXMLObject) kids=sxObject->getSimpleXMLObjects();
         kids.push_back(dynamic_cast<SimpleXMLObject*>(b->buildObject()));
@@ -342,7 +342,7 @@ public:
 
         istringstream in(buf);
         DOMDocument* doc=XMLToolingConfig::getConfig().getParser().parse(in);
-        auto_ptr<SimpleXMLObject> sxObject2(dynamic_cast<SimpleXMLObject*>(b->buildFromDocument(doc)));
+        scoped_ptr<SimpleXMLObject> sxObject2(dynamic_cast<SimpleXMLObject*>(b->buildFromDocument(doc)));
         TS_ASSERT(sxObject2.get()!=nullptr);
         TS_ASSERT(sxObject2->getSignature()!=nullptr);
         

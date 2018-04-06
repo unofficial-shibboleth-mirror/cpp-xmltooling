@@ -36,6 +36,7 @@ using namespace std;
 
 using xercesc::DOMDocument;
 using xercesc::DOMElement;
+using boost::scoped_ptr;
 
 map<QName,XMLObjectBuilder*> XMLObjectBuilder::m_map;
 XMLObjectBuilder* XMLObjectBuilder::m_default = nullptr;
@@ -55,7 +56,7 @@ XMLObject* XMLObjectBuilder::buildFromQName(const QName& q) const
 
 XMLObject* XMLObjectBuilder::buildFromElement(DOMElement* element, bool bindDocument) const
 {
-    auto_ptr<QName> schemaType(XMLHelper::getXSIType(element));
+    scoped_ptr<QName> schemaType(XMLHelper::getXSIType(element));
     auto_ptr<XMLObject> ret(
         buildObject(element->getNamespaceURI(),element->getLocalName(),element->getPrefix(),schemaType.get())
         );
@@ -87,7 +88,7 @@ const XMLObjectBuilder* XMLObjectBuilder::getBuilder(const DOMElement* domElemen
 #endif
     Category& log=Category::getInstance(XMLTOOLING_LOGCAT ".XMLObjectBuilder");
  
-    auto_ptr<QName> schemaType(XMLHelper::getXSIType(domElement));
+    scoped_ptr<QName> schemaType(XMLHelper::getXSIType(domElement));
     const XMLObjectBuilder* xmlObjectBuilder = schemaType.get() ? getBuilder(*(schemaType.get())) : nullptr;
     if (xmlObjectBuilder) {
         if (log.isDebugEnabled()) {
@@ -96,7 +97,7 @@ const XMLObjectBuilder* XMLObjectBuilder::getBuilder(const DOMElement* domElemen
         return xmlObjectBuilder;
     }
     
-    auto_ptr<QName> elementName(XMLHelper::getNodeQName(domElement));
+    scoped_ptr<QName> elementName(XMLHelper::getNodeQName(domElement));
     xmlObjectBuilder = getBuilder(*(elementName.get()));
     if (xmlObjectBuilder) {
         if (log.isDebugEnabled()) {

@@ -123,7 +123,7 @@ namespace xmltooling {
         bool resolveKey(const KeyInfo* keyInfo, bool followRefs=false);
         bool resolveCRLs(const KeyInfo* keyInfo, bool followRefs=false);
 
-        auto_ptr<KeyInfoCredentialContext> m_credctx;
+        scoped_ptr<KeyInfoCredentialContext> m_credctx;
     };
 
     static const XMLCh keyInfoReferences[] = UNICODE_LITERAL_17(k,e,y,I,n,f,o,R,e,f,e,r,e,n,c,e,s);
@@ -194,13 +194,13 @@ void InlineCredential::resolve(const KeyInfo* keyInfo, int types, bool followRef
         if (types & X509Credential::RESOLVE_CERTS) {
             // If we have a cert, just use it.
             if (!m_xseccerts.empty())
-                m_key = m_xseccerts.front()->clonePublicKey();
+                m_key.reset(m_xseccerts.front()->clonePublicKey());
             else
                 resolveKey(keyInfo, followRefs);
         }
         // Otherwise try directly for a key and then go for certs if none is found.
         else if (!resolveKey(keyInfo, followRefs) && resolveCerts(keyInfo, followRefs)) {
-            m_key = m_xseccerts.front()->clonePublicKey();
+            m_key.reset(m_xseccerts.front()->clonePublicKey());
         }
     }
 
@@ -269,7 +269,7 @@ bool InlineCredential::resolveKey(const KeyInfo* keyInfo, bool followRefs)
                 auto_ptr<XSECCryptoKeyRSA> rsa(XSECPlatformUtils::g_cryptoProvider->keyRSA());
                 rsa->loadPublicModulusBase64BigNums(mod.get(), strlen(mod.get()));
                 rsa->loadPublicExponentBase64BigNums(exp.get(), strlen(exp.get()));
-                m_key = rsa.release();
+                m_key.reset(rsa.release());
                 return true;
             }
             DSAKeyValue* dsakv = i->getDSAKeyValue();
@@ -290,7 +290,7 @@ bool InlineCredential::resolveKey(const KeyInfo* keyInfo, bool followRefs)
                     auto_ptr_char g(dsakv->getG()->getValue());
                     dsa->loadGBase64BigNums(g.get(), strlen(g.get()));
                 }
-                m_key = dsa.release();
+                m_key.reset(dsa.release());
                 return true;
             }
 
@@ -303,7 +303,7 @@ bool InlineCredential::resolveKey(const KeyInfo* keyInfo, bool followRefs)
                 auto_ptr_char val(eckv->getPublicKey()->getValue());
                 if (uri.get() && val.get()) {
                     ec->loadPublicKeyBase64(uri.get(), val.get(), XMLString::stringLen(val.get()));
-                    m_key = ec.release();
+                    m_key.reset(ec.release());
                     return true;
                 }
             }
@@ -327,7 +327,7 @@ bool InlineCredential::resolveKey(const KeyInfo* keyInfo, bool followRefs)
     for (indirect_iterator<vector<DEREncodedKeyValue*>::const_iterator> j = make_indirect_iterator(derValues.begin());
             j != make_indirect_iterator(derValues.end()); ++j) {
         log.debug("resolving ds11:DEREncodedKeyValue");
-        m_key = SecurityHelper::fromDEREncoding(j->getValue());
+        m_key.reset(SecurityHelper::fromDEREncoding(j->getValue()));
         if (m_key)
             return true;
         log.warn("failed to resolve ds11:DEREncodedKeyValue");
@@ -502,7 +502,7 @@ void InlineCredential::resolve(DSIGKeyInfoList* keyInfo, int types, bool followR
         // Default resolver handles RSA/DSAKeyValue and X509Certificate elements.
         try {
             XSECKeyInfoResolverDefault def;
-            m_key = def.resolveKey(keyInfo);
+            m_key.reset(def.resolveKey(keyInfo));
         }
         catch(XSECException& e) {
             auto_ptr_char temp(e.getMsg());

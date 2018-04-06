@@ -47,6 +47,8 @@ using namespace xmltooling;
 using namespace xercesc;
 using namespace std;
 
+using boost::scoped_ptr;
+
 extern string data_path;
 
 #if defined (_MSC_VER)
@@ -99,10 +101,8 @@ public:
     XMLObject* clone() const {
         auto_ptr<XMLObject> domClone(AbstractDOMCachingXMLObject::clone());
         SimpleXMLObject* ret=dynamic_cast<SimpleXMLObject*>(domClone.get());
-        if (ret) {
-            domClone.release();
-            return ret;
-        }
+        if (ret)
+            return domClone.release();
 
         return new SimpleXMLObject(*this);
     }

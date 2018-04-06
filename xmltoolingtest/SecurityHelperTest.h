@@ -44,30 +44,30 @@ public:
 
     void testKeysFromFiles() {
         string pathname = data_path + "key.pem";
-        auto_ptr<XSECCryptoKey> key1(SecurityHelper::loadKeyFromFile(pathname.c_str()));
+        scoped_ptr<XSECCryptoKey> key1(SecurityHelper::loadKeyFromFile(pathname.c_str()));
         pathname = data_path + "key.der";
-        auto_ptr<XSECCryptoKey> key2(SecurityHelper::loadKeyFromFile(pathname.c_str()));
+        scoped_ptr<XSECCryptoKey> key2(SecurityHelper::loadKeyFromFile(pathname.c_str()));
         pathname = data_path + "test.pfx";
-        auto_ptr<XSECCryptoKey> key3(SecurityHelper::loadKeyFromFile(pathname.c_str(), nullptr, "password"));
+        scoped_ptr<XSECCryptoKey> key3(SecurityHelper::loadKeyFromFile(pathname.c_str(), nullptr, "password"));
 
         TSM_ASSERT("PEM/DER keys did not match", SecurityHelper::matches(*key1.get(), *key2.get()));
         TSM_ASSERT("DER/PKCS12 keys did not match", SecurityHelper::matches(*key2.get(), *key3.get()));
 
         pathname = data_path + "key2.pem";
-        auto_ptr<XSECCryptoKey> key4(SecurityHelper::loadKeyFromFile(pathname.c_str()));
+        scoped_ptr<XSECCryptoKey> key4(SecurityHelper::loadKeyFromFile(pathname.c_str()));
         TSM_ASSERT("Different keys matched", !SecurityHelper::matches(*key3.get(), *key4.get()));
     }
 
     void testKeysFromURLs() {
         string pathname = data_path + "key.pem.bak";
-        auto_ptr<SOAPTransport> t1(getTransport("https://wiki.shibboleth.net/confluence/download/attachments/3277026/key.pem"));
-        auto_ptr<XSECCryptoKey> key1(SecurityHelper::loadKeyFromURL(*t1.get(), pathname.c_str()));
+        scoped_ptr<SOAPTransport> t1(getTransport("https://wiki.shibboleth.net/confluence/download/attachments/3277026/key.pem"));
+        scoped_ptr<XSECCryptoKey> key1(SecurityHelper::loadKeyFromURL(*t1.get(), pathname.c_str()));
         pathname = data_path + "key.der.bak";
-        auto_ptr<SOAPTransport> t2(getTransport("https://wiki.shibboleth.net/confluence/download/attachments/3277026/key.der"));
-        auto_ptr<XSECCryptoKey> key2(SecurityHelper::loadKeyFromURL(*t2.get(), pathname.c_str()));
+        scoped_ptr<SOAPTransport> t2(getTransport("https://wiki.shibboleth.net/confluence/download/attachments/3277026/key.der"));
+        scoped_ptr<XSECCryptoKey> key2(SecurityHelper::loadKeyFromURL(*t2.get(), pathname.c_str()));
         pathname = data_path + "test.pfx.bak";
-        auto_ptr<SOAPTransport> t3(getTransport("https://wiki.shibboleth.net/confluence/download/attachments/3277026/test.pfx"));
-        auto_ptr<XSECCryptoKey> key3(SecurityHelper::loadKeyFromURL(*t3.get(), pathname.c_str(), nullptr, "password"));
+        scoped_ptr<SOAPTransport> t3(getTransport("https://wiki.shibboleth.net/confluence/download/attachments/3277026/test.pfx"));
+        scoped_ptr<XSECCryptoKey> key3(SecurityHelper::loadKeyFromURL(*t3.get(), pathname.c_str(), nullptr, "password"));
 
         TSM_ASSERT("PEM/DER keys did not match", SecurityHelper::matches(*key1.get(), *key2.get()));
         TSM_ASSERT("DER/PKCS12 keys did not match", SecurityHelper::matches(*key2.get(), *key3.get()));
@@ -83,9 +83,9 @@ public:
 
         TSM_ASSERT_EQUALS("Wrong certificate count", certs.size(), 3);
 
-        auto_ptr<XSECCryptoKey> key1(certs[0]->clonePublicKey());
-        auto_ptr<XSECCryptoKey> key2(certs[1]->clonePublicKey());
-        auto_ptr<XSECCryptoKey> key3(certs[2]->clonePublicKey());
+        scoped_ptr<XSECCryptoKey> key1(certs[0]->clonePublicKey());
+        scoped_ptr<XSECCryptoKey> key2(certs[1]->clonePublicKey());
+        scoped_ptr<XSECCryptoKey> key3(certs[2]->clonePublicKey());
 
         TSM_ASSERT("PEM/DER keys did not match", SecurityHelper::matches(*key1.get(), *key2.get()));
         TSM_ASSERT("DER/PKCS12 keys did not match", SecurityHelper::matches(*key2.get(), *key3.get()));
@@ -111,20 +111,20 @@ public:
 
     void testCertificatesFromURLs() {
         string pathname = data_path + "cert.pem.bak";
-        auto_ptr<SOAPTransport> t1(getTransport("https://wiki.shibboleth.net/confluence/download/attachments/3277026/cert.pem"));
+        scoped_ptr<SOAPTransport> t1(getTransport("https://wiki.shibboleth.net/confluence/download/attachments/3277026/cert.pem"));
         SecurityHelper::loadCertificatesFromURL(certs, *t1.get(), pathname.c_str());
         pathname = data_path + "cert.der.bak";
-        auto_ptr<SOAPTransport> t2(getTransport("https://wiki.shibboleth.net/confluence/download/attachments/3277026/cert.der"));
+        scoped_ptr<SOAPTransport> t2(getTransport("https://wiki.shibboleth.net/confluence/download/attachments/3277026/cert.der"));
         SecurityHelper::loadCertificatesFromURL(certs, *t2.get(), pathname.c_str());
         pathname = data_path + "test.pfx.bak";
-        auto_ptr<SOAPTransport> t3(getTransport("https://wiki.shibboleth.net/confluence/download/attachments/3277026/test.pfx"));
+        scoped_ptr<SOAPTransport> t3(getTransport("https://wiki.shibboleth.net/confluence/download/attachments/3277026/test.pfx"));
         SecurityHelper::loadCertificatesFromURL(certs, *t3.get(), pathname.c_str(), nullptr, "password");
 
         TSM_ASSERT_EQUALS("Wrong certificate count", certs.size(), 3);
 
-        auto_ptr<XSECCryptoKey> key1(certs[0]->clonePublicKey());
-        auto_ptr<XSECCryptoKey> key2(certs[0]->clonePublicKey());
-        auto_ptr<XSECCryptoKey> key3(certs[0]->clonePublicKey());
+        scoped_ptr<XSECCryptoKey> key1(certs[0]->clonePublicKey());
+        scoped_ptr<XSECCryptoKey> key2(certs[0]->clonePublicKey());
+        scoped_ptr<XSECCryptoKey> key3(certs[0]->clonePublicKey());
 
         TSM_ASSERT("PEM/DER keys did not match", SecurityHelper::matches(*key1.get(), *key2.get()));
         TSM_ASSERT("DER/PKCS12 keys did not match", SecurityHelper::matches(*key2.get(), *key3.get()));

@@ -37,6 +37,7 @@
 using namespace xmlconstants;
 using namespace xmltooling;
 using namespace xercesc;
+using boost::scoped_ptr;
 using namespace std;
 
 AbstractXMLObjectUnmarshaller::AbstractXMLObjectUnmarshaller()
@@ -185,13 +186,15 @@ void AbstractXMLObjectUnmarshaller::unmarshallContent(const DOMElement* domEleme
         if (childNode->getNodeType() == DOMNode::ELEMENT_NODE) {
             const XMLObjectBuilder* builder = XMLObjectBuilder::getBuilder(static_cast<DOMElement*>(childNode));
             if (!builder) {
-                auto_ptr<QName> cname(XMLHelper::getNodeQName(childNode));
-                m_log.error("no default builder installed, found unknown child element (%s)", cname->toString().c_str());
+                if (m_log.isErrorEnabled()) {
+                    scoped_ptr<QName> cname(XMLHelper::getNodeQName(childNode));
+                    m_log.error("no default builder installed, found unknown child element (%s)", cname->toString().c_str());
+                }
                 throw UnmarshallingException("Unmarshaller found unknown child element, but no default builder was found.");
             }
 
             if (m_log.isDebugEnabled()) {
-                auto_ptr<QName> cname(XMLHelper::getNodeQName(childNode));
+                scoped_ptr<QName> cname(XMLHelper::getNodeQName(childNode));
                 m_log.debug("unmarshalling child element (%s)", cname->toString().c_str());
             }
 
@@ -222,6 +225,6 @@ void AbstractXMLObjectUnmarshaller::processChildElement(XMLObject* child, const 
 
 void AbstractXMLObjectUnmarshaller::processAttribute(const DOMAttr* attribute)
 {
-    auto_ptr<QName> q(XMLHelper::getNodeQName(attribute));
+    scoped_ptr<QName> q(XMLHelper::getNodeQName(attribute));
     throw UnmarshallingException("Invalid attribute: $1",params(1,q->toString().c_str()));
 }

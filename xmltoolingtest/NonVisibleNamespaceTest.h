@@ -43,7 +43,7 @@ public:
         xmltooling::QName qtype(SimpleXMLObject::NAMESPACE,SimpleXMLObject::TYPE_NAME,SimpleXMLObject::NAMESPACE_PREFIX);
         const XMLObjectBuilder* b = XMLObjectBuilder::getBuilder(qtype);
         TS_ASSERT(b!=nullptr);
-        auto_ptr<SimpleXMLObject> sxObject(
+        scoped_ptr<SimpleXMLObject> sxObject(
             dynamic_cast<SimpleXMLObject*>(b->buildObject(SimpleXMLObject::NAMESPACE, SimpleXMLObject::LOCAL_NAME, nullptr, &qtype))
             );
         TS_ASSERT(sxObject.get()!=nullptr);
@@ -83,7 +83,7 @@ public:
         const XMLObjectBuilder* b = XMLObjectBuilder::getBuilder(doc->getDocumentElement());
         TS_ASSERT(b!=nullptr);
 
-        auto_ptr<SimpleXMLObject> sxObject(
+        scoped_ptr<SimpleXMLObject> sxObject(
             dynamic_cast<SimpleXMLObject*>(b->buildFromDocument(doc))
             );
         TS_ASSERT(sxObject.get()!=nullptr);

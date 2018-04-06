@@ -47,6 +47,7 @@ using xercesc::Base64;
 using xercesc::DOMDocument;
 using xercesc::Janitor;
 using xercesc::XMLDateTime;
+using boost::scoped_ptr;
 using namespace std;
 
 namespace xmltooling {
@@ -146,7 +147,7 @@ string DataSealer::wrap(const char* s, time_t exp) const
 
 	DOMDocument* dummydoc = XMLToolingConfig::getConfig().getParser().newDocument();
 	Janitor<DOMDocument> docjan(dummydoc);
-	auto_ptr<XSECEnv> env(new XSECEnv(dummydoc));
+	scoped_ptr<XSECEnv> env(new XSECEnv(dummydoc));
 
     TXFMChar* ct = new TXFMChar(dummydoc);
     ct->setInput(deflated, len);
@@ -154,7 +155,7 @@ string DataSealer::wrap(const char* s, time_t exp) const
 
 	safeBuffer ciphertext;
 	try {
-		auto_ptr<XENCEncryptionMethod> method(XENCEncryptionMethod::create(env.get(), algorithm));
+		scoped_ptr<XENCEncryptionMethod> method(XENCEncryptionMethod::create(env.get(), algorithm));
 		if (!handler->encryptToSafeBuffer(&tx, method.get(), defaultKey.second, dummydoc, ciphertext)) {
 			throw XMLSecurityException("Data encryption failed.");
 		}
@@ -218,7 +219,7 @@ string DataSealer::unwrap(const char* s) const
 
 	DOMDocument* dummydoc = XMLToolingConfig::getConfig().getParser().newDocument();
 	Janitor<DOMDocument> docjan(dummydoc);
-	auto_ptr<XSECEnv> env(new XSECEnv(dummydoc));
+	scoped_ptr<XSECEnv> env(new XSECEnv(dummydoc));
 
 	TXFMChar* ct = new TXFMChar(dummydoc);
 	ct->setInput(++delim);
@@ -229,7 +230,7 @@ string DataSealer::unwrap(const char* s) const
 	unsigned int len = 0;
 	safeBuffer plaintext;
 	try {
-		auto_ptr<XENCEncryptionMethod> method(XENCEncryptionMethod::create(env.get(), algorithm));
+		scoped_ptr<XENCEncryptionMethod> method(XENCEncryptionMethod::create(env.get(), algorithm));
 		len = handler->decryptToSafeBuffer(&tx, method.get(), requiredKey.second, dummydoc, plaintext);
 	}
 	catch (XSECException& ex) {

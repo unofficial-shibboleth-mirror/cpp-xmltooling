@@ -39,7 +39,7 @@ public:
     }
 
     void testMarshallingWithAttributes() {
-        auto_ptr<SimpleXMLObject> sxObject(SimpleXMLObjectBuilder::buildSimpleXMLObject());
+        scoped_ptr<SimpleXMLObject> sxObject(SimpleXMLObjectBuilder::buildSimpleXMLObject());
         TS_ASSERT(sxObject.get()!=nullptr);
         auto_ptr_XMLCh expected("Firefly");
         sxObject->setId(expected.get());
@@ -56,7 +56,7 @@ public:
     }
 
     void testMarshallingWithElementContent() {
-        auto_ptr<SimpleXMLObject> sxObject(SimpleXMLObjectBuilder::buildSimpleXMLObject());
+        scoped_ptr<SimpleXMLObject> sxObject(SimpleXMLObjectBuilder::buildSimpleXMLObject());
         TS_ASSERT(sxObject.get()!=nullptr);
         auto_ptr_XMLCh expected("Sample Content");
         sxObject->setValue(expected.get());
@@ -77,7 +77,7 @@ public:
         const SimpleXMLObjectBuilder* b=dynamic_cast<const SimpleXMLObjectBuilder*>(XMLObjectBuilder::getBuilder(qname));
         TS_ASSERT(b!=nullptr);
         
-        auto_ptr<SimpleXMLObject> sxObject(dynamic_cast<SimpleXMLObject*>(b->buildObject()));
+        scoped_ptr<SimpleXMLObject> sxObject(dynamic_cast<SimpleXMLObject*>(b->buildObject()));
         TS_ASSERT(sxObject.get()!=nullptr);
         VectorOf(SimpleXMLObject) kids=sxObject->getSimpleXMLObjects();
         kids.push_back(dynamic_cast<SimpleXMLObject*>(b->buildObject()));

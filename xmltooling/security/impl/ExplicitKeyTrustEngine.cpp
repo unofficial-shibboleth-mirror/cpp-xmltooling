@@ -259,7 +259,7 @@ bool ExplicitKeyTrustEngine::validate(
         return false;
 
     for (vector<const Credential*>::const_iterator c=credentials.begin(); c != credentials.end(); ++c) {
-        XSECCryptoKey* key = (*c)->getPublicKey();
+        const XSECCryptoKey* key = (*c)->getPublicKey();
         if (!key)
             continue;
         if (key->getProviderName() != DSIGConstants::s_unicodeStrPROVOpenSSL) {

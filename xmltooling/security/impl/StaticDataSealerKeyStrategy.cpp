@@ -34,6 +34,7 @@
 using namespace xmltooling;
 using xercesc::Base64;
 using xercesc::DOMElement;
+using boost::scoped_ptr;
 using namespace std;
 
 namespace xmltooling {
@@ -51,7 +52,7 @@ namespace xmltooling {
 
     private:
         string m_name;
-        auto_ptr<XSECCryptoSymmetricKey> m_key;
+        scoped_ptr<XSECCryptoSymmetricKey> m_key;
     };
 
     DataSealerKeyStrategy* XMLTOOL_DLLLOCAL StaticDataSealerKeyStrategyFactory(const DOMElement* const & e)
@@ -89,7 +90,7 @@ StaticDataSealerKeyStrategy::StaticDataSealerKeyStrategy(const DOMElement* e)
         XMLString::release((char**)&decoded);
     }
 
-    if (!m_key.get()) {
+    if (!m_key) {
         throw XMLSecurityException("No key attribute specified.");
     }
 }

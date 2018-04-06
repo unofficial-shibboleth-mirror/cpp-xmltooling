@@ -34,6 +34,7 @@
 #include <stack>
 #include <string>
 #include <istream>
+#include <boost/scoped_ptr.hpp>
 #include <xercesc/dom/DOM.hpp>
 #include <xercesc/sax/InputSource.hpp>
 #include <xercesc/util/BinInputStream.hpp>
@@ -163,8 +164,8 @@ namespace xmltooling {
 
         bool m_namespaceAware,m_schemaAware;
         std::stack<xercesc::DOMLSParser*> m_pool;
-        std::auto_ptr<Mutex> m_lock;
-        std::auto_ptr<xercesc::SecurityManager> m_security;
+        boost::scoped_ptr<Mutex> m_lock;
+        boost::scoped_ptr<xercesc::SecurityManager> m_security;
     };
 
     /**

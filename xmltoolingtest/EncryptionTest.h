@@ -69,14 +69,14 @@ public:
             Encrypter encrypter;
             Encrypter::EncryptionParams ep;
             Encrypter::KeyEncryptionParams kep(*cred);
-            auto_ptr<EncryptedData> encData(encrypter.encryptElement(doc->getDocumentElement(),ep,&kep));
+            scoped_ptr<EncryptedData> encData(encrypter.encryptElement(doc->getDocumentElement(),ep,&kep));
 
             string buf;
             XMLHelper::serialize(encData->marshall(), buf);
             //TS_TRACE(buf.c_str());
             istringstream is(buf);
             DOMDocument* doc2=XMLToolingConfig::getConfig().getValidatingParser().parse(is);
-            auto_ptr<EncryptedData> encData2(
+            scoped_ptr<EncryptedData> encData2(
                 dynamic_cast<EncryptedData*>(XMLObjectBuilder::buildOneFromElement(doc2->getDocumentElement(),true))
                 );
 

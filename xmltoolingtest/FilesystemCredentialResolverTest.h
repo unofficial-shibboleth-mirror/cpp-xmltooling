@@ -39,7 +39,7 @@ public:
         DOMDocument* doc=XMLToolingConfig::getConfig().getParser().parse(in);
         XercesJanitor<DOMDocument> janitor(doc);
 
-        auto_ptr<CredentialResolver> credResolver(
+        scoped_ptr<CredentialResolver> credResolver(
             XMLToolingConfig::getConfig().CredentialResolverManager.newPlugin(
                 CHAINING_CREDENTIAL_RESOLVER,doc->getDocumentElement()
                 )

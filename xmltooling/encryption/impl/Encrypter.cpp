@@ -42,6 +42,7 @@ using namespace xmlencryption;
 using namespace xmlsignature;
 using namespace xmltooling;
 using namespace xercesc;
+using boost::scoped_ptr;
 using namespace std;
 
 Encrypter::EncryptionParams::EncryptionParams(
@@ -92,9 +93,8 @@ void Encrypter::checkParams(EncryptionParams& encParams, KeyEncryptionParams* ke
         }
     }
     
-    XSECCryptoKey* key=nullptr;
     if (encParams.m_credential) {
-        key = encParams.m_credential->getPrivateKey();
+        const XSECCryptoKey* key = encParams.m_credential->getPrivateKey();
         if (!key)
             throw EncryptionException("Credential in EncryptionParams structure did not supply a private/secret key.");
         // Set the encryption key.
@@ -103,11 +103,12 @@ void Encrypter::checkParams(EncryptionParams& encParams, KeyEncryptionParams* ke
     else {
         // We have to have a raw key now, so we need to build a wrapper around it.
         const XSECAlgorithmHandler* handler =XSECPlatformUtils::g_algorithmMapper->mapURIToHandler(encParams.m_algorithm);
-        if (handler != nullptr)
-            key = handler->createKeyForURI(
-                encParams.m_algorithm,const_cast<unsigned char*>(encParams.m_keyBuffer),encParams.m_keyBufferSize
-                );
+        if (!handler)
+            throw EncryptionException("Unable to obtain internal algorithm handle, unknown algorithm?");
 
+        XSECCryptoKey* key = handler->createKeyForURI(
+            encParams.m_algorithm,const_cast<unsigned char*>(encParams.m_keyBuffer),encParams.m_keyBufferSize
+            );
         if (!key)
             throw EncryptionException("Unable to build wrapper for key, unknown algorithm?");
         // Overwrite the length if known.
@@ -238,7 +239,7 @@ EncryptedData* Encrypter::decorateAndUnmarshall(EncryptionParams& encParams, Key
     
     // Are we doing a key encryption?
     if (kencParams) {
-        XSECCryptoKey* kek = kencParams->m_credential.getPublicKey();
+        const XSECCryptoKey* kek = kencParams->m_credential.getPublicKey();
         if (!kek)
             throw EncryptionException("Credential in KeyEncryptionParams structure did not supply a public key.");
         if (!kencParams->m_algorithm)
@@ -248,7 +249,7 @@ EncryptedData* Encrypter::decorateAndUnmarshall(EncryptionParams& encParams, Key
 
         m_cipher->setKEK(kek->clone());
         // ownership of this belongs to us, for some reason...
-        auto_ptr<XENCEncryptedKey> encKey(
+        scoped_ptr<XENCEncryptedKey> encKey(
             m_cipher->encryptKey(encParams.m_keyBuffer, encParams.m_keyBufferSize, kencParams->m_algorithm)
             );
         EncryptedKey* xmlEncKey=nullptr;
@@ -292,7 +293,7 @@ EncryptedKey* Encrypter::encryptKey(
         m_cipher=nullptr;
     }
 
-    XSECCryptoKey* kek = kencParams.m_credential.getPublicKey();
+    const XSECCryptoKey* kek = kencParams.m_credential.getPublicKey();
     if (!kek)
         throw EncryptionException("Credential in KeyEncryptionParams structure did not supply a public key.");
 
@@ -303,7 +304,7 @@ EncryptedKey* Encrypter::encryptKey(
         m_cipher=XMLToolingInternalConfig::getInternalConfig().m_xsecProvider->newCipher(doc);
         m_cipher->setExclusiveC14nSerialisation(false);
         m_cipher->setKEK(kek->clone());
-        auto_ptr<XENCEncryptedKey> encKey(m_cipher->encryptKey(keyBuffer, keyBufferSize, kencParams.m_algorithm));
+        scoped_ptr<XENCEncryptedKey> encKey(m_cipher->encryptKey(keyBuffer, keyBufferSize, kencParams.m_algorithm));
         
         EncryptedKey* xmlEncKey=nullptr;
         auto_ptr<XMLObject> xmlObjectKey(XMLObjectBuilder::buildOneFromElement(encKey->getElement()));

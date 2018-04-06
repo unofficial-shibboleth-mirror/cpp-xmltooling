@@ -43,6 +43,7 @@ using namespace xmltooling::logging;
 using namespace xmltooling;
 using xercesc::Base64;
 using xercesc::DOMElement;
+using boost::scoped_ptr;
 using namespace std;
 
 namespace xmltooling {
@@ -65,7 +66,7 @@ namespace xmltooling {
 		void load(ifstream& in);
 
     		Category& m_log;
-		auto_ptr<RWLock> m_lock;
+		scoped_ptr<RWLock> m_lock;
 		mutable map< string, boost::shared_ptr<XSECCryptoSymmetricKey> > m_keyMap;
 		string m_default;
 	};
@@ -120,7 +121,7 @@ void VersionedDataSealerKeyStrategy::load()
 		load(in);
 	}
 	else {
-		auto_ptr<SOAPTransport> t(getTransport());
+		scoped_ptr<SOAPTransport> t(getTransport());
 
 		// Fetch the data.
 		t->send();

@@ -45,7 +45,7 @@ public:
         const XMLObjectBuilder* b = XMLObjectBuilder::getBuilder(doc->getDocumentElement());
         TS_ASSERT(b!=nullptr);
 
-        auto_ptr<ElementProxy> wcObject(
+        scoped_ptr<ElementProxy> wcObject(
             dynamic_cast<ElementProxy*>(b->buildFromDocument(doc, false))
             );
         TS_ASSERT(wcObject.get()!=nullptr);
