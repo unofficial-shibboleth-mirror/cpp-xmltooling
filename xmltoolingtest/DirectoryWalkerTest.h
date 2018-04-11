@@ -26,6 +26,8 @@
 
 using namespace xmltooling::logging;
 
+static void counting_callback(const char* pathname, struct stat& stat_buf, void* data);
+
 class DirectoryWalkerTest : public CxxTest::TestSuite {
     unsigned int m_count;
     Category& m_log;
@@ -83,7 +85,7 @@ public:
     }
 };
 
-static void counting_callback(const char* pathname, struct stat& stat_buf, void* data) {
+void counting_callback(const char* pathname, struct stat& stat_buf, void* data) {
     if (!strstr(pathname, ".gitkeep"))
         reinterpret_cast<DirectoryWalkerTest*>(data)->m_count++;
 }
