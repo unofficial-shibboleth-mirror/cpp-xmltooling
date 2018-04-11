@@ -56,18 +56,20 @@ namespace xmltooling {
     public:
         bool stale(logging::Category& log, RWLock* lock=nullptr) {
             if (local) {
+                if (source.empty())
+                    return false;
 #ifdef WIN32
                 struct _stat stat_buf;
-				if (_stat(source.c_str(), &stat_buf) != 0) {
-					log.error("unable to stat local resource (%s)", source.c_str());
-					return false;
-				}
+                if (_stat(source.c_str(), &stat_buf) != 0) {
+                    log.error("unable to stat local resource (%s)", source.c_str());
+                    return false;
+                }
 #else
-				struct stat stat_buf;
-				if (stat(source.c_str(), &stat_buf) != 0) {
-					log.error("unable to stat local resource (%s)", source.c_str());	
-					return false;
-				}
+                struct stat stat_buf;
+                if (stat(source.c_str(), &stat_buf) != 0) {
+                    log.error("unable to stat local resource (%s)", source.c_str());	
+                    return false;
+                }
 #endif
                 if (filestamp >= stat_buf.st_mtime)
                     return false;
