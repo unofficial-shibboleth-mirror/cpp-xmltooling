@@ -568,6 +568,7 @@ void XMLToolingInternalConfig::term()
     curl_global_cleanup();
 #endif
    Category::getInstance(XMLTOOLING_LOGCAT ".Config").info("%s library shutdown complete", PACKAGE_STRING);
+   Category::shutdown();
 }
 
 Lockable* XMLToolingInternalConfig::lock()
