@@ -94,11 +94,7 @@ static const XMLCh _CredentialResolver[] = UNICODE_LITERAL_18(C,r,e,d,e,n,t,i,a,
 
 ReloadableXMLFile::ReloadableXMLFile(const DOMElement* e, Category& log, bool startReloadThread)
     : m_root(e), m_local(true), m_validate(false), m_filestamp(0), m_reloadInterval(0),
-      m_lock(nullptr), m_log(log), m_loaded(false),
-#ifndef XMLTOOLING_LITE
-      m_credResolver(nullptr), m_trust(nullptr),
-#endif
-      m_shutdown(false), m_reload_wait(nullptr), m_reload_thread(nullptr)
+      m_log(log), m_loaded(false), m_shutdown(false)
 {
 #ifdef _DEBUG
     NDC ndc("ReloadableXMLFile");
@@ -135,7 +131,7 @@ ReloadableXMLFile::ReloadableXMLFile(const DOMElement* e, Category& log, bool st
         m_source = temp.get();
 
         if (!m_local && !strstr(m_source.c_str(),"://")) {
-            log.warn("deprecated usage of uri/url attribute for a local resource, use path instead");
+            log.warn("DEPRECATED: usage of uri/url attribute for a local resource, use path instead");
             m_local = true;
         }
 
@@ -143,23 +139,23 @@ ReloadableXMLFile::ReloadableXMLFile(const DOMElement* e, Category& log, bool st
         // Check for signature bits.
         if (e->hasAttributeNS(nullptr, certificate)) {
             // Use a file-based credential resolver rooted here.
-            m_credResolver = XMLToolingConfig::getConfig().CredentialResolverManager.newPlugin(FILESYSTEM_CREDENTIAL_RESOLVER, e);
+            m_credResolver.reset(XMLToolingConfig::getConfig().CredentialResolverManager.newPlugin(FILESYSTEM_CREDENTIAL_RESOLVER, e));
         }
         else {
             const DOMElement* sub = XMLHelper::getFirstChildElement(e, _CredentialResolver);
             string t(XMLHelper::getAttrString(sub, nullptr, type));
             if (!t.empty()) {
-                m_credResolver = XMLToolingConfig::getConfig().CredentialResolverManager.newPlugin(t.c_str(), sub);
+                m_credResolver.reset(XMLToolingConfig::getConfig().CredentialResolverManager.newPlugin(t.c_str(), sub));
             }
             else {
                 sub = XMLHelper::getFirstChildElement(e, _TrustEngine);
                 t = XMLHelper::getAttrString(sub, nullptr, type);
                 if (!t.empty()) {
-                    TrustEngine* trust = XMLToolingConfig::getConfig().TrustEngineManager.newPlugin(t.c_str(), sub);
-                    if (!(m_trust = dynamic_cast<SignatureTrustEngine*>(trust))) {
-                        delete trust;
+                    auto_ptr<TrustEngine> trust(XMLToolingConfig::getConfig().TrustEngineManager.newPlugin(t.c_str(), sub));
+                    if (!dynamic_cast<SignatureTrustEngine*>(trust.get())) {
                         throw XMLToolingException("TrustEngine-based ReloadableXMLFile requires a SignatureTrustEngine plugin.");
                     }
+                    m_trust.reset(dynamic_cast<SignatureTrustEngine*>(trust.release()));
 
                     m_signerName = XMLHelper::getAttrString(e, nullptr, signerName);
                 }
@@ -182,7 +178,7 @@ ReloadableXMLFile::ReloadableXMLFile(const DOMElement* e, Category& log, bool st
                     m_filestamp = stat_buf.st_mtime;
                 else
                     throw IOException("Unable to access local file ($1)", params(1,m_source.c_str()));
-                m_lock = RWLock::create();
+                m_lock.reset(RWLock::create());
             }
             FILE* cfile = fopen(m_source.c_str(), "r");
             if (cfile)
@@ -216,7 +212,7 @@ ReloadableXMLFile::ReloadableXMLFile(const DOMElement* e, Category& log, bool st
                 m_reloadInterval = XMLHelper::getAttrInt(e, 0, maxRefreshDelay);
             if (m_reloadInterval > 0) {
                 m_log.debug("will reload remote resource at most every %d seconds", m_reloadInterval);
-                m_lock = RWLock::create();
+                m_lock.reset(RWLock::create());
             }
             m_filestamp = time(nullptr);   // assume it gets loaded initially
         }
@@ -234,14 +230,13 @@ ReloadableXMLFile::ReloadableXMLFile(const DOMElement* e, Category& log, bool st
 ReloadableXMLFile::~ReloadableXMLFile()
 {
     shutdown();
-    delete m_lock;
 }
 
 void ReloadableXMLFile::startup()
 {
     if (m_lock && !m_reload_thread) {
-        m_reload_wait = CondWait::create();
-        m_reload_thread = Thread::create(&reload_fn, this);
+        m_reload_wait.reset(CondWait::create());
+        m_reload_thread.reset(Thread::create(&reload_fn, this));
     }
 }
 
@@ -252,10 +247,8 @@ void ReloadableXMLFile::shutdown()
         m_shutdown = true;
         m_reload_wait->signal();
         m_reload_thread->join(nullptr);
-        delete m_reload_thread;
-        delete m_reload_wait;
-        m_reload_thread = nullptr;
-        m_reload_wait = nullptr;
+        m_reload_thread.reset();
+        m_reload_wait.reset();
     }
 }
 
@@ -321,7 +314,7 @@ void* ReloadableXMLFile::reload_fn(void* pv)
             if (ret.first)
                 ret.second->getOwnerDocument()->release();
         }
-        catch (long& ex) {
+        catch (const long& ex) {
             if (ex == HTTPResponse::XMLTOOLING_HTTP_STATUS_NOTMODIFIED) {
                 r->m_log.info("remote resource (%s) unchanged from cached version", r->m_source.c_str());
             }
@@ -330,7 +323,7 @@ void* ReloadableXMLFile::reload_fn(void* pv)
                 r->m_log.crit("maintaining existing configuration, remote resource fetch returned atypical status code (%d)", ex);
             }
         }
-        catch (exception& ex) {
+        catch (const exception& ex) {
             r->m_log.crit("maintaining existing configuration, error reloading resource (%s): %s", r->m_source.c_str(), ex.what());
         }
     }
@@ -608,7 +601,7 @@ void ReloadableXMLFile::validateSignature(Signature& sigObj) const
         cc.setPeerName(m_signerName.c_str());
 
     if (m_credResolver) {
-        Locker locker(m_credResolver);
+        Locker locker(m_credResolver.get());
         vector<const Credential*> creds;
         if (m_credResolver->resolve(creds, &cc)) {
             SignatureValidator sigValidator;
@@ -618,7 +611,7 @@ void ReloadableXMLFile::validateSignature(Signature& sigObj) const
                     sigValidator.validate(&sigObj);
                     return; // success!
                 }
-                catch (exception&) {
+                catch (const exception&) {
                 }
             }
             throw XMLSecurityException("Unable to verify signature with supplied key(s).");

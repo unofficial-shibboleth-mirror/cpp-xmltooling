@@ -32,6 +32,7 @@
 
 #include <ctime>
 #include <string>
+#include <boost/scoped_ptr.hpp>
 #include <xercesc/dom/DOM.hpp>
 
 #ifndef XMLTOOLING_LITE
@@ -220,7 +221,7 @@ namespace xmltooling {
         std::string m_cacheTag;
 
         /** Shared lock for guarding reloads. */
-        RWLock* m_lock;
+        boost::scoped_ptr<RWLock> m_lock;
         
         /** Logging object. */
         logging::Category& m_log;
@@ -233,10 +234,10 @@ namespace xmltooling {
 
 #ifndef XMLTOOLING_LITE
         /** CredentialResolver for signature verification. */
-        CredentialResolver* m_credResolver;
+        boost::scoped_ptr<CredentialResolver> m_credResolver;
 
         /** TrustEngine for signature verification. */
-        SignatureTrustEngine* m_trust;
+        boost::scoped_ptr<SignatureTrustEngine> m_trust;
 
         /** Name of signer for signature verification. */
         std::string m_signerName;
@@ -252,8 +253,8 @@ namespace xmltooling {
 #endif
         // Used to manage background reload/refresh.
         bool m_shutdown;
-        CondWait* m_reload_wait;
-        Thread* m_reload_thread;
+        boost::scoped_ptr<CondWait> m_reload_wait;
+        boost::scoped_ptr<Thread> m_reload_thread;
         static void* reload_fn(void*);
     };
 
