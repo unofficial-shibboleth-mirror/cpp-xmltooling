@@ -275,9 +275,9 @@ void* ReloadableXMLFile::reload_fn(void* pv)
     mutex->lock();
 
     if (r->m_local)
-        r->m_log.info("reload thread started...running when signaled");
+        r->m_log.debug("reload thread started...running when signaled");
     else
-        r->m_log.info("reload thread started...running every %d seconds", r->m_reloadInterval);
+        r->m_log.debug("reload thread started...running every %d seconds", r->m_reloadInterval);
 
     while (!r->m_shutdown) {
         if (r->m_local)
@@ -328,7 +328,7 @@ void* ReloadableXMLFile::reload_fn(void* pv)
         }
     }
 
-    r->m_log.info("reload thread finished");
+    r->m_log.debug("reload thread finished");
 
     mutex->unlock();
 
