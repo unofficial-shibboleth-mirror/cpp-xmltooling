@@ -56,6 +56,9 @@ namespace xmltooling {
          * Destructor pops context off of diagnostic stack
          */
         ~NDC();
+
+    private:
+        bool m_pop;
     };
 
 };

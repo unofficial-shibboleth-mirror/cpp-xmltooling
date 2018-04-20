@@ -36,17 +36,24 @@
 
 using namespace xmltooling;
 
-NDC::NDC(const char* context)
+NDC::NDC(const char* context) : m_pop(false)
 {
-    logging::NDC::push(context);
+    if (context) {
+        logging::NDC::push(context);
+        m_pop = true;
+    }
 }
 
-NDC::NDC(const std::string& context)
+NDC::NDC(const std::string& context) : m_pop(false)
 {
-    logging::NDC::push(context);
+    if (!context.empty()) {
+        logging::NDC::push(context);
+        m_pop = true;
+    }
 }
 
 NDC::~NDC()
 {
-    logging::NDC::pop();
+    if (m_pop)
+        logging::NDC::pop();
 }
