@@ -92,7 +92,7 @@ namespace xmltooling {
          * @param p     parameters to configure plugin
          * @return      the constructed plugin  
          */
-        T* newPlugin(const Key& type, const Params& p) {
+        T* newPlugin(const Key& type, const Params& p) const {
             typename std::map<Key, typename PluginManager::Factory*>::const_iterator i=m_map.find(type);
             if (i==m_map.end())
                 throw UnknownExtensionException("Unknown plugin type.");
