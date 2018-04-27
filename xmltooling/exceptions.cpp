@@ -125,10 +125,9 @@ void XMLToolingException::addProperties(const namedparams& p)
 {
     m_processedmsg.erase();
     const vector<const char*>& v = p.get();
-    for (vector<const char*>::const_iterator ci = v.begin(); ci != v.end(); ++ci) {
+    for (vector<const char*>::const_iterator ci = v.begin(); ci != v.end(); ci+=2) {
         m_params.erase(*ci);
         m_params[*ci] = *(ci+1);
-        ++ci;   // advance past name to value, then loop will advance it again
     }
 }
 
