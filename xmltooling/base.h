@@ -1205,7 +1205,7 @@
  */
 #define PROC_QNAME_ATTRIB(proper,ucase,namespaceURI) \
     if (xmltooling::XMLHelper::isNodeNamed(attribute, namespaceURI, ucase##_ATTRIB_NAME)) { \
-        boost::scoped_ptr<xmltooling::QName> q(xmltooling::XMLHelper::getAttributeValueAsQName(attribute)); \
+        boost::scoped_ptr<xmltooling::QName> q(xmltooling::XMLHelper::getNodeValueAsQName(attribute)); \
         set##proper(q.get()); \
         return; \
     }

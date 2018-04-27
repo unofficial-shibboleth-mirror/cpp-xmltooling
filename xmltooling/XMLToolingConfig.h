@@ -272,14 +272,6 @@ namespace xmltooling {
          */
         void setURLEncoder(URLEncoder* urlEncoder);
         
-        /**
-         * @deprecated
-         * List of catalog files to load into validating parser pool at initialization time.
-         * <p>Like other path settings, the separator depends on the platform
-         * (semicolon on Windows, colon otherwise). 
-         */
-        std::string catalog_path;
-
         /** A User-Agent header to include in HTTP client requests. */
         std::string user_agent;
 

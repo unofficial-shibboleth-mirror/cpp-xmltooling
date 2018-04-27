@@ -378,11 +378,6 @@ void ReloadableXMLFile::unlock()
         m_lock->unlock();
 }
 
-pair<bool, DOMElement*> ReloadableXMLFile::load(bool backup)
-{
-    return load(backup, "");
-}
-
 pair<bool,DOMElement*> ReloadableXMLFile::load(bool backup, string backingFile)
 {
 #ifdef _DEBUG
@@ -495,7 +490,7 @@ pair<bool,DOMElement*> ReloadableXMLFile::load()
     // backup of a remote resource (if available), and for backing up remote
     // resources.
     try {
-        pair<bool,DOMElement*> ret = load(false);
+        pair<bool,DOMElement*> ret = load(false, m_backing);
         if (!m_backing.empty()) {
             m_log.debug("backing up remote resource to (%s)", m_backing.c_str());
             try {
@@ -504,13 +499,13 @@ pair<bool,DOMElement*> ReloadableXMLFile::load()
                 backer << *(ret.second->getOwnerDocument());
                 preserveCacheTag();
             }
-            catch (exception& ex) {
+            catch (const exception& ex) {
                 m_log.crit("exception while backing up resource: %s", ex.what());
             }
         }
         return ret;
     }
-    catch (long& responseCode) {
+    catch (long responseCode) {
         // If there's an HTTP error or the document hasn't changed,
         // use the backup iff we have no "valid" resource in place.
         // That prevents reload of the backup copy any time the document
@@ -518,13 +513,13 @@ pair<bool,DOMElement*> ReloadableXMLFile::load()
         if (responseCode == HTTPResponse::XMLTOOLING_HTTP_STATUS_NOTMODIFIED)
             m_log.info("remote resource (%s) unchanged from cached version", m_source.c_str());
         if (!m_loaded && !m_backing.empty())
-            return load(true);
+            return load(true, "");
         throw;
     }
-    catch (exception&) {
+    catch (const exception&) {
         // Same as above, but for general load/parse errors.
         if (!m_loaded && !m_backing.empty())
-            return load(true);
+            return load(true, "");
         throw;
     }
 }

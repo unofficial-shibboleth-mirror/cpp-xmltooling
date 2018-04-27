@@ -103,13 +103,13 @@ namespace xmltooling {
     };
 
 
-    static XMLCh fullCRLChain[] =		    UNICODE_LITERAL_12(f,u,l,l,C,R,L,C,h,a,i,n);
-    static XMLCh checkRevocation[] =	    UNICODE_LITERAL_15(c,h,e,c,k,R,e,v,o,c,a,t,i,o,n);
+    static XMLCh fullCRLChain[] =           UNICODE_LITERAL_12(f,u,l,l,C,R,L,C,h,a,i,n);
+    static XMLCh checkRevocation[] =        UNICODE_LITERAL_15(c,h,e,c,k,R,e,v,o,c,a,t,i,o,n);
     static XMLCh policyMappingInhibit[] =   UNICODE_LITERAL_20(p,o,l,i,c,y,M,a,p,p,i,n,g,I,n,h,i,b,i,t);
-    static XMLCh anyPolicyInhibit[] =	    UNICODE_LITERAL_16(a,n,y,P,o,l,i,c,y,I,n,h,i,b,i,t);
+    static XMLCh anyPolicyInhibit[] =       UNICODE_LITERAL_16(a,n,y,P,o,l,i,c,y,I,n,h,i,b,i,t);
     static XMLCh _PathValidator[] =         UNICODE_LITERAL_13(P,a,t,h,V,a,l,i,d,a,t,o,r);
-    static XMLCh PolicyOID[] =			    UNICODE_LITERAL_9(P,o,l,i,c,y,O,I,D);
-    static XMLCh TrustedName[] =		    UNICODE_LITERAL_11(T,r,u,s,t,e,d,N,a,m,e);
+    static XMLCh PolicyOID[] =      	    UNICODE_LITERAL_9(P,o,l,i,c,y,O,I,D);
+    static XMLCh TrustedName[] =            UNICODE_LITERAL_11(T,r,u,s,t,e,d,N,a,m,e);
     static XMLCh type[] =                   UNICODE_LITERAL_4(t,y,p,e);
 };
 
@@ -124,18 +124,14 @@ AbstractPKIXTrustEngine::PKIXValidationInfoIterator::~PKIXValidationInfoIterator
 AbstractPKIXTrustEngine::AbstractPKIXTrustEngine(const xercesc::DOMElement* e)
 	: TrustEngine(e),
 		m_checkRevocation(XMLHelper::getAttrString(e, nullptr, checkRevocation)),
-		m_fullCRLChain(XMLHelper::getAttrBool(e, false, fullCRLChain)),
 		m_policyMappingInhibit(XMLHelper::getAttrBool(e, false, policyMappingInhibit)),
 		m_anyPolicyInhibit(XMLHelper::getAttrBool(e, false, anyPolicyInhibit))
 {
-    if (m_fullCRLChain) {
+    if (m_checkRevocation.empty() && XMLHelper::getAttrBool(e, false, fullCRLChain)) {
         Category::getInstance(XMLTOOLING_LOGCAT ".TrustEngine.PKIX").warn(
-            "fullCRLChain option is deprecated, setting checkRevocation to \"fullChain\""
+            "DEPRECATED: replace fullCRLChain option with checkRevocation set to \"fullChain\""
             );
         m_checkRevocation = "fullChain";
-    }
-    else if (m_checkRevocation == "fullChain") {
-        m_fullCRLChain = true; // in case anything's using this
     }
 
     xercesc::DOMElement* c = XMLHelper::getFirstChildElement(e);
@@ -166,7 +162,7 @@ AbstractPKIXTrustEngine::AbstractPKIXTrustEngine(const xercesc::DOMElement* e)
                     m_pathValidators.push_back(ptr);
                 }
             }
-            catch (exception& ex) {
+            catch (const exception& ex) {
                 Category::getInstance(XMLTOOLING_LOGCAT ".TrustEngine.PKIX").error(
                     "error building PathValidator: %s", ex.what()
                     );

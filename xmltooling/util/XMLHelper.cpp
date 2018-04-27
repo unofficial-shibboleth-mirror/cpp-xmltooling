@@ -180,11 +180,6 @@ xmltooling::QName* XMLHelper::getNodeQName(const DOMNode* domNode)
     return nullptr; 
 }
 
-xmltooling::QName* XMLHelper::getAttributeValueAsQName(const DOMAttr* attribute)
-{
-    return getNodeValueAsQName(attribute);
-}
-
 xmltooling::QName* XMLHelper::getNodeValueAsQName(const DOMNode* domNode)
 {
     if (!domNode)
@@ -376,7 +371,7 @@ bool XMLHelper::getCaseSensitive(const xercesc::DOMElement* e, bool defValue, co
     if (e) {
         const XMLCh* ic = e->getAttributeNS(ns, ignoreCase);
         if (ic && * ic) {
-            Category::getInstance(XMLTOOLING_LOGCAT ".XMLHelper").warn("Deprecated attribute \"ignoreCase\" encountered in configuration. Use \"caseSensitive\".");
+            Category::getInstance(XMLTOOLING_LOGCAT ".XMLHelper").warn("DEPRECATED: attribute \"ignoreCase\" encountered in configuration. Use \"caseSensitive\".");
 
             // caseInsensitive = !"ignoreCase"
             if (*ic == chLatin_t || *ic == chDigit_1)

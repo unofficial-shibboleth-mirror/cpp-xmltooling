@@ -157,16 +157,6 @@ namespace xmltooling {
         static QName* getNodeQName(const xercesc::DOMNode* domNode);
 
         /**
-         * @deprecated
-         * Constructs a QName from an attribute's value.
-         * <p>The caller is responsible for freeing the result.
-         *
-         * @param attribute the attribute with a QName value
-         * @return a QName from an attribute's value, or null if the given attribute is null
-         */
-        static QName* getAttributeValueAsQName(const xercesc::DOMAttr* attribute);
-
-        /**
          * Constructs a QName from a node's value.
          * <p>The caller is responsible for freeing the result.
          *

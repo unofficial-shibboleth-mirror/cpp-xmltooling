@@ -37,11 +37,14 @@ public:
 
         if (getenv("XMLTOOLINGTEST_DATA"))
             data_path=std::string(getenv("XMLTOOLINGTEST_DATA")) + "/";
-        XMLToolingConfig::getConfig().catalog_path = data_path + "catalog.xml";
 
         if (!XMLToolingConfig::getConfig().init())
             return false;
         if (!XMLToolingConfig::getConfig().init())  // should be a no-op
+            return false;
+
+        string catalog_path = data_path + "catalog.xml";
+        if (!XMLToolingConfig::getConfig().getValidatingParser().loadCatalogs(catalog_path.c_str()))
             return false;
         
         return true;

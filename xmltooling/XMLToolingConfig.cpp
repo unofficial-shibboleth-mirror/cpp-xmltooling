@@ -416,10 +416,6 @@ bool XMLToolingInternalConfig::init()
         m_pathResolver.reset(new PathResolver());
         m_urlEncoder.reset(new URLEncoder());
 
-        // Load catalogs from deprecated path setting.
-        if (!catalog_path.empty())
-            m_validatingPool->loadCatalogs(catalog_path.c_str());
-
         // default registrations
         XMLObjectBuilder::registerDefaultBuilder(new UnknownElementBuilder());
 

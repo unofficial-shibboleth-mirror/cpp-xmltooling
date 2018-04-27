@@ -72,9 +72,6 @@ namespace xmltooling {
         /** Controls revocation checking, currently limited to CRLs and supports "off", "entityOnly", "fullChain". */
         std::string m_checkRevocation;
 
-        /** Deprecated option, equivalent to checkRevocation="fullChain". */
-        bool m_fullCRLChain;
-
         /** Disable policy mapping when applying PKIX policy checking. */
         bool m_policyMappingInhibit;
 

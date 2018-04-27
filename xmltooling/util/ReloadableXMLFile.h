@@ -113,22 +113,6 @@ namespace xmltooling {
         virtual std::pair<bool,xercesc::DOMElement*> background_load();
 
         /**
-         * @deprecated
-         * Basic load/parse of configuration material.
-         * 
-         * <p>The base version performs basic parsing duties and returns the result.
-         * Subclasses should override the new background_load() method and perform
-         * their own locking in conjunction with use of this method.
-         *
-         * <p>Subclasses that continue to override this method will function, but
-         * a write lock will be acquired and held for the entire operation.
-         * 
-         * @return a pair consisting of a flag indicating whether to take ownership of
-         *      the document, and the root element of the tree to load
-         */
-        virtual std::pair<bool,xercesc::DOMElement*> load();
-
-        /**
         * Basic load/parse of configuration material.
         *
         * <p>The base version performs basic parsing duties and returns the result.
@@ -145,29 +129,12 @@ namespace xmltooling {
         * copied to this file.  Thus backup can be done without locking and the
         * job of creating the backup consists of doing a rename (under the lock).</p>
         *
-        * <p> The single parameter version is deprecated and is the same as
-        * calling this version with an empty string at the second parameter
-        * (no backing file).</p>
-        *
         * @param backup      true iff the backup source should be loaded
         * @param backingFile Filename to copy the input to
         * @return a pair consisting of a flag indicating whether to take ownership of
         *      the document, and the root element of the tree to load
         */
         virtual std::pair<bool, xercesc::DOMElement*> load(bool backup, std::string backingFile);
-
-        /**
-        * @deprecated
-        * Basic load/parse of configuration material.
-        *
-        * <p>The deprecated version of the two-parameter load method, equivalent to
-        * calling it with an empty second parameter.</p>
-        *
-        * @param backup      true iff the backup source should be loaded
-        * @return a pair consisting of a flag indicating whether to take ownership of
-        *      the document, and the root element of the tree to load
-        */
-        virtual std::pair<bool,xercesc::DOMElement*> load(bool backup);
 
         /**
          * Accesses a lock interface protecting use of backup file associated with the
@@ -178,6 +145,18 @@ namespace xmltooling {
          * @return  pointer to a lock interface, or nullptr if unnecessary
          */
         virtual Lockable* getBackupLock();
+
+        /**
+        * Basic load/parse of configuration material.
+        * 
+        * <p>The base version erforms basic parsing duties and returns the result.
+        * Subclasses should override the new background_load() method and perform
+        * their own locking in conjunction with calling this method.
+        * 
+        * @return a pair consisting of a flag indicating whether to take ownership of
+        *      the document, and the root element of the tree to load
+        */
+        std::pair<bool,xercesc::DOMElement*> load();
 
         /**
          * Preserves the last remote resource caching identifier in a backup file

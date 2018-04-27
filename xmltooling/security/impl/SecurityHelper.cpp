@@ -707,21 +707,6 @@ string SecurityHelper::getDEREncoding(const Credential& cred, const char* hash, 
     return "";
 }
 
-string SecurityHelper::getDEREncoding(const XSECCryptoKey& key, bool hash, bool nowrap)
-{
-    return getDEREncoding(key, hash ? "SHA1" : nullptr, nowrap);
-}
-
-string SecurityHelper::getDEREncoding(const XSECCryptoX509& cert, bool hash, bool nowrap)
-{
-    return getDEREncoding(cert, hash ? "SHA1" : nullptr, nowrap);
-}
-
-string SecurityHelper::getDEREncoding(const Credential& cred, bool hash, bool nowrap)
-{
-    return getDEREncoding(cred, hash ? "SHA1" : nullptr, nowrap);
-}
-
 XSECCryptoKey* SecurityHelper::fromDEREncoding(const char* buf, unsigned long buflen, bool base64)
 {
     XMLSize_t x;

@@ -92,7 +92,7 @@ public:
 
         TSM_ASSERT_EQUALS(
             "Certificate and its key produced different DER encodings",
-            SecurityHelper::getDEREncoding(*certs[2]), SecurityHelper::getDEREncoding(*key1.get())
+            SecurityHelper::getDEREncoding(*certs[2], nullptr), SecurityHelper::getDEREncoding(*key1.get(), nullptr)
             );
 
         TSM_ASSERT_EQUALS(
