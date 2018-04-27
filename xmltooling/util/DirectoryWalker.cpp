@@ -116,7 +116,7 @@ void DirectoryWalker::_walk(
         else if (startsWith || endsWith) {
             string fname(entptr->d_name);
             if ((startsWith && !boost::algorithm::starts_with(fname, startsWith)) ||
-                (endsWith && boost::algorithm::ends_with(fname, endsWith))) {
+                (endsWith && !boost::algorithm::ends_with(fname, endsWith))) {
                 continue;
             }
         }
