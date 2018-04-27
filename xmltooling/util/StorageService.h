@@ -61,7 +61,7 @@ namespace xmltooling {
              * Constructor.
              *
              * @param contextSize   max size of context labels in characters
-             * @param keysize       max size of keys in characters
+             * @param keySize       max size of keys in characters
              * @param stringSize    max size of string values in characters
              */
             Capabilities(unsigned int contextSize, unsigned int keySize, unsigned int stringSize);

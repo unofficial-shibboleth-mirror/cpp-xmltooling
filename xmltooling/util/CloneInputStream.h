@@ -42,7 +42,7 @@ namespace xmltooling {
          * Constructor.
          *
          * @param stream a stream that we will read from
-         * @param backingFele the name of a file to write every byte we read, as we read it.
+         * @param backingFile the name of a file to write every byte we read, as we read it.
          *        we take ownership of this, arranging to delete it in our destructor.
          */
         CloneInputStream(xercesc::BinInputStream *stream, const std::string& backingFile);
@@ -56,7 +56,7 @@ namespace xmltooling {
 
     private :
         logging::Category& m_log;
-	xercesc::BinInputStream* m_input;
+        xercesc::BinInputStream* m_input;
         std::ofstream m_backingStream;
     };
 };

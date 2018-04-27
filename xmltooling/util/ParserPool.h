@@ -118,7 +118,7 @@ namespace xmltooling {
          * @param pathname  path to a catalog file
          * @return true iff the catalog was successfully processed
          */
-        bool loadCatalog(const char* pathnames);
+        bool loadCatalog(const char* pathname);
 
         /**
          * Load an OASIS catalog file to map schema namespace URIs to filenames.

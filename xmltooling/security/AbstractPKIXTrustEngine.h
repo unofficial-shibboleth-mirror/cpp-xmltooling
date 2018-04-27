@@ -57,7 +57,7 @@ namespace xmltooling {
          *  <li>checkRevocation attribute (off, entityOnly, fullChain)
          *  <li>policyMappingInhibit attribute (boolean)
          *  <li>anyPolicyInhibit attribute (boolean)
-         *  <li>&t;PathValidator&gt; element (zero or more)
+         *  <li>&lt;PathValidator&gt; element (zero or more)
          *  <li>&lt;TrustedName&gt; element (zero or more)
          *  <li>&lt;PolicyOID&gt; element (zero or more)
          * </ul>

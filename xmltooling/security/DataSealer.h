@@ -106,7 +106,7 @@ namespace xmltooling {
         * (in length-prefixed UTF-8 format), which identifies the key used. Finally the result is encoded
         * safely for ASCII use (e.g., base64).</p>
         *
-        * @param data the data to wrap
+        * @param s the data to wrap
         * @param exp expiration time
         * @return the encoded blob
         */

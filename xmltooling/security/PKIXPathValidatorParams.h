@@ -83,6 +83,9 @@ namespace xmltooling {
          */
         virtual const std::vector<XSECCryptoX509*>& getTrustAnchors() const=0;
 
+        /**
+         * Revocation types.
+         */
         enum revocation_t {
             REVOCATION_OFF = 0,
             REVOCATION_ENTITYONLY = 1,

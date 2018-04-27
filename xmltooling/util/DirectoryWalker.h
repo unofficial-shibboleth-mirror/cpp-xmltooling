@@ -51,6 +51,7 @@ namespace xmltooling {
         /**
          * Constructor.
          *
+         * @param log log category
          * @param path directory path to walk
          * @param recurse true iff nested directories should be processed
          */
