@@ -19,10 +19,9 @@
  */
 
 /**
- * URLEncoder.cpp
+ * DataSealer.cpp
  * 
- * Interface to a URL-encoding mechanism along with a
- * default implementation. 
+ * Generic data protection interface.
  */
 
 #include "internal.h"
@@ -91,15 +90,15 @@ string DataSealer::wrap(const char* s, time_t exp) const
 
 	const XMLCh* algorithm = nullptr;
 	switch (defaultKey.second->getSymmetricKeyType()) {
-		case XSECCryptoSymmetricKey::SymmetricKeyType::KEY_AES_128:
+		case XSECCryptoSymmetricKey::KEY_AES_128:
 			algorithm = DSIGConstants::s_unicodeStrURIAES128_GCM;
 			break;
 
-		case XSECCryptoSymmetricKey::SymmetricKeyType::KEY_AES_192:
+		case XSECCryptoSymmetricKey::KEY_AES_192:
 			algorithm = DSIGConstants::s_unicodeStrURIAES192_GCM;
 			break;
 
-		case XSECCryptoSymmetricKey::SymmetricKeyType::KEY_AES_256:
+		case XSECCryptoSymmetricKey::KEY_AES_256:
 			algorithm = DSIGConstants::s_unicodeStrURIAES256_GCM;
 			break;
 
@@ -196,15 +195,15 @@ string DataSealer::unwrap(const char* s) const
 
 	const XMLCh* algorithm = nullptr;
 	switch (requiredKey.second->getSymmetricKeyType()) {
-	case XSECCryptoSymmetricKey::SymmetricKeyType::KEY_AES_128:
+	case XSECCryptoSymmetricKey::KEY_AES_128:
 		algorithm = DSIGConstants::s_unicodeStrURIAES128_GCM;
 		break;
 
-	case XSECCryptoSymmetricKey::SymmetricKeyType::KEY_AES_192:
+	case XSECCryptoSymmetricKey::KEY_AES_192:
 		algorithm = DSIGConstants::s_unicodeStrURIAES192_GCM;
 		break;
 
-	case XSECCryptoSymmetricKey::SymmetricKeyType::KEY_AES_256:
+	case XSECCryptoSymmetricKey::KEY_AES_256:
 		algorithm = DSIGConstants::s_unicodeStrURIAES256_GCM;
 		break;
 
