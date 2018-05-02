@@ -107,7 +107,7 @@ public:
     }
 
     void testOpenSSLEC() {
-#if (OPENSSL_VERSION_NUMBER >= 0x00907000L)
+#ifdef XSEC_OPENSSL_HAVE_EC
 
         CredentialCriteria cc;
         cc.setUsage(Credential::SIGNING_CREDENTIAL);

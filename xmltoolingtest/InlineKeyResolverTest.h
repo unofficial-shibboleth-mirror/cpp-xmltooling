@@ -123,9 +123,8 @@ public:
 
     }
 
-#ifdef XSEC_OPENSSL_HAVE_EC
     void testOpenSSLEC() {
-
+#ifdef XSEC_OPENSSL_HAVE_EC
         string path=data_path + "KeyInfoEC.xml";
         ifstream fs(path.c_str());
         DOMDocument* doc=XMLToolingConfig::getConfig().getValidatingParser().parse(fs);
@@ -137,8 +136,6 @@ public:
 
         scoped_ptr<X509Credential> credFromKeyInfo(dynamic_cast<X509Credential*>(m_resolver->resolve(kiObject.get())));
         const OpenSSLCryptoKeyEC* sslCredFromKeyInfo= dynamic_cast<const OpenSSLCryptoKeyEC*>(credFromKeyInfo->getPublicKey());
-
-        const EC_KEY* keyInfoEC = dynamic_cast<const OpenSSLCryptoKeyEC*>(credFromKeyInfo->getPublicKey())->getOpenSSLEC();
 
         path = data_path + "FileSystemCredentialResolver.xml";
         ifstream in(path.c_str());
@@ -152,7 +149,6 @@ public:
         cc.setUsage(Credential::SIGNING_CREDENTIAL);
         cc.setKeyAlgorithm("EC");
         const OpenSSLCryptoKeyEC* fileResolverCryptoKeyEC = dynamic_cast<const OpenSSLCryptoKeyEC*>(cresolver->resolve(&cc)->getPublicKey());
-        const EC_KEY* fileResolverEC= fileResolverCryptoKeyEC->getOpenSSLEC();
 
         unsigned char toSign[] = "NibbleAHappyWartHog";
         const int bufferSize = 1024;
@@ -161,8 +157,8 @@ public:
 
         bool worked = sslCredFromKeyInfo->verifyBase64SignatureDSA(toSign, sizeof(toSign), &outSig[0], len);
         TSM_ASSERT("EC Round Trip Signature via KeyInfo Failed", worked);
-    }
 #endif
+    }
 
     void testOpenSSLRSA() {
         string path=data_path + "KeyInfo1.xml";
