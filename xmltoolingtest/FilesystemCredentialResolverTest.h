@@ -48,7 +48,11 @@ public:
         vector<const Credential*> creds;
         Locker locker(credResolver.get());
         credResolver->resolve(creds);
-        TSM_ASSERT_EQUALS("Retrieved credential was null", 3, creds.size());
+#ifdef XSEC_OPENSSL_HAVE_EC
+        TSM_ASSERT_EQUALS("Wrong number of credentials", 3, creds.size());
+#else
+        TSM_ASSERT_EQUALS("Wrong number of credentials", 2, creds.size());
+#endif
         TSM_ASSERT("Retrieved key was null", creds.front()->getPrivateKey()!=nullptr);
         TSM_ASSERT_EQUALS("Unexpected number of certificates", 1,
             dynamic_cast<const X509Credential*>(creds.front())->getEntityCertificateChain().size());

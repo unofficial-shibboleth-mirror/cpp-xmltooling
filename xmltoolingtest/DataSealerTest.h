@@ -30,7 +30,7 @@
 class DataSealerTest : public CxxTest::TestSuite {
 public:
     void testStaticDataSealer() {
-
+#ifdef XSEC_OPENSSL_HAVE_GCM
         unsigned char keybuf[32];
         TS_ASSERT_EQUALS(sizeof(keybuf), XSECPlatformUtils::g_cryptoProvider->getRandom(keybuf, sizeof(keybuf)));
 
@@ -76,10 +76,11 @@ public:
 		wrapped = sealer->wrap(data.c_str(), time(nullptr) - 500);
 		wrapped.insert(0, "invalid");
 		TSM_ASSERT_THROWS("DataSealer did not throw on wrong key label.", sealer->unwrap(wrapped.c_str()), IOException);
-	}
+#endif
+    }
 
 	void testVersionedDataSealer() {
-
+#ifdef XSEC_OPENSSL_HAVE_GCM
 		DOMDocument* doc = XMLToolingConfig::getConfig().getParser().newDocument();
 		Janitor<DOMDocument> jdoc(doc);
 
@@ -124,5 +125,6 @@ public:
 		wrapped = sealer->wrap(data.c_str(), time(nullptr) - 500);
 		wrapped.insert(0, "invalid");
 		TSM_ASSERT_THROWS("DataSealer did not throw on wrong key label.", sealer->unwrap(wrapped.c_str()), IOException);
+#endif
 	}
 };

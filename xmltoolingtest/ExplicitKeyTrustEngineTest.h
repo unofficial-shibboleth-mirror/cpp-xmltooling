@@ -79,8 +79,10 @@ public:
         SecurityHelper::loadCertificatesFromFile(certs, pathname.c_str());
         pathname = data_path + "dsa-cert.pem";
         SecurityHelper::loadCertificatesFromFile(certs, pathname.c_str());
+#ifdef XMLTOOLING_OPENSSL_HAVE_EC
         pathname = data_path + "ec-cert.pem";
         SecurityHelper::loadCertificatesFromFile(certs, pathname.c_str());
+#endif
 
         for (vector<XSECCryptoX509*>::const_iterator cert=certs.begin(); cert!=certs.end(); ++cert) {
             // certs is ignore but must be present

@@ -177,6 +177,7 @@ public:
     }
 
     void testSignatureDSA() {
+#ifdef XMLTOOLING_OPENSSL_HAVE_SHA2
         xmltooling::QName qname(SimpleXMLObject::NAMESPACE,SimpleXMLObject::LOCAL_NAME);
         const SimpleXMLObjectBuilder* b=dynamic_cast<const SimpleXMLObjectBuilder*>(XMLObjectBuilder::getBuilder(qname));
         TS_ASSERT(b!=nullptr);
@@ -235,10 +236,12 @@ public:
             TS_TRACE(e.what());
             throw;
         }
+#endif
     }
 
 
     void testSignatureEC() {
+#ifdef XMLTOOLING_OPENSSL_HAVE_EC
         xmltooling::QName qname(SimpleXMLObject::NAMESPACE,SimpleXMLObject::LOCAL_NAME);
         const SimpleXMLObjectBuilder* b=dynamic_cast<const SimpleXMLObjectBuilder*>(XMLObjectBuilder::getBuilder(qname));
         TS_ASSERT(b!=nullptr);
@@ -297,6 +300,7 @@ public:
             TS_TRACE(e.what());
             throw;
         }
+#endif
     }
 
     void testSignatureRSA() {
@@ -358,6 +362,5 @@ public:
             throw;
         }
     }
-
 
 };
