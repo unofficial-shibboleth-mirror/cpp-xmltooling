@@ -332,6 +332,8 @@ int i = 0;
             if test -d "$withval" ; then
                 CPPFLAGS="${CPPFLAGS} -I$withval/include"
                 XMLSEC_LIBS="-L$withval/lib -lz $XMLSEC_LIBS"
+            else
+                XMLSEC_LIBS="-lz $XMLSEC_LIBS"
             fi
         ]
     )
