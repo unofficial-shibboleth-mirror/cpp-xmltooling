@@ -34,7 +34,6 @@ libxmltoolinginclude_HEADERS = \
 	base.h \
 	ConcreteXMLObjectBuilder.h \
 	char_traits.h \
-	config_pub.h \
 	ElementExtensibleXMLObject.h \
 	ElementProxy.h \
 	exceptions.h \
@@ -48,6 +47,8 @@ libxmltoolinginclude_HEADERS = \
 	XMLObject.h \
 	XMLObjectBuilder.h \
 	XMLToolingConfig.h
+
+nodist_libxmltoolinginclude_HEADERS = config_pub.h
 
 encinclude_HEADERS = \
 	encryption/Decrypter.h \
