@@ -58,6 +58,7 @@ encinclude_HEADERS = \
 implinclude_HEADERS = \
 	impl/AnyElement.h \
 	security/impl/OpenSSLSupport.h \
+	security/impl/ManagedResource.h \
 	security/OpenSSLSecurityHelper.h \
 	impl/UnknownElement.h
 
@@ -77,7 +78,7 @@ secinclude_HEADERS = \
 	security/CredentialContext.h \
 	security/CredentialCriteria.h \
 	security/CredentialResolver.h \
-    security/DataSealer.h \
+	security/DataSealer.h \
 	security/KeyInfoCredentialContext.h \
 	security/KeyInfoResolver.h \
 	security/OpenSSLCredential.h \
