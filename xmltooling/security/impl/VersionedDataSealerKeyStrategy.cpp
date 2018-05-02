@@ -36,7 +36,7 @@
 
 #include <map>
 #include <fstream>
-#include <boost/smart_ptr/shared_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 #include <xercesc/util/Base64.hpp>
 
 using namespace xmltooling::logging;
@@ -117,7 +117,7 @@ void VersionedDataSealerKeyStrategy::load()
 		return;
 	m_log.info("loading secret keys from %s (%s)", local ? "local file" : "URL", source.c_str());
 	if (local) {
-		ifstream in(source);
+		ifstream in(source.c_str());
 		load(in);
 	}
 	else {
