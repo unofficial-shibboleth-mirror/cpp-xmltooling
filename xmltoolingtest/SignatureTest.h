@@ -31,6 +31,9 @@
 #include <xercesc/util/XMLUniDefs.hpp>
 #include <xsec/dsig/DSIGReference.hpp>
 #include <xsec/dsig/DSIGSignature.hpp>
+#include <xsec/enc/XSECCryptoKeyDSA.hpp>
+#include <xsec/enc/XSECCryptoKeyEC.hpp>
+#include <xsec/enc/XSECCryptoKeyRSA.hpp>
 #include <openssl/opensslv.h>
 
 class TestContext : public ContentReference

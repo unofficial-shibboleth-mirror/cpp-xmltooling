@@ -183,7 +183,7 @@ string DataSealer::unwrap(const char* s) const
 	// KEYLABEL and a colon on the outside, as a key hint.
 
 	// First extract the key label up to the first colon.
-	pair<string, const XSECCryptoSymmetricKey*> requiredKey = make_pair(string(), nullptr);
+	pair<string, const XSECCryptoSymmetricKey*> requiredKey = make_pair<string, const XSECCryptoSymmetricKey*>(string(), nullptr);
 	const char* delim = strchr(s ? s : "", ':');
 	if (delim && delim > s) {
 		requiredKey.first.append(s, delim - s);
