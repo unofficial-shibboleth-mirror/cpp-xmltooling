@@ -42,7 +42,9 @@
 #include <xsec/enc/OpenSSL/OpenSSLCryptoX509.hpp>
 
 #include "security/OpenSSLSecurityHelper.h"
-#include <openssl/ec.h>
+#ifdef XSEC_OPENSSL_HAVE_EC
+# include <openssl/ec.h>
+#endif
 
 using namespace xmlsignature;
 using namespace xmltooling::logging;
