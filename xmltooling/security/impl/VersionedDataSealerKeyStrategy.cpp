@@ -132,11 +132,11 @@ void VersionedDataSealerKeyStrategy::load()
 			throw (long)HTTPResponse::XMLTOOLING_HTTP_STATUS_NOTMODIFIED;
 
 		// Dump to output file.
-		ofstream out(backing, fstream::trunc | fstream::binary);
+		ofstream out(backing.c_str(), fstream::trunc | fstream::binary);
 		out << msg.rdbuf();
 		out.close();
 
-		ifstream in(backing);
+		ifstream in(backing.c_str());
 		load(in);
 	}
 }
@@ -211,7 +211,7 @@ Lockable* VersionedDataSealerKeyStrategy::lock()
 				m_log.crit("maintaining existing keys, remote fetch returned atypical status code (%d)", ex);
 			}
 		}
-		catch (exception& ex) {
+		catch (const exception& ex) {
 			m_log.crit("maintaining existing keys: %s", ex.what());
 		}
 	}
