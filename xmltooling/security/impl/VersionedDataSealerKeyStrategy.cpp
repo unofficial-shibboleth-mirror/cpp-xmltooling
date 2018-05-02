@@ -19,10 +19,9 @@
  */
 
 /**
- * URLEncoder.cpp
+ * VersionedDataSealerKeyStrategy.cpp
  * 
- * Interface to a URL-encoding mechanism along with a
- * default implementation. 
+ * DataSealerKeyStrategy based on a rolling key in a flat file.
  */
 
 #include "internal.h"
