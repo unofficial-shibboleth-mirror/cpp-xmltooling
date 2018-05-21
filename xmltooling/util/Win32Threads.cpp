@@ -29,7 +29,7 @@
 #include "util/Threads.h"
 
 #include <algorithm>
-#include<xfunctional>
+#include <functional>
 
 #ifndef WIN32
 # error "This implementation is for WIN32 platforms."
