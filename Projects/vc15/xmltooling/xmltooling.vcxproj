@@ -111,6 +111,7 @@
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <DisableSpecificWarnings>4275</DisableSpecificWarnings>
+      <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -140,6 +141,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <DisableSpecificWarnings>4275</DisableSpecificWarnings>
+      <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -162,6 +164,7 @@
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <DisableSpecificWarnings>4275</DisableSpecificWarnings>
+      <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
       <AdditionalDependencies>wsock32.lib;log4shib1.lib;zlib1.lib;xerces-c_3.lib;xsec_2.lib;$(SSLLib);$(LibCurlLib);%(AdditionalDependencies)</AdditionalDependencies>
@@ -186,6 +189,7 @@
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <DisableSpecificWarnings>4275</DisableSpecificWarnings>
+      <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
       <AdditionalDependencies>wsock32.lib;log4shib1.lib;zlib1.lib;xerces-c_3.lib;xsec_2.lib;$(SSLLib);$(LibCurlLib);%(AdditionalDependencies)</AdditionalDependencies>
@@ -223,7 +227,12 @@
     <ClCompile Include="..\..\..\XMLTooling\util\CurlURLInputStream.cpp" />
     <ClCompile Include="..\..\..\XMLTooling\util\NDC.cpp" />
     <ClCompile Include="..\..\..\XMLTooling\util\ParserPool.cpp" />
-    <ClCompile Include="..\..\..\XMLTooling\util\PathResolver.cpp" />
+    <ClCompile Include="..\..\..\XMLTooling\util\PathResolver.cpp">
+      <ConformanceMode Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ConformanceMode>
+      <ConformanceMode Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ConformanceMode>
+      <ConformanceMode Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ConformanceMode>
+      <ConformanceMode Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ConformanceMode>
+    </ClCompile>
     <ClCompile Include="..\..\..\XMLTooling\util\ReloadableXMLFile.cpp" />
     <ClCompile Include="..\..\..\XMLTooling\util\ReplayCache.cpp" />
     <ClCompile Include="..\..\..\XMLTooling\util\StorageService.cpp" />
