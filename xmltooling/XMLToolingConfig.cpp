@@ -84,13 +84,6 @@ using namespace xercesc;
 using namespace boost;
 using namespace std;
 
-#ifdef WIN32
-# if (OPENSSL_VERSION_NUMBER >= 0x00908000)
-#  define XMLTOOLING_OPENSSL_HAVE_SHA2 1
-# endif
-#endif
-
-
 DECL_XMLTOOLING_EXCEPTION_FACTORY(XMLParserException,xmltooling);
 DECL_XMLTOOLING_EXCEPTION_FACTORY(XMLObjectException,xmltooling);
 DECL_XMLTOOLING_EXCEPTION_FACTORY(MarshallingException,xmltooling);
@@ -737,51 +730,51 @@ void XMLToolingInternalConfig::registerXMLAlgorithms()
 
     registerXMLAlgorithm(DSIGConstants::s_unicodeStrURIMD5, nullptr, 0, ALGTYPE_DIGEST);
     registerXMLAlgorithm(DSIGConstants::s_unicodeStrURISHA1, nullptr, 0, ALGTYPE_DIGEST);
-#if defined(XMLTOOLING_OPENSSL_HAVE_SHA2) && !defined(OPENSSL_NO_SHA256)
+#if defined(XSEC_OPENSSL_HAVE_SHA2) && !defined(OPENSSL_NO_SHA256)
     registerXMLAlgorithm(DSIGConstants::s_unicodeStrURISHA224, nullptr, 0, ALGTYPE_DIGEST);
     registerXMLAlgorithm(DSIGConstants::s_unicodeStrURISHA256, nullptr, 0, ALGTYPE_DIGEST);
 #endif
-#if defined(XMLTOOLING_OPENSSL_HAVE_SHA2) && !defined(OPENSSL_NO_SHA512)
+#if defined(XSEC_OPENSSL_HAVE_SHA2) && !defined(OPENSSL_NO_SHA512)
     registerXMLAlgorithm(DSIGConstants::s_unicodeStrURISHA384, nullptr, 0, ALGTYPE_DIGEST);
     registerXMLAlgorithm(DSIGConstants::s_unicodeStrURISHA512, nullptr, 0, ALGTYPE_DIGEST);
 #endif
 
     registerXMLAlgorithm(DSIGConstants::s_unicodeStrURIDSA_SHA1, "DSA", 0, ALGTYPE_SIGN);
-#if defined(URI_ID_DSA_SHA256) && defined(XMLTOOLING_OPENSSL_HAVE_SHA2) && !defined(OPENSSL_NO_SHA256)
+#if defined(URI_ID_DSA_SHA256) && defined(XSEC_OPENSSL_HAVE_SHA2) && !defined(OPENSSL_NO_SHA256)
     registerXMLAlgorithm(DSIGConstants::s_unicodeStrURIDSA_SHA256, "DSA", 0, ALGTYPE_SIGN);
 #endif
 
     registerXMLAlgorithm(DSIGConstants::s_unicodeStrURIRSA_MD5, "RSA", 0, ALGTYPE_SIGN);
     registerXMLAlgorithm(DSIGConstants::s_unicodeStrURIRSA_SHA1, "RSA", 0, ALGTYPE_SIGN);
-#if defined(XMLTOOLING_OPENSSL_HAVE_SHA2) && !defined(OPENSSL_NO_SHA256)
+#if defined(XSEC_OPENSSL_HAVE_SHA2) && !defined(OPENSSL_NO_SHA256)
     registerXMLAlgorithm(DSIGConstants::s_unicodeStrURIRSA_SHA224, "RSA", 0, ALGTYPE_SIGN);
     registerXMLAlgorithm(DSIGConstants::s_unicodeStrURIRSA_SHA256, "RSA", 0, ALGTYPE_SIGN);
 #endif
-#if defined(XMLTOOLING_OPENSSL_HAVE_SHA2) && !defined(OPENSSL_NO_SHA512)
+#if defined(XSEC_OPENSSL_HAVE_SHA2) && !defined(OPENSSL_NO_SHA512)
     registerXMLAlgorithm(DSIGConstants::s_unicodeStrURIRSA_SHA384, "RSA", 0, ALGTYPE_SIGN);
     registerXMLAlgorithm(DSIGConstants::s_unicodeStrURIRSA_SHA512, "RSA", 0, ALGTYPE_SIGN);
 #endif
 
 #ifdef XSEC_OPENSSL_HAVE_EC
     registerXMLAlgorithm(DSIGConstants::s_unicodeStrURIECDSA_SHA1, "EC", 0, ALGTYPE_SIGN);
-# if defined(XMLTOOLING_OPENSSL_HAVE_SHA2) && !defined(OPENSSL_NO_SHA256)
+# if defined(XSEC_OPENSSL_HAVE_SHA2) && !defined(OPENSSL_NO_SHA256)
     registerXMLAlgorithm(DSIGConstants::s_unicodeStrURIECDSA_SHA256, "EC", 0, ALGTYPE_SIGN);
 #  ifdef URI_ID_ECDSA_SHA224
     registerXMLAlgorithm(DSIGConstants::s_unicodeStrURIECDSA_SHA224, "EC", 0, ALGTYPE_SIGN);
 #  endif
 # endif
-# if defined(XMLTOOLING_OPENSSL_HAVE_SHA2) && !defined(OPENSSL_NO_SHA512)
+# if defined(XSEC_OPENSSL_HAVE_SHA2) && !defined(OPENSSL_NO_SHA512)
     registerXMLAlgorithm(DSIGConstants::s_unicodeStrURIECDSA_SHA384, "EC", 0, ALGTYPE_SIGN);
     registerXMLAlgorithm(DSIGConstants::s_unicodeStrURIECDSA_SHA512, "EC", 0, ALGTYPE_SIGN);
 # endif
 #endif
 
     registerXMLAlgorithm(DSIGConstants::s_unicodeStrURIHMAC_SHA1, "HMAC", 0, ALGTYPE_SIGN);
-#if defined(XMLTOOLING_OPENSSL_HAVE_SHA2) && !defined(OPENSSL_NO_SHA256)
+#if defined(XSEC_OPENSSL_HAVE_SHA2) && !defined(OPENSSL_NO_SHA256)
     registerXMLAlgorithm(DSIGConstants::s_unicodeStrURIHMAC_SHA224, "HMAC", 0, ALGTYPE_SIGN);
     registerXMLAlgorithm(DSIGConstants::s_unicodeStrURIHMAC_SHA256, "HMAC", 0, ALGTYPE_SIGN);
 #endif
-#if defined(XMLTOOLING_OPENSSL_HAVE_SHA2) && !defined(OPENSSL_NO_SHA512)
+#if defined(XSEC_OPENSSL_HAVE_SHA2) && !defined(OPENSSL_NO_SHA512)
     registerXMLAlgorithm(DSIGConstants::s_unicodeStrURIHMAC_SHA384, "HMAC", 0, ALGTYPE_SIGN);
     registerXMLAlgorithm(DSIGConstants::s_unicodeStrURIHMAC_SHA512, "HMAC", 0, ALGTYPE_SIGN);
 #endif

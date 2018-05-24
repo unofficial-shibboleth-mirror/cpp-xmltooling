@@ -278,8 +278,13 @@ DOMElement* XMLSecSignatureImpl::marshall(DOMDocument* document, const vector<Si
         DSIGSignature* temp=XMLToolingInternalConfig::getInternalConfig().m_xsecProvider->newSignature();
         temp->setDSIGNSPrefix(XMLSIG_PREFIX);
         const XMLCh* alg = getSignatureAlgorithm();
-        if (!alg)
+        if (!alg) {
+#ifdef XSEC_OPENSSL_HAVE_SHA2
+            alg = DSIGConstants::s_unicodeStrURIRSA_SHA256;
+#else
             alg = DSIGConstants::s_unicodeStrURIRSA_SHA1;
+#endif
+        }
         cachedDOM=temp->createBlankSignature(document, getCanonicalizationMethod(), alg);
         m_signature = temp;
     }

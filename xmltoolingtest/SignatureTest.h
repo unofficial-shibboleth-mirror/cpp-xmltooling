@@ -177,7 +177,7 @@ public:
     }
 
     void testSignatureDSA() {
-#ifdef XMLTOOLING_OPENSSL_HAVE_SHA2
+#ifdef XSEC_OPENSSL_HAVE_SHA2
         xmltooling::QName qname(SimpleXMLObject::NAMESPACE,SimpleXMLObject::LOCAL_NAME);
         const SimpleXMLObjectBuilder* b=dynamic_cast<const SimpleXMLObjectBuilder*>(XMLObjectBuilder::getBuilder(qname));
         TS_ASSERT(b!=nullptr);
@@ -241,7 +241,7 @@ public:
 
 
     void testSignatureEC() {
-#ifdef XMLTOOLING_OPENSSL_HAVE_EC
+#ifdef XSEC_OPENSSL_HAVE_EC
         xmltooling::QName qname(SimpleXMLObject::NAMESPACE,SimpleXMLObject::LOCAL_NAME);
         const SimpleXMLObjectBuilder* b=dynamic_cast<const SimpleXMLObjectBuilder*>(XMLObjectBuilder::getBuilder(qname));
         TS_ASSERT(b!=nullptr);
