@@ -327,12 +327,11 @@ int i = 0;
         [
             if test -d "$withval" ; then
                 CPPFLAGS="${CPPFLAGS} -I$withval/include"
-                XMLSEC_LIBS="-L$withval/lib -lz $XMLSEC_LIBS"
-            else
-                XMLSEC_LIBS="-lz $XMLSEC_LIBS"
+                XMLSEC_LIBS="$XMLSEC_LIBS -L$withval/lib"
             fi
         ]
     )
+    XMLSEC_LIBS="$XMLSEC_LIBS -lz"
 
     # save and append master libs
     save_LIBS="$LIBS"
