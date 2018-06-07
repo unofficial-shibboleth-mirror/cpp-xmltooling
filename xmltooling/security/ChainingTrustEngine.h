@@ -51,8 +51,9 @@ namespace xmltooling {
          * XML namespaces are ignored in the processing of this content.
          * 
          * @param e DOM to supply configuration for provider
+         * @param deprecationSupport true iff the plugin(s) should support any deprecated features
          */
-        ChainingTrustEngine(const xercesc::DOMElement* e=nullptr);
+        ChainingTrustEngine(const xercesc::DOMElement* e=nullptr, bool deprecationSupport=true);
         
         /**
          * Destructor will delete any embedded engines.

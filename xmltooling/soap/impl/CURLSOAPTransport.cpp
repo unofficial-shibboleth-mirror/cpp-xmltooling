@@ -267,7 +267,7 @@ namespace xmltooling {
     int XMLTOOL_DLLLOCAL verify_callback(X509_STORE_CTX* x509_ctx, void* arg);
 #endif
 
-    SOAPTransport* CURLSOAPTransportFactory(const SOAPTransport::Address& addr)
+    SOAPTransport* CURLSOAPTransportFactory(const SOAPTransport::Address& addr, bool deprecationSupport)
     {
         return new CURLSOAPTransport(addr);
     }

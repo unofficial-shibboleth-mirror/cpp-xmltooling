@@ -49,7 +49,7 @@ namespace xmltooling {
 
     class XMLTOOL_DLLLOCAL VersionedDataSealerKeyStrategy : public DataSealerKeyStrategy, public ManagedResource {
     public:
-		VersionedDataSealerKeyStrategy(const DOMElement* e);
+		VersionedDataSealerKeyStrategy(const DOMElement* e, bool deprecationSupport=true);
         virtual ~VersionedDataSealerKeyStrategy();
 
 		Lockable* lock();
@@ -70,20 +70,20 @@ namespace xmltooling {
 		string m_default;
 	};
 
-    DataSealerKeyStrategy* XMLTOOL_DLLLOCAL VersionedDataSealerKeyStrategyFactory(const DOMElement* const & e)
+    DataSealerKeyStrategy* XMLTOOL_DLLLOCAL VersionedDataSealerKeyStrategyFactory(const DOMElement* const & e, bool deprecationSupport)
     {
-        return new VersionedDataSealerKeyStrategy(e);
+        return new VersionedDataSealerKeyStrategy(e, deprecationSupport);
     }
 
 };
 
-VersionedDataSealerKeyStrategy::VersionedDataSealerKeyStrategy(const DOMElement* e)
+VersionedDataSealerKeyStrategy::VersionedDataSealerKeyStrategy(const DOMElement* e, bool deprecationSupport)
 	: m_log(Category::getInstance(XMLTOOLING_LOGCAT".DataSealer")), m_lock(RWLock::create())
 {
 	static const XMLCh backingFilePath[] = UNICODE_LITERAL_15(b,a,c,k,i,n,g,F,i,l,e,P,a,t,h);
 	static const XMLCh path[] = UNICODE_LITERAL_4(p,a,t,h);
 	static const XMLCh _reloadChanges[] = UNICODE_LITERAL_13(r,e,l,o,a,d,C,h,a,n,g,e,s);
-	static const XMLCh _reloadInterval[] = UNICODE_LITERAL_14(r,e,l,o,a,d,I,n,t,e,r,v,a,l);
+    static const XMLCh _reloadInterval[] = UNICODE_LITERAL_14(r,e,l,o,a,d,I,n,t,e,r,v,a,l);
 	static const XMLCh url[] = UNICODE_LITERAL_3(u,r,l);
 
 	if (e->hasAttributeNS(nullptr, path)) {
@@ -104,6 +104,8 @@ VersionedDataSealerKeyStrategy::VersionedDataSealerKeyStrategy(const DOMElement*
 	else {
 		throw XMLSecurityException("DataSealer requires path or url XML attribute.");
 	}
+
+    m_deprecationSupport = deprecationSupport;
 }
 
 VersionedDataSealerKeyStrategy::~VersionedDataSealerKeyStrategy()

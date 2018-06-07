@@ -46,7 +46,7 @@ public:
         DOMDocument* docFsCred=XMLToolingConfig::getConfig().getParser().parse(inFsCred);
         XercesJanitor<DOMDocument> janitorFsCred(docFsCred);
         m_resolver = XMLToolingConfig::getConfig().CredentialResolverManager.newPlugin(
-            CHAINING_CREDENTIAL_RESOLVER,docFsCred->getDocumentElement()
+            CHAINING_CREDENTIAL_RESOLVER, docFsCred->getDocumentElement(), false
             );
 
         config = data_path + "ExplicitKeyTrustEngine.xml";
@@ -56,7 +56,7 @@ public:
 
         TrustEngine *trustEngine =
             XMLToolingConfig::getConfig().TrustEngineManager.newPlugin(
-                EXPLICIT_KEY_TRUSTENGINE, docTrustEngine->getDocumentElement()
+                EXPLICIT_KEY_TRUSTENGINE, docTrustEngine->getDocumentElement(), false
                 );
 
         m_trustEngine = dynamic_cast<X509TrustEngine*>(trustEngine);

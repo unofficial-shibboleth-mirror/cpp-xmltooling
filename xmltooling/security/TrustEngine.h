@@ -54,8 +54,9 @@ namespace xmltooling {
          * XML namespaces are ignored in the processing of this content.
          * 
          * @param e DOM to supply configuration for provider
+         * @param deprecationSupport true iff deprecated settings and features should be supported
          */
-        TrustEngine(const xercesc::DOMElement* e=nullptr);
+        TrustEngine(const xercesc::DOMElement* e=nullptr, bool deprecationSupport=true);
         
         /** Custom KeyInfoResolver instance. */
         KeyInfoResolver* m_keyInfoResolver;

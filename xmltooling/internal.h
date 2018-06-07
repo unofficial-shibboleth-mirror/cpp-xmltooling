@@ -95,7 +95,7 @@ namespace xmltooling {
         static XMLToolingInternalConfig& getInternalConfig();
 
         // global per-process setup and shutdown of runtime
-        bool init();
+        bool init(bool deprecationSupport=true);
         void term();
 
         // global mutex available to library applications

@@ -45,16 +45,16 @@ using namespace std;
 using xercesc::DOMElement;
 
 namespace xmltooling {
-    TrustEngine* XMLTOOL_DLLLOCAL ChainingTrustEngineFactory(const DOMElement* const & e)
+    TrustEngine* XMLTOOL_DLLLOCAL ChainingTrustEngineFactory(const DOMElement* const & e, bool deprecationSupport)
     {
-        return new ChainingTrustEngine(e);
+        return new ChainingTrustEngine(e, deprecationSupport);
     }
 };
 
 static const XMLCh _TrustEngine[] =                 UNICODE_LITERAL_11(T,r,u,s,t,E,n,g,i,n,e);
 static const XMLCh _type[] =                         UNICODE_LITERAL_4(t,y,p,e);
 
-ChainingTrustEngine::ChainingTrustEngine(const DOMElement* e) : TrustEngine(e)
+ChainingTrustEngine::ChainingTrustEngine(const DOMElement* e, bool deprecationSupport) : TrustEngine(e)
 {
     Category& log=Category::getInstance(XMLTOOLING_LOGCAT ".TrustEngine." CHAINING_TRUSTENGINE);
     e = e ? XMLHelper::getFirstChildElement(e, _TrustEngine) : nullptr;
@@ -63,10 +63,10 @@ ChainingTrustEngine::ChainingTrustEngine(const DOMElement* e) : TrustEngine(e)
             string t = XMLHelper::getAttrString(e, nullptr, _type);
             if (!t.empty()) {
                 log.info("building TrustEngine of type %s", t.c_str());
-                addTrustEngine(XMLToolingConfig::getConfig().TrustEngineManager.newPlugin(t.c_str(), e));
+                addTrustEngine(XMLToolingConfig::getConfig().TrustEngineManager.newPlugin(t.c_str(), e, deprecationSupport));
             }
         }
-        catch (exception& ex) {
+        catch (const exception& ex) {
             log.error("error building TrustEngine: %s", ex.what());
         }
         e = XMLHelper::getNextSiblingElement(e, _TrustEngine);

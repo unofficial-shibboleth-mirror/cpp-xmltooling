@@ -37,7 +37,7 @@ class PKIXEngineTest : public CxxTest::TestSuite {
         XercesJanitor<DOMDocument> janitor(doc);
         return dynamic_cast<X509TrustEngine*>(
             XMLToolingConfig::getConfig().TrustEngineManager.newPlugin(
-                STATIC_PKIX_TRUSTENGINE, doc->getDocumentElement()
+                STATIC_PKIX_TRUSTENGINE, doc->getDocumentElement(), false
                 )
             );
     }
@@ -51,8 +51,8 @@ class PKIXEngineTest : public CxxTest::TestSuite {
 
 public:
     void setUp() {
-        m_dummy = XMLToolingConfig::getConfig().CredentialResolverManager.newPlugin(DUMMY_CREDENTIAL_RESOLVER, nullptr);
-        m_chain = dynamic_cast<ChainingTrustEngine*>(XMLToolingConfig::getConfig().TrustEngineManager.newPlugin(CHAINING_TRUSTENGINE, nullptr));
+        m_dummy = XMLToolingConfig::getConfig().CredentialResolverManager.newPlugin(DUMMY_CREDENTIAL_RESOLVER, nullptr, false);
+        m_chain = dynamic_cast<ChainingTrustEngine*>(XMLToolingConfig::getConfig().TrustEngineManager.newPlugin(CHAINING_TRUSTENGINE, nullptr, false));
 
         m_ee = m_int1 = m_int2 = m_int3 = nullptr;
         vector<XSECCryptoX509*> certs;

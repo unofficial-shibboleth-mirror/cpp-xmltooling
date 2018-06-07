@@ -55,7 +55,9 @@ public:
         ifstream in(config.c_str());
         DOMDocument* doc=XMLToolingConfig::getConfig().getParser().parse(in);
         XercesJanitor<DOMDocument> janitor(doc);
-        m_resolver=XMLToolingConfig::getConfig().KeyInfoResolverManager.newPlugin(INLINE_KEYINFO_RESOLVER,doc->getDocumentElement());
+        m_resolver=XMLToolingConfig::getConfig().KeyInfoResolverManager.newPlugin(
+            INLINE_KEYINFO_RESOLVER, doc->getDocumentElement(), false
+            );
     }
 
     void tearDown() {
@@ -101,7 +103,7 @@ public:
         DOMDocument* cdoc=XMLToolingConfig::getConfig().getParser().parse(in);
         XercesJanitor<DOMDocument> cjanitor(cdoc);
         CredentialResolver* cresolver = XMLToolingConfig::getConfig().CredentialResolverManager.newPlugin(
-            CHAINING_CREDENTIAL_RESOLVER,cdoc->getDocumentElement()
+            CHAINING_CREDENTIAL_RESOLVER, cdoc->getDocumentElement(), false
             );
 
         CredentialCriteria cc;
@@ -142,7 +144,7 @@ public:
         DOMDocument* cdoc=XMLToolingConfig::getConfig().getParser().parse(in);
         XercesJanitor<DOMDocument> cjanitor(cdoc);
         CredentialResolver* cresolver = XMLToolingConfig::getConfig().CredentialResolverManager.newPlugin(
-            CHAINING_CREDENTIAL_RESOLVER,cdoc->getDocumentElement()
+            CHAINING_CREDENTIAL_RESOLVER, cdoc->getDocumentElement(), false
             );
 
         CredentialCriteria cc;

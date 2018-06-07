@@ -35,7 +35,7 @@ using namespace std;
 
 ReplayCache::ReplayCache(StorageService* storage)
     : m_owned(storage==nullptr),
-        m_storage(storage ? storage : XMLToolingConfig::getConfig().StorageServiceManager.newPlugin(MEMORY_STORAGE_SERVICE, nullptr)),
+        m_storage(storage ? storage : XMLToolingConfig::getConfig().StorageServiceManager.newPlugin(MEMORY_STORAGE_SERVICE, nullptr, false)),
         m_storageCaps(m_storage->getCapabilities())
 {
 }

@@ -63,8 +63,9 @@ namespace xmltooling {
          * </ul>
          * 
          * @param e DOM to supply configuration for provider
+         * @param deprecationSupport true iff deprecated features and settings should be supported
          */
-        AbstractPKIXTrustEngine(const xercesc::DOMElement* e=nullptr);
+        AbstractPKIXTrustEngine(const xercesc::DOMElement* e=nullptr, bool deprecationSupport=true);
 
         /** Plugins used to perform path validation. */
         std::vector< boost::shared_ptr<OpenSSLPathValidator> > m_pathValidators;

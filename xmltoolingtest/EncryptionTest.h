@@ -43,7 +43,7 @@ public:
         DOMDocument* doc=XMLToolingConfig::getConfig().getParser().parse(in);
         XercesJanitor<DOMDocument> janitor(doc);
         m_resolver = XMLToolingConfig::getConfig().CredentialResolverManager.newPlugin(
-            CHAINING_CREDENTIAL_RESOLVER,doc->getDocumentElement()
+            CHAINING_CREDENTIAL_RESOLVER, doc->getDocumentElement(), false
             );
         XMLObjectBuilder::registerDefaultBuilder(new UnknownElementBuilder());
     }

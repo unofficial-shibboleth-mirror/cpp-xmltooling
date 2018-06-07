@@ -110,10 +110,12 @@ namespace xmltooling {
          * 
          * Each process using the library MUST call this function exactly once
          * before using any library classes except for the LogConfig method.
-         * 
+         *
+         * @param deprecationSupport true iff plugins should support any deprecated features
+         *
          * @return true iff initialization was successful 
          */
-        virtual bool init()=0;
+        virtual bool init(bool deprecationSupport=true)=0;
         
         /**
          * Shuts down library

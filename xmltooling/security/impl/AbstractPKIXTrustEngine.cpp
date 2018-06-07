@@ -121,8 +121,8 @@ AbstractPKIXTrustEngine::PKIXValidationInfoIterator::~PKIXValidationInfoIterator
 {
 }
 
-AbstractPKIXTrustEngine::AbstractPKIXTrustEngine(const xercesc::DOMElement* e)
-	: TrustEngine(e),
+AbstractPKIXTrustEngine::AbstractPKIXTrustEngine(const xercesc::DOMElement* e, bool deprecationSupport)
+	: TrustEngine(e, deprecationSupport),
 		m_checkRevocation(XMLHelper::getAttrString(e, nullptr, checkRevocation)),
 		m_policyMappingInhibit(XMLHelper::getAttrBool(e, false, policyMappingInhibit)),
 		m_anyPolicyInhibit(XMLHelper::getAttrBool(e, false, anyPolicyInhibit))
@@ -152,7 +152,7 @@ AbstractPKIXTrustEngine::AbstractPKIXTrustEngine(const xercesc::DOMElement* e)
                     Category::getInstance(XMLTOOLING_LOGCAT ".TrustEngine.PKIX").info(
                         "building PathValidator of type %s", t.c_str()
                         );
-                    PathValidator* pv = XMLToolingConfig::getConfig().PathValidatorManager.newPlugin(t.c_str(), c);
+                    PathValidator* pv = XMLToolingConfig::getConfig().PathValidatorManager.newPlugin(t.c_str(), c, deprecationSupport);
                     OpenSSLPathValidator* ospv = dynamic_cast<OpenSSLPathValidator*>(pv);
                     if (!ospv) {
                         delete pv;
@@ -174,7 +174,7 @@ AbstractPKIXTrustEngine::AbstractPKIXTrustEngine(const xercesc::DOMElement* e)
     if (m_pathValidators.empty()) {
         boost::shared_ptr<OpenSSLPathValidator> ptr(
             dynamic_cast<OpenSSLPathValidator*>(
-                XMLToolingConfig::getConfig().PathValidatorManager.newPlugin(PKIX_PATHVALIDATOR, e)
+                XMLToolingConfig::getConfig().PathValidatorManager.newPlugin(PKIX_PATHVALIDATOR, e, deprecationSupport)
                 )
             );
         m_pathValidators.push_back(ptr);

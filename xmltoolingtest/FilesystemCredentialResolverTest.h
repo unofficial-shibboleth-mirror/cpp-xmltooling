@@ -41,7 +41,7 @@ public:
 
         scoped_ptr<CredentialResolver> credResolver(
             XMLToolingConfig::getConfig().CredentialResolverManager.newPlugin(
-                CHAINING_CREDENTIAL_RESOLVER,doc->getDocumentElement()
+                CHAINING_CREDENTIAL_RESOLVER, doc->getDocumentElement(), false
                 )
             );
 

@@ -126,7 +126,7 @@ namespace xmltooling {
         Category& m_log;
     };
 
-    StorageService* XMLTOOL_DLLLOCAL MemoryStorageServiceFactory(const DOMElement* const & e)
+    StorageService* XMLTOOL_DLLLOCAL MemoryStorageServiceFactory(const DOMElement* const & e, bool deprecationSupport)
     {
         return new MemoryStorageService(e);
     }

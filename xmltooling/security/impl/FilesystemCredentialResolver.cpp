@@ -141,7 +141,7 @@ namespace xmltooling {
     class XMLTOOL_DLLLOCAL FilesystemCredentialResolver : public CredentialResolver
     {
     public:
-        FilesystemCredentialResolver(const DOMElement* e);
+        FilesystemCredentialResolver(const DOMElement* e, bool deprecationSupport=true);
         virtual ~FilesystemCredentialResolver();
 
         Lockable* lock();
@@ -212,9 +212,9 @@ namespace xmltooling {
     #pragma warning( pop )
 #endif
 
-    CredentialResolver* XMLTOOL_DLLLOCAL FilesystemCredentialResolverFactory(const DOMElement* const & e)
+    CredentialResolver* XMLTOOL_DLLLOCAL FilesystemCredentialResolverFactory(const DOMElement* const & e, bool deprecationSupport)
     {
-        return new FilesystemCredentialResolver(e);
+        return new FilesystemCredentialResolver(e, deprecationSupport);
     }
 
     static const XMLCh backingFilePath[] =  UNICODE_LITERAL_15(b,a,c,k,i,n,g,F,i,l,e,P,a,t,h);
@@ -238,7 +238,7 @@ namespace xmltooling {
     static const XMLCh _use[] =             UNICODE_LITERAL_3(u,s,e);
 };
 
-FilesystemCredentialResolver::FilesystemCredentialResolver(const DOMElement* e)
+FilesystemCredentialResolver::FilesystemCredentialResolver(const DOMElement* e, bool deprecationSupport)
     : m_keyinfomask(XMLHelper::getAttrInt(e, 0, keyInfoMask)),
         m_usage(Credential::UNSPECIFIED_CREDENTIAL), m_extractNames(true)
 {
@@ -307,6 +307,7 @@ FilesystemCredentialResolver::FilesystemCredentialResolver(const DOMElement* e)
             XMLToolingConfig::getConfig().getPathResolver()->resolve(m_key.source, PathResolver::XMLTOOLING_CFG_FILE);
             m_key.local = true;
             m_key.reloadChanges = XMLHelper::getAttrBool(e, true, _reloadChanges);
+            m_key.m_deprecationSupport = deprecationSupport;
         }
         else if ((e=XMLHelper::getFirstChildElement(keynode,_URL)) && e->hasChildNodes()) {
             prop = e->getFirstChild()->getNodeValue();
@@ -318,6 +319,7 @@ FilesystemCredentialResolver::FilesystemCredentialResolver(const DOMElement* e)
                 throw XMLSecurityException("FilesystemCredentialResolver can't access key, backingFilePath missing from URL element.");
             XMLToolingConfig::getConfig().getPathResolver()->resolve(m_key.backing, PathResolver::XMLTOOLING_CACHE_FILE);
             m_key.reloadInterval = XMLHelper::getAttrInt(e, 0, _reloadInterval);
+            m_key.m_deprecationSupport = deprecationSupport;
         }
         else {
             log.error("Path/URL element missing inside Key element");
@@ -351,6 +353,7 @@ FilesystemCredentialResolver::FilesystemCredentialResolver(const DOMElement* e)
                 XMLToolingConfig::getConfig().getPathResolver()->resolve(crl.source, PathResolver::XMLTOOLING_CFG_FILE);
                 crl.local = true;
                 crl.reloadChanges = XMLHelper::getAttrBool(e, true, _reloadChanges);
+                crl.m_deprecationSupport = deprecationSupport;
             }
             e = XMLHelper::getNextSiblingElement(e, Path);
         }
@@ -370,6 +373,7 @@ FilesystemCredentialResolver::FilesystemCredentialResolver(const DOMElement* e)
                     throw XMLSecurityException("FilesystemCredentialResolver can't access CRL, backingFilePath missing from URL element.");
                 XMLToolingConfig::getConfig().getPathResolver()->resolve(crl.backing, PathResolver::XMLTOOLING_CACHE_FILE);
                 crl.reloadInterval = XMLHelper::getAttrInt(e, 0, _reloadInterval);
+                crl.m_deprecationSupport = deprecationSupport;
             }
             e = XMLHelper::getNextSiblingElement(e, _URL);
         }
@@ -398,6 +402,7 @@ FilesystemCredentialResolver::FilesystemCredentialResolver(const DOMElement* e)
                 XMLToolingConfig::getConfig().getPathResolver()->resolve(cert.source, PathResolver::XMLTOOLING_CFG_FILE);
                 cert.local = true;
                 cert.reloadChanges = XMLHelper::getAttrBool(e, true, _reloadChanges);
+                cert.m_deprecationSupport = deprecationSupport;
             }
             else if (e->hasChildNodes() && XMLString::equals(e->getLocalName(), _URL)) {
                 m_certs.push_back(ManagedCert());
@@ -412,6 +417,7 @@ FilesystemCredentialResolver::FilesystemCredentialResolver(const DOMElement* e)
                     throw XMLSecurityException("FilesystemCredentialResolver can't access certificate, backingFilePath missing from URL element.");
                 XMLToolingConfig::getConfig().getPathResolver()->resolve(cert.backing, PathResolver::XMLTOOLING_CACHE_FILE);
                 cert.reloadInterval = XMLHelper::getAttrInt(e, 0, _reloadInterval);
+                cert.m_deprecationSupport = deprecationSupport;
             }
             e = XMLHelper::getNextSiblingElement(e);
         }

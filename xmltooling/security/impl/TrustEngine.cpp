@@ -56,13 +56,13 @@ void XMLTOOL_API xmltooling::registerTrustEngines()
 static const XMLCh _KeyInfoResolver[] = UNICODE_LITERAL_15(K,e,y,I,n,f,o,R,e,s,o,l,v,e,r);
 static const XMLCh type[] =             UNICODE_LITERAL_4(t,y,p,e);
 
-TrustEngine::TrustEngine(const DOMElement* e) : m_keyInfoResolver(nullptr)
+TrustEngine::TrustEngine(const DOMElement* e, bool deprecationSupport) : m_keyInfoResolver(nullptr)
 {
     DOMElement* child = e ? XMLHelper::getFirstChildElement(e, _KeyInfoResolver) : nullptr;
     if (child) {
         string t = XMLHelper::getAttrString(child, nullptr, type);
         if (!t.empty())
-            m_keyInfoResolver = XMLToolingConfig::getConfig().KeyInfoResolverManager.newPlugin(t.c_str(), child);
+            m_keyInfoResolver = XMLToolingConfig::getConfig().KeyInfoResolverManager.newPlugin(t.c_str(), child, deprecationSupport);
         else
             throw UnknownExtensionException("<KeyInfoResolver> element found with no type attribute");
     }
@@ -73,7 +73,7 @@ TrustEngine::~TrustEngine()
     delete m_keyInfoResolver;
 }
 
-SignatureTrustEngine::SignatureTrustEngine(const DOMElement* e) : TrustEngine(e)
+SignatureTrustEngine::SignatureTrustEngine(const DOMElement* e, bool deprecationSupport) : TrustEngine(e, deprecationSupport)
 {
 }
 
@@ -81,7 +81,7 @@ SignatureTrustEngine::~SignatureTrustEngine()
 {
 }
 
-X509TrustEngine::X509TrustEngine(const DOMElement* e) : TrustEngine(e)
+X509TrustEngine::X509TrustEngine(const DOMElement* e, bool deprecationSupport) : TrustEngine(e, deprecationSupport)
 {
 }
 
@@ -89,7 +89,7 @@ X509TrustEngine::~X509TrustEngine()
 {
 }
 
-OpenSSLTrustEngine::OpenSSLTrustEngine(const DOMElement* e) : X509TrustEngine(e)
+OpenSSLTrustEngine::OpenSSLTrustEngine(const DOMElement* e, bool deprecationSupport) : X509TrustEngine(e, deprecationSupport)
 {
 }
 

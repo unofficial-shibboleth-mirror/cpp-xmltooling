@@ -352,7 +352,7 @@ bool XMLToolingInternalConfig::log_config(const char* config)
     return true;
 }
 
-bool XMLToolingInternalConfig::init()
+bool XMLToolingInternalConfig::init(bool deprecationSupport)
 {
 #ifdef _DEBUG
     xmltooling::NDC ndc("init");
@@ -436,7 +436,7 @@ bool XMLToolingInternalConfig::init()
         registerPathValidators();
         registerTrustEngines();
         registerXMLAlgorithms();
-        m_keyInfoResolver.reset(KeyInfoResolverManager.newPlugin(INLINE_KEYINFO_RESOLVER,nullptr));
+        m_keyInfoResolver.reset(KeyInfoResolverManager.newPlugin(INLINE_KEYINFO_RESOLVER,nullptr,deprecationSupport));
 #endif
 
 #ifndef XMLTOOLING_LITE

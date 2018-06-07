@@ -92,7 +92,7 @@ static const XMLCh _TrustEngine[] =     UNICODE_LITERAL_11(T,r,u,s,t,E,n,g,i,n,e
 static const XMLCh _CredentialResolver[] = UNICODE_LITERAL_18(C,r,e,d,e,n,t,i,a,l,R,e,s,o,l,v,e,r);
 #endif
 
-ReloadableXMLFile::ReloadableXMLFile(const DOMElement* e, Category& log, bool startReloadThread)
+ReloadableXMLFile::ReloadableXMLFile(const DOMElement* e, Category& log, bool startReloadThread, bool deprecationSupport)
     : m_root(e), m_local(true), m_validate(false), m_filestamp(0), m_reloadInterval(0),
       m_log(log), m_loaded(false), m_shutdown(false)
 {
@@ -101,23 +101,36 @@ ReloadableXMLFile::ReloadableXMLFile(const DOMElement* e, Category& log, bool st
 #endif
 
     // Establish source of data...
-    const XMLCh* source=e->getAttributeNS(nullptr,uri);
+    const XMLCh* source = e->getAttributeNS(nullptr, url);
     if (!source || !*source) {
-        source=e->getAttributeNS(nullptr,url);
+        if (deprecationSupport)
+            source = e->getAttributeNS(nullptr, uri);
         if (!source || !*source) {
-            source=e->getAttributeNS(nullptr,path);
+            source = e->getAttributeNS(nullptr, path);
             if (!source || !*source) {
-                source=e->getAttributeNS(nullptr,pathname);
-                if (!source || !*source) {
-                    source=e->getAttributeNS(nullptr,file);
+                if (deprecationSupport) {
+                    source = e->getAttributeNS(nullptr, pathname);
                     if (!source || !*source) {
-                        source=e->getAttributeNS(nullptr,filename);
+                        source = e->getAttributeNS(nullptr, file);
+                        if (!source || !*source) {
+                            source = e->getAttributeNS(nullptr, filename);
+                            if (source && *source) {
+                                m_log.warn("DEPRECATED: filename attribute should be replaced with path to specify local resource");
+                            }
+                        }
+                        else {
+                            m_log.warn("DEPRECATED: file attribute should be replaced with path to specify local resource");
+                        }
+                    }
+                    else {
+                        m_log.warn("DEPRECATED: pathname attribute should be replaced with path to specify local resource");
                     }
                 }
             }
         }
         else {
-            m_local=false;
+            m_local = false;
+            m_log.warn("DEPRECATED: uri attribute should be replaced with url to specify remote resource");
         }
     }
     else {
@@ -130,7 +143,7 @@ ReloadableXMLFile::ReloadableXMLFile(const DOMElement* e, Category& log, bool st
         auto_ptr_char temp(source);
         m_source = temp.get();
 
-        if (!m_local && !strstr(m_source.c_str(),"://")) {
+        if (deprecationSupport && !m_local && !strstr(m_source.c_str(),"://")) {
             log.warn("DEPRECATED: usage of uri/url attribute for a local resource, use path instead");
             m_local = true;
         }
@@ -139,19 +152,19 @@ ReloadableXMLFile::ReloadableXMLFile(const DOMElement* e, Category& log, bool st
         // Check for signature bits.
         if (e->hasAttributeNS(nullptr, certificate)) {
             // Use a file-based credential resolver rooted here.
-            m_credResolver.reset(XMLToolingConfig::getConfig().CredentialResolverManager.newPlugin(FILESYSTEM_CREDENTIAL_RESOLVER, e));
+            m_credResolver.reset(XMLToolingConfig::getConfig().CredentialResolverManager.newPlugin(FILESYSTEM_CREDENTIAL_RESOLVER, e, deprecationSupport));
         }
         else {
             const DOMElement* sub = XMLHelper::getFirstChildElement(e, _CredentialResolver);
             string t(XMLHelper::getAttrString(sub, nullptr, type));
             if (!t.empty()) {
-                m_credResolver.reset(XMLToolingConfig::getConfig().CredentialResolverManager.newPlugin(t.c_str(), sub));
+                m_credResolver.reset(XMLToolingConfig::getConfig().CredentialResolverManager.newPlugin(t.c_str(), sub, deprecationSupport));
             }
             else {
                 sub = XMLHelper::getFirstChildElement(e, _TrustEngine);
                 t = XMLHelper::getAttrString(sub, nullptr, type);
                 if (!t.empty()) {
-                    auto_ptr<TrustEngine> trust(XMLToolingConfig::getConfig().TrustEngineManager.newPlugin(t.c_str(), sub));
+                    auto_ptr<TrustEngine> trust(XMLToolingConfig::getConfig().TrustEngineManager.newPlugin(t.c_str(), sub, deprecationSupport));
                     if (!dynamic_cast<SignatureTrustEngine*>(trust.get())) {
                         throw XMLToolingException("TrustEngine-based ReloadableXMLFile requires a SignatureTrustEngine plugin.");
                     }
@@ -204,12 +217,12 @@ ReloadableXMLFile::ReloadableXMLFile(const DOMElement* e, Category& log, bool st
                         }
                     }
                 }
-                catch (exception&) {
+                catch (const exception&) {
                 }
             }
-            m_reloadInterval = XMLHelper::getAttrInt(e, 0, reloadInterval);
+            m_reloadInterval = XMLHelper::getAttrInt(e, 0, maxRefreshDelay);
             if (m_reloadInterval == 0)
-                m_reloadInterval = XMLHelper::getAttrInt(e, 0, maxRefreshDelay);
+                m_reloadInterval = XMLHelper::getAttrInt(e, 0, reloadInterval);
             if (m_reloadInterval > 0) {
                 m_log.debug("will reload remote resource at most every %d seconds", m_reloadInterval);
                 m_lock.reset(RWLock::create());
@@ -221,7 +234,7 @@ ReloadableXMLFile::ReloadableXMLFile(const DOMElement* e, Category& log, bool st
             startup();
     }
     else {
-        log.debug("no resource uri/path/name supplied, will load inline configuration");
+        log.debug("no resource url/path supplied, will load inline configuration");
     }
 
     m_id = XMLHelper::getAttrString(e, nullptr, id);
@@ -617,7 +630,7 @@ void ReloadableXMLFile::validateSignature(Signature& sigObj) const
     }
     else if (m_trust) {
         scoped_ptr<CredentialResolver> dummy(
-            XMLToolingConfig::getConfig().CredentialResolverManager.newPlugin(DUMMY_CREDENTIAL_RESOLVER, nullptr)
+            XMLToolingConfig::getConfig().CredentialResolverManager.newPlugin(DUMMY_CREDENTIAL_RESOLVER, nullptr, false)
             );
         if (m_trust->validate(sigObj, *dummy, &cc))
             return;

@@ -55,7 +55,7 @@ namespace xmltooling {
         scoped_ptr<XSECCryptoSymmetricKey> m_key;
     };
 
-    DataSealerKeyStrategy* XMLTOOL_DLLLOCAL StaticDataSealerKeyStrategyFactory(const DOMElement* const & e)
+    DataSealerKeyStrategy* XMLTOOL_DLLLOCAL StaticDataSealerKeyStrategyFactory(const DOMElement* const & e, bool deprecationSupport)
     {
         return new StaticDataSealerKeyStrategy(e);
     }

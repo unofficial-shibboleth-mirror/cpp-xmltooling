@@ -55,7 +55,7 @@ namespace xmltooling {
         ~PluginManager() {}
 
         /** Factory function for plugin. */
-        typedef T* Factory(const Params&);
+        typedef T* Factory(const Params&, bool deprecationSupport);
 
         /**
          * Registers the factory for a given type.
@@ -90,13 +90,15 @@ namespace xmltooling {
          * 
          * @param type  the key to the plugin type
          * @param p     parameters to configure plugin
+         * @param deprecationSupport true iff the plugin should recognize/support its deprecated features
+         *
          * @return      the constructed plugin  
          */
-        T* newPlugin(const Key& type, const Params& p) const {
+        T* newPlugin(const Key& type, const Params& p, bool deprecationSupport) const {
             typename std::map<Key, typename PluginManager::Factory*>::const_iterator i=m_map.find(type);
             if (i==m_map.end())
                 throw UnknownExtensionException("Unknown plugin type.");
-            return i->second(p);
+            return i->second(p, deprecationSupport);
         }
         
     private:

@@ -120,8 +120,9 @@ namespace xmltooling {
     class XMLTOOL_DLLLOCAL PKIXPathValidator : public OpenSSLPathValidator
     {
     public:
-        PKIXPathValidator(const xercesc::DOMElement* e)
+        PKIXPathValidator(const xercesc::DOMElement* e, bool deprecationSupport=true)
             : m_log(Category::getInstance(XMLTOOLING_LOGCAT ".PathValidator.PKIX")),
+              m_deprecationSupport(deprecationSupport),
               m_lock(XMLToolingConfig::getConfig().getNamedMutex(XMLTOOLING_LOGCAT ".PathValidator.PKIX")),
               m_minRefreshDelay(XMLHelper::getAttrInt(e, 60, minRefreshDelay)),
               m_minSecondsRemaining(XMLHelper::getAttrInt(e, 86400, minSecondsRemaining)),
@@ -142,6 +143,7 @@ namespace xmltooling {
         bool isFreshCRL(XSECCryptoX509CRL *c, Category* log=nullptr) const;
 
         Category& m_log;
+        bool m_deprecationSupport;
         Mutex& m_lock;
         time_t m_minRefreshDelay,m_minSecondsRemaining;
         unsigned short m_minPercentRemaining;
@@ -149,9 +151,9 @@ namespace xmltooling {
         static map<string,time_t> m_crlUpdateMap;
     };
 
-    PathValidator* XMLTOOL_DLLLOCAL PKIXPathValidatorFactory(const xercesc::DOMElement* const & e)
+    PathValidator* XMLTOOL_DLLLOCAL PKIXPathValidatorFactory(const xercesc::DOMElement* const & e, bool deprecationSupport)
     {
-        return new PKIXPathValidator(e);
+        return new PKIXPathValidator(e, deprecationSupport);
     }
 
 };
@@ -508,7 +510,7 @@ XSECCryptoX509CRL* PKIXPathValidator::getRemoteCRLs(const char* cdpuri) const
             if (difftime(now, ts) > m_minRefreshDelay) {
                 SOAPTransport::Address addr("AbstractPKIXTrustEngine", cdpuri, cdpuri);
                 string scheme(addr.m_endpoint, strchr(addr.m_endpoint,':') - addr.m_endpoint);
-                scoped_ptr<SOAPTransport> soap(XMLToolingConfig::getConfig().SOAPTransportManager.newPlugin(scheme.c_str(), addr));
+                scoped_ptr<SOAPTransport> soap(XMLToolingConfig::getConfig().SOAPTransportManager.newPlugin(scheme.c_str(), addr, m_deprecationSupport));
                 soap->send();
                 istream& msg = soap->receive();
                 Lock glock(m_lock);

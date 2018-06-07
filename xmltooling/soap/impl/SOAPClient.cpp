@@ -148,7 +148,7 @@ void SOAPClient::send(const Envelope& env, const SOAPTransport::Address& addr)
     if (!pch)
         throw IOException("SOAP endpoint was not a URL.");
     string scheme(addr.m_endpoint, pch-addr.m_endpoint);
-    m_transport = XMLToolingConfig::getConfig().SOAPTransportManager.newPlugin(scheme.c_str(), addr);
+    m_transport = XMLToolingConfig::getConfig().SOAPTransportManager.newPlugin(scheme.c_str(), addr, false);
     prepareTransport(*m_transport);
     
     Category& log = Category::getInstance(XMLTOOLING_LOGCAT ".SOAPClient");

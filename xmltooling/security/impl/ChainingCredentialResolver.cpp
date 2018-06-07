@@ -48,7 +48,7 @@ namespace xmltooling {
     class XMLTOOL_DLLLOCAL ChainingCredentialResolver : public CredentialResolver
     {
     public:
-        ChainingCredentialResolver(const DOMElement* e);
+        ChainingCredentialResolver(const DOMElement* e, bool deprecationSupport=true);
         virtual ~ChainingCredentialResolver() {}
 
         Lockable* lock() {
@@ -83,16 +83,16 @@ namespace xmltooling {
         ptr_vector<CredentialResolver> m_resolvers;
     };
 
-    CredentialResolver* XMLTOOL_DLLLOCAL ChainingCredentialResolverFactory(const DOMElement* const & e)
+    CredentialResolver* XMLTOOL_DLLLOCAL ChainingCredentialResolverFactory(const DOMElement* const & e, bool deprecationSupport)
     {
-        return new ChainingCredentialResolver(e);
+        return new ChainingCredentialResolver(e, deprecationSupport);
     }
 
     static const XMLCh _CredentialResolver[] =  UNICODE_LITERAL_18(C,r,e,d,e,n,t,i,a,l,R,e,s,o,l,v,e,r);
     static const XMLCh type[] =                 UNICODE_LITERAL_4(t,y,p,e);
 };
 
-ChainingCredentialResolver::ChainingCredentialResolver(const DOMElement* e)
+ChainingCredentialResolver::ChainingCredentialResolver(const DOMElement* e, bool deprecationSupport)
 {
     XMLToolingConfig& conf = XMLToolingConfig::getConfig();
     Category& log=Category::getInstance(XMLTOOLING_LOGCAT ".CredentialResolver." CHAINING_CREDENTIAL_RESOLVER);
@@ -104,7 +104,7 @@ ChainingCredentialResolver::ChainingCredentialResolver(const DOMElement* e)
         if (!t.empty()) {
             log.info("building CredentialResolver of type %s", t.c_str());
             try {
-                m_resolvers.push_back(conf.CredentialResolverManager.newPlugin(t.c_str(), e));
+                m_resolvers.push_back(conf.CredentialResolverManager.newPlugin(t.c_str(), e, deprecationSupport));
             }
             catch (exception& ex) {
                 log.error("caught exception processing embedded CredentialResolver element: %s", ex.what());

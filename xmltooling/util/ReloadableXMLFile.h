@@ -63,9 +63,9 @@ namespace xmltooling {
          * Constructor taking a DOM element supporting the following content:
          * 
          * <dl>
-         *  <dt>file | filename | path | pathname</dt>
+         *  <dt>path</dt>
          *  <dd>identifies a local file</dd>
-         *  <dt>uri | url</dt>
+         *  <dt>url</dt>
          *  <dd>identifies a remote resource</dd>
          *  <dt>validate</dt>
          *  <dd>use a validating parser</dd>
@@ -88,11 +88,12 @@ namespace xmltooling {
          *  <dd>requires XML be signed with an enveloped signature verifiable with specified TrustEngine</dd>
          * </dl>
          * 
-         * @param e                 DOM to supply configuration
-         * @param log               logging object to use
-         * @param startReloadThread true iff refresh thread for resources should be started by constructor
+         * @param e                     DOM to supply configuration
+         * @param log                   logging object to use
+         * @param startReloadThread     true iff refresh thread for resources should be started by constructor
+         * @param deprecationSupport    true iff deprecated options and settings should be accepted
          */
-        ReloadableXMLFile(const xercesc::DOMElement* e, logging::Category& log, bool startReloadThread=true);
+        ReloadableXMLFile(const xercesc::DOMElement* e, logging::Category& log, bool startReloadThread=true, bool deprecationSupport=true);
     
         virtual ~ReloadableXMLFile();
 

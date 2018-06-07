@@ -32,7 +32,7 @@ public:
 
     void testMemoryService() {
         scoped_ptr<StorageService> storage(
-            XMLToolingConfig::getConfig().StorageServiceManager.newPlugin(MEMORY_STORAGE_SERVICE,nullptr)
+            XMLToolingConfig::getConfig().StorageServiceManager.newPlugin(MEMORY_STORAGE_SERVICE,nullptr,false)
             );
 
         string data;

@@ -89,7 +89,7 @@ namespace xmltooling {
             ) const;
     };
 
-    TrustEngine* XMLTOOL_DLLLOCAL ExplicitKeyTrustEngineFactory(const DOMElement* const & e)
+    TrustEngine* XMLTOOL_DLLLOCAL ExplicitKeyTrustEngineFactory(const DOMElement* const & e, bool deprecationSupport)
     {
         return new ExplicitKeyTrustEngine(e);
     }

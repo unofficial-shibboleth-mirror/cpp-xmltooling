@@ -48,8 +48,9 @@ namespace xmltooling {
          * Constructor.
          * 
          * @param e DOM to supply configuration for provider
+         * @param deprecationSupport true iff deprecated features and settings should be supported
          */
-        SignatureTrustEngine(const xercesc::DOMElement* e=nullptr);
+        SignatureTrustEngine(const xercesc::DOMElement* e=nullptr, bool deprecationSupport=true);
         
     public:
         virtual ~SignatureTrustEngine();

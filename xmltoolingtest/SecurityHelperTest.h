@@ -31,7 +31,7 @@ class SecurityHelperTest : public CxxTest::TestSuite {
     SOAPTransport* getTransport(const char* url) {
         SOAPTransport::Address addr("SecurityHelperTest", "spaces.internet2.edu", url);
         string scheme(addr.m_endpoint, strchr(addr.m_endpoint,':') - addr.m_endpoint);
-        return XMLToolingConfig::getConfig().SOAPTransportManager.newPlugin(scheme.c_str(), addr);
+        return XMLToolingConfig::getConfig().SOAPTransportManager.newPlugin(scheme.c_str(), addr, false);
     }
 public:
     void setUp() {

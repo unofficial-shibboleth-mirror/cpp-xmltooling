@@ -55,7 +55,7 @@ namespace xmltooling {
         }
     };
 
-    CredentialResolver* XMLTOOL_DLLLOCAL DummyCredentialResolverFactory(const DOMElement* const & e)
+    CredentialResolver* XMLTOOL_DLLLOCAL DummyCredentialResolverFactory(const DOMElement* const & e, bool deprecationSupport)
     {
         return new DummyCredentialResolver(e);
     }

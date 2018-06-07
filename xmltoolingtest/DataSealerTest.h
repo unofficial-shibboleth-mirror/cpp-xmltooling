@@ -50,7 +50,7 @@ public:
 
         auto_ptr<DataSealerKeyStrategy> keyStrategy(
             XMLToolingConfig::getConfig().DataSealerKeyStrategyManager.newPlugin(
-                STATIC_DATA_SEALER_KEY_STRATEGY, doc->getDocumentElement()
+                STATIC_DATA_SEALER_KEY_STRATEGY, doc->getDocumentElement(), false
                 )
             );
 
@@ -93,7 +93,7 @@ public:
 
 		auto_ptr<DataSealerKeyStrategy> keyStrategy(
 			XMLToolingConfig::getConfig().DataSealerKeyStrategyManager.newPlugin(
-				VERSIONED_DATA_SEALER_KEY_STRATEGY, doc->getDocumentElement()
+				VERSIONED_DATA_SEALER_KEY_STRATEGY, doc->getDocumentElement(), false
 			)
 		);
 

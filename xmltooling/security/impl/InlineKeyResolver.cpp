@@ -175,7 +175,7 @@ namespace xmltooling {
         bool m_followRefs;
     };
 
-    KeyInfoResolver* XMLTOOL_DLLLOCAL InlineKeyInfoResolverFactory(const DOMElement* const & e)
+    KeyInfoResolver* XMLTOOL_DLLLOCAL InlineKeyInfoResolverFactory(const DOMElement* const & e, bool deprecationSupport)
     {
         return new InlineKeyResolver(e);
     }

@@ -52,7 +52,7 @@ namespace xmltooling {
     class XMLTOOL_DLLLOCAL StaticPKIXTrustEngine : public AbstractPKIXTrustEngine
     {
     public:
-        StaticPKIXTrustEngine(const DOMElement* e=nullptr);
+        StaticPKIXTrustEngine(const DOMElement* e=nullptr, bool deprecationSupport=true);
 
         virtual ~StaticPKIXTrustEngine() {}
         
@@ -70,9 +70,9 @@ namespace xmltooling {
         friend class XMLTOOL_DLLLOCAL StaticPKIXIterator;
     };
     
-    TrustEngine* XMLTOOL_DLLLOCAL StaticPKIXTrustEngineFactory(const DOMElement* const & e)
+    TrustEngine* XMLTOOL_DLLLOCAL StaticPKIXTrustEngineFactory(const DOMElement* const & e, bool deprecationSupport)
     {
-        return new StaticPKIXTrustEngine(e);
+        return new StaticPKIXTrustEngine(e, deprecationSupport);
     }
 
     class XMLTOOL_DLLLOCAL StaticPKIXIterator : public AbstractPKIXTrustEngine::PKIXValidationInfoIterator
@@ -128,18 +128,18 @@ namespace xmltooling {
     };
 };
 
-StaticPKIXTrustEngine::StaticPKIXTrustEngine(const DOMElement* e)
-    : AbstractPKIXTrustEngine(e), m_depth(XMLHelper::getAttrInt(e, 1, verifyDepth))
+StaticPKIXTrustEngine::StaticPKIXTrustEngine(const DOMElement* e, bool deprecationSupport)
+    : AbstractPKIXTrustEngine(e, deprecationSupport), TrustEngine(e, deprecationSupport), m_depth(XMLHelper::getAttrInt(e, 1, verifyDepth))
 {
     if (e && e->hasAttributeNS(nullptr, certificate)) {
         // Simple File resolver config rooted here.
-        m_credResolver.reset(XMLToolingConfig::getConfig().CredentialResolverManager.newPlugin(FILESYSTEM_CREDENTIAL_RESOLVER, e));
+        m_credResolver.reset(XMLToolingConfig::getConfig().CredentialResolverManager.newPlugin(FILESYSTEM_CREDENTIAL_RESOLVER, e, deprecationSupport));
     }
     else {
         e = e ? XMLHelper::getFirstChildElement(e, _CredentialResolver) : nullptr;
         string t = XMLHelper::getAttrString(e, nullptr, type);
         if (!t.empty())
-            m_credResolver.reset(XMLToolingConfig::getConfig().CredentialResolverManager.newPlugin(t.c_str(), e));
+            m_credResolver.reset(XMLToolingConfig::getConfig().CredentialResolverManager.newPlugin(t.c_str(), e, deprecationSupport));
         else
             throw XMLSecurityException("Missing <CredentialResolver> element, or no type attribute found");
     }

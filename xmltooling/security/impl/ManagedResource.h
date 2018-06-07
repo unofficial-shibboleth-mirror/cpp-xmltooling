@@ -41,13 +41,13 @@ namespace xmltooling {
 
     class XMLTOOL_DLLLOCAL ManagedResource {
     protected:
-        ManagedResource() : local(true), reloadChanges(true), filestamp(0), reloadInterval(0) {}
+        ManagedResource() : local(true), reloadChanges(true), m_deprecationSupport(true), filestamp(0), reloadInterval(0) {}
         ~ManagedResource() {}
 
         SOAPTransport* getTransport() {
             SOAPTransport::Address addr("ManagedResource", source.c_str(), source.c_str());
             std::string scheme(addr.m_endpoint, strchr(addr.m_endpoint,':') - addr.m_endpoint);
-            SOAPTransport* ret = XMLToolingConfig::getConfig().SOAPTransportManager.newPlugin(scheme.c_str(), addr);
+            SOAPTransport* ret = XMLToolingConfig::getConfig().SOAPTransportManager.newPlugin(scheme.c_str(), addr, m_deprecationSupport);
             if (ret)
                 ret->setCacheTag(&cacheTag);
             return ret;
@@ -119,7 +119,7 @@ namespace xmltooling {
             return true;
         }
 
-        bool local,reloadChanges;
+        bool local, reloadChanges, m_deprecationSupport;
         std::string source,backing,cacheTag;
         time_t filestamp,reloadInterval;
     };
