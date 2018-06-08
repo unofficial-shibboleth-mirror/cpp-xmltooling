@@ -127,7 +127,7 @@ AbstractPKIXTrustEngine::AbstractPKIXTrustEngine(const xercesc::DOMElement* e, b
 		m_policyMappingInhibit(XMLHelper::getAttrBool(e, false, policyMappingInhibit)),
 		m_anyPolicyInhibit(XMLHelper::getAttrBool(e, false, anyPolicyInhibit))
 {
-    if (m_checkRevocation.empty() && XMLHelper::getAttrBool(e, false, fullCRLChain)) {
+    if (m_checkRevocation.empty() && deprecationSupport && XMLHelper::getAttrBool(e, false, fullCRLChain)) {
         Category::getInstance(XMLTOOLING_LOGCAT ".TrustEngine.PKIX").warn(
             "DEPRECATED: replace fullCRLChain option with checkRevocation set to \"fullChain\""
             );
