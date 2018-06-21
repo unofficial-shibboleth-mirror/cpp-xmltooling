@@ -148,6 +148,7 @@ This package includes XML schemas and related files.
 %{_includedir}/*
 %{_libdir}/*.so
 %{_libdir}/pkgconfig/@PACKAGE_NAME@.pc
+%{_libdir}/pkgconfig/@PACKAGE_NAME@-lite.pc
 %doc %{pkgdocdir}
 
 %changelog
