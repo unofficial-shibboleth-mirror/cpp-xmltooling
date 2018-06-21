@@ -36,7 +36,9 @@ class SecurityHelperTest : public CxxTest::TestSuite {
 
     void skipNetworked() {
         if (getenv("XMLTOOLINGTEST_SKIP_NETWORKED")) {
+#ifdef TS_SKIP
             TS_SKIP("requires network access");
+#endif
         }
     }
 
