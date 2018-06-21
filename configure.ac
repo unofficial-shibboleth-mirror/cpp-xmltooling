@@ -132,7 +132,7 @@ AX_PKG_CHECK_MODULES([log4shib],,[log4shib],
         [XMLTOOLING_LITE_REQUIRES],[XMLTOOLING_LITE_REQUIRES_PRIVATE])],,
     [XMLTOOLING_LITE_REQUIRES],[XMLTOOLING_LITE_REQUIRES_PRIVATE])
 
-AX_PKG_CHECK_MODULES([xerces],,[xerces-c >= 3],,,
+AX_PKG_CHECK_MODULES([xerces],,[xerces-c >= 3.2],,,
     [XMLTOOLING_LITE_REQUIRES],[XMLTOOLING_LITE_REQUIRES_PRIVATE])
 
 AC_ARG_WITH(xmlsec,
@@ -171,6 +171,7 @@ AC_LINK_IFELSE(
 # Check for unit test support
 AC_ARG_VAR([CXXTEST], [override the cxxtestgen executable and options])
 AC_CHECK_PROGS([CXXTEST], [cxxtestgen cxxtestgen.pl], [false])
+AC_ARG_VAR([CXXTESTFLAGS], [override the cxxtest compiler flags needed to build tests])
 AM_CONDITIONAL([BUILD_UNITTEST], [test "x${CXXTEST}" != xfalse])
 
 AC_ARG_WITH([pkgxmldir],
