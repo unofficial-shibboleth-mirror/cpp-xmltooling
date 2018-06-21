@@ -75,3 +75,7 @@ xmltooling-lite-Release
 /xmltoolingtest/xmltoolingtest
 /xmltoolingtest/data/*bak
 /xmltoolingtest/data/clonedfile.xml
+/xmltoolingtest/test-suite.log
+/xmltoolingtest/xmltoolingtest.log
+/xmltoolingtest/xmltoolingtest.trs
+
