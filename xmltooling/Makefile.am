@@ -231,9 +231,6 @@ libxmltooling_la_CXXFLAGS = $(XMLSEC_CFLAGS) $(common_CXXFLAGS)
 libxmltooling_la_LIBADD   = $(XMLSEC_LIBS)   $(common_LIBADD)
 endif
 
-install-exec-hook:
-	for la in $(lib_LTLIBRARIES) ; do rm -f $(DESTDIR)$(libdir)/$$la ; done
-
 EXTRA_DIST = \
     config_pub.h.in \
     config_pub_win32.h\
