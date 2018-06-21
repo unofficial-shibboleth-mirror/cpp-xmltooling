@@ -98,7 +98,7 @@ public:
         scoped_ptr<X509Credential> credFromKeyInfo(dynamic_cast<X509Credential*>(m_resolver->resolve(kiObject.get())));
         const OpenSSLCryptoKeyDSA* keyInfoDSA = dynamic_cast<const OpenSSLCryptoKeyDSA*>(credFromKeyInfo->getPublicKey());
 
-        path = data_path + "FileSystemCredentialResolver.xml";
+        path = data_path + "FilesystemCredentialResolver.xml";
         ifstream in(path.c_str());
         DOMDocument* cdoc=XMLToolingConfig::getConfig().getParser().parse(in);
         XercesJanitor<DOMDocument> cjanitor(cdoc);
@@ -139,7 +139,7 @@ public:
         scoped_ptr<X509Credential> credFromKeyInfo(dynamic_cast<X509Credential*>(m_resolver->resolve(kiObject.get())));
         const OpenSSLCryptoKeyEC* sslCredFromKeyInfo= dynamic_cast<const OpenSSLCryptoKeyEC*>(credFromKeyInfo->getPublicKey());
 
-        path = data_path + "FileSystemCredentialResolver.xml";
+        path = data_path + "FilesystemCredentialResolver.xml";
         ifstream in(path.c_str());
         DOMDocument* cdoc=XMLToolingConfig::getConfig().getParser().parse(in);
         XercesJanitor<DOMDocument> cjanitor(cdoc);
