@@ -216,17 +216,17 @@ common_sources = \
 common_CXXFLAGS = $(xerces_CFLAGS) $(log4shib_CFLAGS) $(log4cpp_CFLAGS) $(PTHREAD_CFLAGS) $(BOOST_CPPFLAGS)
 common_LIBADD   = $(xerces_LIBS)   $(log4shib_LIBS)   $(log4cpp_LIBS)   $(PTHREAD_LIBS)   $(dlopen_LIBS)
 
+AM_LDFLAGS = -version-info 8:0:0
+
 libxmltooling_lite_la_SOURCES = \
 	${common_sources}
 libxmltooling_lite_la_CXXFLAGS = -DXMLTOOLING_LITE $(common_CXXFLAGS)
-libxmltooling_lite_la_LDFLAGS = -version-info 8:0:0
 libxmltooling_lite_la_LIBADD = $(common_LIBADD)
 
 if BUILD_XMLSEC
 libxmltooling_la_SOURCES = \
 	${common_sources} \
 	${xmlsec_sources}
-libxmltooling_la_LDFLAGS = -version-info 8:0:0
 libxmltooling_la_CXXFLAGS = $(XMLSEC_CFLAGS) $(common_CXXFLAGS)
 libxmltooling_la_LIBADD   = $(XMLSEC_LIBS)   $(common_LIBADD)
 endif
