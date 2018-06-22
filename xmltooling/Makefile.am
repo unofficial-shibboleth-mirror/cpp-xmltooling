@@ -227,8 +227,8 @@ if BUILD_XMLSEC
 libxmltooling_la_SOURCES = \
 	${common_sources} \
 	${xmlsec_sources}
-libxmltooling_la_CXXFLAGS = $(XMLSEC_CFLAGS) $(zlib_CFLAGS) $(common_CXXFLAGS)
-libxmltooling_la_LIBADD   = $(XMLSEC_LIBS) $(zlib_LIBS) $(common_LIBADD)
+libxmltooling_la_CXXFLAGS = $(XMLSEC_CFLAGS) $(common_CXXFLAGS)
+libxmltooling_la_LIBADD   = $(XMLSEC_LIBS) $(common_LIBADD)
 endif
 
 EXTRA_DIST = \
