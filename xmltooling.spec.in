@@ -105,7 +105,7 @@ This package includes XML schemas and related files.
 
 %build
 %if 0%{?rhel} >= 6 || 0%{?centos_version} >= 600 || 0%{?amzn} >= 1
-%configure %{?@PACKAGE_NAME@_options} --with-curl=/opt/shibboleth
+%configure %{?@PACKAGE_NAME@_options} PKG_CONFIG_PATH=/opt/shibboleth/%{_lib}/pkgconfig
 %else
 %configure %{?@PACKAGE_NAME@_options}
 %endif
