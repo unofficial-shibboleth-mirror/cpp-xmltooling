@@ -105,12 +105,12 @@ This package includes XML schemas and related files.
 
 %build
 %if 0%{?rhel} >= 6 || 0%{?centos_version} >= 600 || 0%{?amzn} >= 1
-%configure %{?@PACKAGE_NAME@_options} PKG_CONFIG_PATH=/opt/shibboleth/%{_lib}/pkgconfig
+%configure %{?@PACKAGE_NAME@_options} %{!?_without_xmlsec: --with-xmlsec} PKG_CONFIG_PATH=/opt/shibboleth/%{_lib}/pkgconfig
 %else
 %if 0%{?rhel} == 5
-%configure %{?@PACKAGE_NAME@_options} zlib_CFLAGS=" " zlib_LIBS="-lz"
+%configure %{?@PACKAGE_NAME@_options} %{!?_without_xmlsec: --with-xmlsec} zlib_CFLAGS=" " zlib_LIBS="-lz"
 %else
-%configure %{?@PACKAGE_NAME@_options}
+%configure %{?@PACKAGE_NAME@_options} %{!?_without_xmlsec: --with-xmlsec}
 %endif
 %endif
 %{__make}
