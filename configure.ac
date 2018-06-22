@@ -140,23 +140,34 @@ AC_ARG_WITH(xmlsec,
         [include signature/encryption support via Apache Santuario (XML Security) @<:@default=check@:>@]),,
     [with_xmlsec=check])
 
-AS_IF([test "x$with_xmlsec" != xno],
-    [AX_PKG_CHECK_MODULES([zlib],,[zlib])
-     AX_PKG_CHECK_MODULES([XMLSEC],,[xml-security-c >= 2 libcurl openssl],
-        [AX_SAVE_FLAGS
-         CXXFLAGS="$XMLSEC_CFLAGS $CXXFLAGS"
-         LIBS="$XMLSEC_LIBS $LIBS"
-         AC_CHECK_DECLS([CURLOPT_ACCEPT_ENCODING,CURLINFO_TLS_SSL_PTR],,,[[#include <curl/curl.h>]])
-         AC_CHECK_DECL([CURLOPT_SSL_CTX_FUNCTION],,[AC_MSG_ERROR([need libcurl that supports CURLOPT_SSL_CTX_FUNCTION])],[[#include <curl/curl.h>]])
-         AC_CHECK_TYPE([curl_off_t],[AC_DEFINE([HAVE_CURL_OFF_T],[1],[Define to 1 if you have the 'curl_off_t' type.])],,[[#include <curl/curl.h>]])
-         AX_RESTORE_FLAGS
-        ],
+AC_DEFUN([XMLSEC_PKG_CHECK],[
+AX_PKG_CHECK_MODULES([$1],,[$2],[$3],
         [AS_IF([test "x$with_xmlsec" = xcheck],
              [AC_MSG_WARN([xmlsec disabled, building without signature/encryption support])
               AC_DEFINE([XMLTOOLING_NO_XMLSEC],[1],
                   [Define to 1 if you wish to disable XML-Security-dependent features.])],
              [AC_MSG_FAILURE([--with-xmlsec was given, but the package was not found])])
         ],[XMLTOOLING_REQUIRES],[XMLTOOLING_REQUIRES_PRIVATE])
+])
+
+AS_IF([test "x$with_xmlsec" != xno],
+    [XMLSEC_PKG_CHECK([zlib],[zlib],
+     [XMLSEC_PKG_CHECK([openssl],[openssl],
+      [XMLSEC_PKG_CHECK([libcurl],[libcurl],
+       [AX_SAVE_FLAGS
+        CXXFLAGS="$libcurl_CFLAGS $CXXFLAGS"
+        LIBS="libcurl_LIBS $LIBS"
+        AC_CHECK_DECLS([CURLOPT_ACCEPT_ENCODING,CURLINFO_TLS_SSL_PTR],,,[[#include <curl/curl.h>]])
+        AC_CHECK_DECL([CURLOPT_SSL_CTX_FUNCTION],,[AC_MSG_ERROR([need libcurl that supports CURLOPT_SSL_CTX_FUNCTION])],[[#include <curl/curl.h>]])
+        AC_CHECK_TYPE([curl_off_t],[AC_DEFINE([HAVE_CURL_OFF_T],[1],[Define to 1 if you have the 'curl_off_t' type.])],,[[#include <curl/curl.h>]])
+        AX_RESTORE_FLAGS
+        XMLSEC_PKG_CHECK([xml_security],[xml-security-c >= 2],
+	[AC_SUBST([XMLSEC_CFLAGS],["$xml_security_CFLAGS $libcurl_CFLAGS $openssl_CFLAGS $zlib_CFLAGS"])
+	 AC_SUBST([XMLSEC_LIBS],["$xml_security_LIBS $libcurl_LIBS $openssl_LIBS $zlib_LIBS"])
+        ])
+       ])
+      ])
+     ])
     ])
 
 AM_CONDITIONAL(BUILD_XMLSEC,test "x$XMLSEC_LIBS" != x)
