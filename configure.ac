@@ -141,7 +141,8 @@ AC_ARG_WITH(xmlsec,
     [with_xmlsec=check])
 
 AS_IF([test "x$with_xmlsec" != xno],
-    [AX_PKG_CHECK_MODULES([XMLSEC],,[xml-security-c >= 2 libcurl openssl zlib],
+    [AX_PKG_CHECK_MODULES([zlib],,[zlib])
+     AX_PKG_CHECK_MODULES([XMLSEC],,[xml-security-c >= 2 libcurl openssl],
         [AX_SAVE_FLAGS
          CXXFLAGS="$XMLSEC_CFLAGS $CXXFLAGS"
          LIBS="$XMLSEC_LIBS $LIBS"
