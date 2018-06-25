@@ -117,7 +117,7 @@
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>wsock32.lib;log4shib1D.lib;zlib1D.lib;xerces-c_3D.lib;xsec_2D.lib;$(SSLLibD);$(LibCurlLibD);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>wsock32.lib;log4shib2D.lib;zlib1D.lib;xerces-c_3D.lib;xsec_2D.lib;$(SSLLibD);$(LibCurlLibD);%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <DataExecutionPrevention>
@@ -147,7 +147,7 @@
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>wsock32.lib;log4shib1D.lib;zlib1D.lib;xerces-c_3D.lib;xsec_2D.lib;$(SSLLibD);$(LibCurlLibD);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>wsock32.lib;log4shib2D.lib;zlib1D.lib;xerces-c_3D.lib;xsec_2D.lib;$(SSLLibD);$(LibCurlLibD);%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <DataExecutionPrevention>
@@ -167,7 +167,7 @@
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>wsock32.lib;log4shib1.lib;zlib1.lib;xerces-c_3.lib;xsec_2.lib;$(SSLLib);$(LibCurlLib);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>wsock32.lib;log4shib2.lib;zlib1.lib;xerces-c_3.lib;xsec_2.lib;$(SSLLib);$(LibCurlLib);%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
@@ -192,7 +192,7 @@
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>wsock32.lib;log4shib1.lib;zlib1.lib;xerces-c_3.lib;xsec_2.lib;$(SSLLib);$(LibCurlLib);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>wsock32.lib;log4shib2.lib;zlib1.lib;xerces-c_3.lib;xsec_2.lib;$(SSLLib);$(LibCurlLib);%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
