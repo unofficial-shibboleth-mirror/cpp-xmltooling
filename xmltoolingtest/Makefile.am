@@ -1,4 +1,4 @@
-AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir)
+AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir) -DDATADIR=\"$(srcdir)/data/\"
 
 TESTS = xmltoolingtest
 
