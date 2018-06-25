@@ -4,7 +4,7 @@ AC_INIT([xmltooling],[3.0.0],[https://issues.shibboleth.net/],[xmltooling])
 AC_CONFIG_SRCDIR(xmltooling)
 AC_CONFIG_AUX_DIR(build-aux)
 AC_CONFIG_MACRO_DIR(m4)
-AM_INIT_AUTOMAKE
+AM_INIT_AUTOMAKE([foreign dist-bzip2 dist-zip subdir-objects nostdinc])
 AC_DISABLE_STATIC
 AC_PROG_LIBTOOL
 PKG_INSTALLDIR

@@ -1,4 +1,4 @@
-AUTOMAKE_OPTIONS = foreign
+AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir)
 
 TESTS = xmltoolingtest
 

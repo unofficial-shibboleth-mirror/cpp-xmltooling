@@ -1,5 +1,3 @@
-AUTOMAKE_OPTIONS = foreign
-
 schemafiles = \
 	soap-envelope.xsd \
 	xenc-schema.xsd \

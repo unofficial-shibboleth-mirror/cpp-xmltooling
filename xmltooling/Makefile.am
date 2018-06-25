@@ -1,4 +1,4 @@
-AUTOMAKE_OPTIONS = foreign subdir-objects
+AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir) -I$(srcdir)
 
 if BUILD_XMLSEC
 lib_LTLIBRARIES = libxmltooling-lite.la libxmltooling.la

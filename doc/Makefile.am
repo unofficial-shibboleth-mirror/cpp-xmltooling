@@ -1,5 +1,3 @@
-AUTOMAKE_OPTIONS = foreign
-
 pkgdocdir = $(datadir)/doc/@PACKAGE@-@PACKAGE_VERSION@
 
 install-data-hook:
