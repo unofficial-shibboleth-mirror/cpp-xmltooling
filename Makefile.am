@@ -19,10 +19,6 @@ endif
 
 pkgconfig_DATA = @PACKAGE_NAME@.pc @PACKAGE_NAME@-lite.pc
 
-GENFILES = @PACKAGE_NAME@.spec
-
 EXTRA_DIST = $(DX_CONFIG) \
 	Projects \
-	config_win32.h \
-	$(GENFILES) \
-	$(GENFILES:%=%.in)
+	config_win32.h
