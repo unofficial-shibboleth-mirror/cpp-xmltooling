@@ -4,7 +4,7 @@ TESTS = xmltoolingtest
 
 check_PROGRAMS = xmltoolingtest
 
-xmltoolingtest_CXXFLAGS = $(CXXTESTFLAGS) $(xerces_CFLAGS) $(log4shib_CFLAGS) $(log4cpp_CFLAGS)
+xmltoolingtest_CXXFLAGS = $(CXXTESTFLAGS) $(xerces_CFLAGS) $(log4shib_CFLAGS) $(log4cpp_CFLAGS) $(BOOST_CPPFLAGS)
 if BUILD_XMLSEC
 xmltoolingtest_CXXFLAGS += $(XMLSEC_CFLAGS)
 xmltoolingtest_LDADD = $(top_builddir)/xmltooling/libxmltooling.la $(XMLSEC_LIBS)

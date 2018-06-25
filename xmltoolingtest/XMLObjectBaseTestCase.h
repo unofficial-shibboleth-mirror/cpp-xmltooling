@@ -43,6 +43,8 @@
     using namespace xmlsignature;
 #endif
 
+#include <boost/scoped_ptr.hpp>
+
 using namespace xmltooling;
 using namespace xercesc;
 using namespace std;
