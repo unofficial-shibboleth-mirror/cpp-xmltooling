@@ -27,7 +27,11 @@
 
 //#define XMLTOOLINGTEST_LEAKCHECK
 
+#ifdef WIN32
+std::string data_path = "../xmltoolingtest/data/";
+#else
 std::string data_path = DATADIR;
+#endif
 
 class ToolingFixture : public CxxTest::GlobalFixture
 {
