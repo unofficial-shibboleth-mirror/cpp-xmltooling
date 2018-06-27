@@ -62,7 +62,7 @@ void HTTPResponse::sanitizeURL(const char* url)
 
     ch = strchr(url, ':');
     if (!ch)
-        throw IOException("URL is malformed.");
+        throw IOException("URL is missing a colon where expected; improper URL encoding?");
     string s(url, ch - url);
     std::locale loc;
     vector<string>::const_iterator i =
