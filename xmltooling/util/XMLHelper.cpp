@@ -57,7 +57,7 @@ bool XMLHelper::hasXSIType(const DOMElement* e)
 
 xmltooling::QName* XMLHelper::getXSIType(const DOMElement* e)
 {
-    DOMAttr* attribute = e->getAttributeNodeNS(xmlconstants::XSI_NS, type);
+    DOMAttr* attribute = e ? e->getAttributeNodeNS(xmlconstants::XSI_NS, type) : nullptr;
     if (attribute) {
         const XMLCh* attributeValue = attribute->getTextContent();
         if (attributeValue && *attributeValue) {
@@ -81,7 +81,7 @@ xmltooling::QName* XMLHelper::getXSIType(const DOMElement* e)
 
 DOMAttr* XMLHelper::getIdAttribute(const DOMElement* domElement)
 {
-    if(!domElement->hasAttributes()) {
+    if(!domElement || !domElement->hasAttributes()) {
         return nullptr;
     }
     
