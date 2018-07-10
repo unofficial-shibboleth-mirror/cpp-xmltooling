@@ -233,8 +233,13 @@ ReloadableXMLFile::ReloadableXMLFile(const DOMElement* e, Category& log, bool st
         if (startReloadThread)
             startup();
     }
+    else if (e && e->hasChildNodes()) {
+        // TODO: what we want to do here is delegate a check to the subclasses to immediately check for the "right"
+        // child element so we can catch the deprecated syntax mistake here.
+        log.info("no resource url/path supplied, assuming inline configuration");
+    }
     else {
-        log.debug("no resource url/path supplied, will load inline configuration");
+        throw XMLToolingException("XML configuration resource missing url/path attributes and has no inline content");
     }
 
     m_id = XMLHelper::getAttrString(e, nullptr, id);
