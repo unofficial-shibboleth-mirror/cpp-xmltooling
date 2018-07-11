@@ -233,7 +233,7 @@ ReloadableXMLFile::ReloadableXMLFile(const DOMElement* e, Category& log, bool st
         if (startReloadThread)
             startup();
     }
-    else if (e && e->hasChildNodes()) {
+    else if (e && XMLHelper::getFirstChildElement(e)) {
         // TODO: what we want to do here is delegate a check to the subclasses to immediately check for the "right"
         // child element so we can catch the deprecated syntax mistake here.
         log.info("no resource url/path supplied, assuming inline configuration");
