@@ -78,8 +78,13 @@ namespace {
         }
         
         const xmltooling::QName* getCode() const {
-            if (!m_qname && getDOM() && getDOM()->getTextContent()) {
-                m_qname = XMLHelper::getNodeValueAsQName(getDOM());
+            if (!m_qname && getDOM() && getDOM()->hasChildNodes()) {
+                try {
+                    m_qname = XMLHelper::getNodeValueAsQName(getDOM());
+                }
+                catch (std::exception&) {
+            	    // unbound prefix here will throw
+                }
             }
             return m_qname;
         }

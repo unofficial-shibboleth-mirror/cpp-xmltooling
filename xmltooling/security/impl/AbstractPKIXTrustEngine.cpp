@@ -108,7 +108,7 @@ namespace xmltooling {
     static XMLCh policyMappingInhibit[] =   UNICODE_LITERAL_20(p,o,l,i,c,y,M,a,p,p,i,n,g,I,n,h,i,b,i,t);
     static XMLCh anyPolicyInhibit[] =       UNICODE_LITERAL_16(a,n,y,P,o,l,i,c,y,I,n,h,i,b,i,t);
     static XMLCh _PathValidator[] =         UNICODE_LITERAL_13(P,a,t,h,V,a,l,i,d,a,t,o,r);
-    static XMLCh PolicyOID[] =      	    UNICODE_LITERAL_9(P,o,l,i,c,y,O,I,D);
+    static XMLCh PolicyOID[] =              UNICODE_LITERAL_9(P,o,l,i,c,y,O,I,D);
     static XMLCh TrustedName[] =            UNICODE_LITERAL_11(T,r,u,s,t,e,d,N,a,m,e);
     static XMLCh type[] =                   UNICODE_LITERAL_4(t,y,p,e);
 };
@@ -122,10 +122,10 @@ AbstractPKIXTrustEngine::PKIXValidationInfoIterator::~PKIXValidationInfoIterator
 }
 
 AbstractPKIXTrustEngine::AbstractPKIXTrustEngine(const xercesc::DOMElement* e, bool deprecationSupport)
-	: TrustEngine(e, deprecationSupport),
-		m_checkRevocation(XMLHelper::getAttrString(e, nullptr, checkRevocation)),
-		m_policyMappingInhibit(XMLHelper::getAttrBool(e, false, policyMappingInhibit)),
-		m_anyPolicyInhibit(XMLHelper::getAttrBool(e, false, anyPolicyInhibit))
+    : TrustEngine(e, deprecationSupport),
+        m_checkRevocation(XMLHelper::getAttrString(e, nullptr, checkRevocation)),
+        m_policyMappingInhibit(XMLHelper::getAttrBool(e, false, policyMappingInhibit)),
+        m_anyPolicyInhibit(XMLHelper::getAttrBool(e, false, anyPolicyInhibit))
 {
     if (m_checkRevocation.empty() && deprecationSupport && XMLHelper::getAttrBool(e, false, fullCRLChain)) {
         Category::getInstance(XMLTOOLING_LOGCAT ".TrustEngine.PKIX").warn(
@@ -136,14 +136,15 @@ AbstractPKIXTrustEngine::AbstractPKIXTrustEngine(const xercesc::DOMElement* e, b
 
     xercesc::DOMElement* c = XMLHelper::getFirstChildElement(e);
     while (c) {
-        if (c->hasChildNodes()) {
-            auto_ptr_char v(c->getTextContent());
-            if (v.get() && *v.get()) {
-                if (XMLString::equals(c->getLocalName(), PolicyOID))
-                    m_policyOIDs.insert(v.get());
-                else if (XMLString::equals(c->getLocalName(), TrustedName))
-                    m_trustedNames.insert(v.get());
-            }
+        if (XMLString::equals(c->getLocalName(), PolicyOID)) {
+            auto_ptr_char v(XMLHelper::getTextContent(c));
+            if (v.get() && *v.get())
+                m_policyOIDs.insert(v.get());
+        }
+        else if (XMLString::equals(c->getLocalName(), TrustedName)) {
+            auto_ptr_char v(XMLHelper::getTextContent(c));
+            if (v.get() && *v.get())
+                m_trustedNames.insert(v.get());
         }
         else if (XMLString::equals(c->getLocalName(), _PathValidator)) {
             try {

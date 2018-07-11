@@ -59,7 +59,7 @@ xmltooling::QName* XMLHelper::getXSIType(const DOMElement* e)
 {
     DOMAttr* attribute = e ? e->getAttributeNodeNS(xmlconstants::XSI_NS, type) : nullptr;
     if (attribute) {
-        const XMLCh* attributeValue = attribute->getTextContent();
+        const XMLCh* attributeValue = attribute->getNodeValue();
         if (attributeValue && *attributeValue) {
             int i;
             if ((i=XMLString::indexOf(attributeValue,chColon))>0) {
@@ -185,7 +185,19 @@ xmltooling::QName* XMLHelper::getNodeValueAsQName(const DOMNode* domNode)
     if (!domNode)
         return nullptr;
     
-    const XMLCh* value=domNode->getTextContent();
+    const XMLCh* value = nullptr;
+    XMLCh* ownedValue = nullptr;
+    
+    if (domNode->getNodeType() == DOMNode::ATTRIBUTE_NODE) {
+        value = domNode->getNodeValue();
+    }
+    else if (domNode->getNodeType() == DOMNode::ELEMENT_NODE) {
+        ownedValue = getWholeTextContent(static_cast<const DOMElement*>(domNode));
+        value = ownedValue;
+    }
+
+    ArrayJanitor<XMLCh> jan(ownedValue);
+
     if (!value || !*value)
         return nullptr;
 
@@ -194,22 +206,39 @@ xmltooling::QName* XMLHelper::getNodeValueAsQName(const DOMNode* domNode)
         XMLCh* prefix=new XMLCh[i+1];
         XMLString::subString(prefix,value,0,i);
         prefix[i]=chNull;
-        xmltooling::QName* ret=new xmltooling::QName(domNode->lookupNamespaceURI(prefix), value + i + 1, prefix);
-        delete[] prefix;
-        return ret;
+        ArrayJanitor<XMLCh> jan2(prefix);
+        const XMLCh* ns = domNode->lookupNamespaceURI(prefix);
+        if (!ns) {
+            auto_ptr_char temp(prefix);
+            throw XMLToolingException("Namespace prefix ($1) not declared in document.", params(1, temp.get()));
+        }
+        return new xmltooling::QName(ns, value + i + 1, prefix);
     }
     
     return new xmltooling::QName(domNode->lookupNamespaceURI(nullptr), value);
 }
 
-bool XMLHelper::getNodeValueAsBool(const xercesc::DOMNode* domNode, bool def)
+bool XMLHelper::getNodeValueAsBool(const DOMNode* domNode, bool def)
 {
     if (!domNode)
         return def;
-    const XMLCh* value = domNode->getNodeValue();
+
+    const XMLCh* value = nullptr;
+    XMLCh* ownedValue = nullptr;
+
+    if (domNode->getNodeType() == DOMNode::ATTRIBUTE_NODE) {
+        value = domNode->getNodeValue();
+    }
+    else if (domNode->getNodeType() == DOMNode::ELEMENT_NODE) {
+        ownedValue = getWholeTextContent(static_cast<const DOMElement*>(domNode));
+        value = ownedValue;
+    }
+
+    ArrayJanitor<XMLCh> jan(ownedValue);
+
     if (!value || !*value)
         return def;
-    if (*value == chLatin_t || *value == chDigit_1)
+    else if (*value == chLatin_t || *value == chDigit_1)
         return true;
     else if (*value == chLatin_f || *value == chDigit_0)
         return false;
@@ -227,16 +256,46 @@ DOMElement* XMLHelper::appendChildElement(DOMElement* parentElement, DOMElement*
     return childElement;
 }
 
-bool XMLHelper::isNodeNamed(const xercesc::DOMNode* n, const XMLCh* ns, const XMLCh* local)
+bool XMLHelper::isNodeNamed(const DOMNode* n, const XMLCh* ns, const XMLCh* local)
 {
     return (n && XMLString::equals(local,n->getLocalName()) && XMLString::equals(ns,n->getNamespaceURI()));
+}
+
+XMLCh* XMLHelper::getWholeTextContent(const DOMElement* e)
+{
+    XMLCh* buf = nullptr;
+    const DOMNode* child = e ? e->getFirstChild() : nullptr;
+    while (child) {
+        if (child->getNodeType() == DOMNode::TEXT_NODE || child->getNodeType() == DOMNode::CDATA_SECTION_NODE) {
+            if (child->getNodeValue()) {
+                if (buf) {
+                    XMLSize_t initialLen = buf ? XMLString::stringLen(buf) : 0;
+                    XMLCh* merged = new XMLCh[initialLen + XMLString::stringLen(child->getNodeValue()) + 1];
+                    XMLString::copyString(merged, buf);
+                    XMLString::catString(merged + initialLen, child->getNodeValue());
+                    delete[] buf;
+                    buf = merged;
+                }
+                else {
+                    buf = new XMLCh[XMLString::stringLen(child->getNodeValue()) + 1];
+                    XMLString::copyString(buf, child->getNodeValue());
+                }
+            }
+        }
+        else if (child->getNodeType() != DOMNode::COMMENT_NODE) {
+            break;
+        }
+        child = child->getNextSibling();
+    }
+
+    return buf;
 }
 
 const XMLCh* XMLHelper::getTextContent(const DOMElement* e)
 {
     DOMNode* child = e ? e->getFirstChild() : nullptr;
     while (child) {
-        if (child->getNodeType() == DOMNode::TEXT_NODE)
+        if (child->getNodeType() == DOMNode::TEXT_NODE || child->getNodeType() == DOMNode::CDATA_SECTION_NODE)
             return child->getNodeValue();
         child = child->getNextSibling();
     }

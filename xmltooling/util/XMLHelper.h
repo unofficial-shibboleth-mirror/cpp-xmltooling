@@ -271,9 +271,21 @@ namespace xmltooling {
         static xercesc::DOMElement* getPreviousSiblingElement(const xercesc::DOMNode* n, const XMLCh* ns, const XMLCh* localName);
 
         /**
-         * Returns the content of the first Text node found in the element, if any.
-         * This is roughly similar to the DOM getTextContent function, but only
-         * examines the immediate children of the element.
+        * Returns all text content inside an element, regardless of the number of
+        * child nodes involved, up to the first child element encountered if any.
+
+        * Because this may require merging data, the text is returned in a separately
+        * allocated buffer the caller must free using delete[].
+        *
+        * @param e   the element
+        * @return an array allocated with new[] containing the text
+        */
+        static XMLCh* getWholeTextContent(const xercesc::DOMElement* e);
+
+        /**
+         * Returns the content of the first Text node found in the element, if any,
+         * acting on the assumption there can be no embedded comment, CDATA, or other
+         * interfering node types interrupting the text.
          *
          * @param e     element to examine
          * @return the content of the first Text node found, or nullptr
