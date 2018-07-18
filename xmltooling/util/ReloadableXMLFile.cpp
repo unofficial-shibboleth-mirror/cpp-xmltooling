@@ -52,6 +52,8 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
+#include <boost/lexical_cast.hpp>
+
 #include <xercesc/framework/LocalFileInputSource.hpp>
 #include <xercesc/framework/Wrapper4InputSource.hpp>
 #include <xercesc/util/XMLUniDefs.hpp>
@@ -506,19 +508,33 @@ pair<bool,DOMElement*> ReloadableXMLFile::load()
 {
     // If this method is used, we're responsible for managing failover to a
     // backup of a remote resource (if available), and for backing up remote
-    // resources.
+    // resources by "committing" the temporary copy to the backup location.
+    // The changes to the backup process mean that the parsing step itself
+    // actually creates the backup copy.
+
+    // Note that this is still not robust. We don't know whether the XML
+    // is fit for purpose because we don't process it until after this step
+    // finishes, which means any well-formed and/or valid XML can overwrite the
+    // backup and only afterward be flagged as unusable.
+
+    // Generate a simple random suffix for the temp file, anything will do.
+    string backupKey = m_backing;
+    if (!backupKey.empty())
+        backupKey += '.' + boost::lexical_cast<string>(rand());
+
     try {
-        pair<bool,DOMElement*> ret = load(false, m_backing);
-        if (!m_backing.empty()) {
-            m_log.debug("backing up remote resource to (%s)", m_backing.c_str());
+        pair<bool,DOMElement*> ret = load(false, backupKey);
+        if (!backupKey.empty()) {
+            m_log.debug("committing backup file to permanent location (%s)", m_backing.c_str());
             try {
                 Locker locker(getBackupLock());
-                ofstream backer(m_backing.c_str());
-                backer << *(ret.second->getOwnerDocument());
+                remove(m_backing.c_str());
+                if (rename(backupKey.c_str(), m_backing.c_str()) != 0)
+                    m_log.crit("unable to rename backup file");
                 preserveCacheTag();
             }
-            catch (const exception& ex) {
-                m_log.crit("exception while backing up resource: %s", ex.what());
+            catch (const std::exception& ex) {
+                m_log.crit("exception while committing backup file: %s", ex.what());
             }
         }
         return ret;
