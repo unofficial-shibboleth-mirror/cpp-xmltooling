@@ -213,10 +213,10 @@ common_sources = \
 	validation/ValidatorSuite.cpp \
 	$(thread_sources)
 
-common_CXXFLAGS = $(xerces_CFLAGS) $(log4shib_CFLAGS) $(log4cpp_CFLAGS) $(PTHREAD_CFLAGS) $(BOOST_CPPFLAGS)
-common_LIBADD   = $(xerces_LIBS)   $(log4shib_LIBS)   $(log4cpp_LIBS)   $(PTHREAD_LIBS)   $(dlopen_LIBS)
+common_CXXFLAGS = $(xerces_CFLAGS) $(zlib_CFLAGS) $(log4shib_CFLAGS) $(log4cpp_CFLAGS) $(PTHREAD_CFLAGS) $(BOOST_CPPFLAGS)
+common_LIBADD   = $(xerces_LIBS) $(zlib_LIBS) $(log4shib_LIBS) $(log4cpp_LIBS) $(PTHREAD_LIBS) $(dlopen_LIBS)
 
-AM_LDFLAGS = -version-info 8:1:0
+AM_LDFLAGS = -version-info 8:2:0
 
 libxmltooling_lite_la_SOURCES = \
 	${common_sources}

@@ -1,6 +1,6 @@
 # Process this file with autoreconf
 AC_PREREQ([2.50])
-AC_INIT([xmltooling],[3.0.1],[https://issues.shibboleth.net/],[xmltooling])
+AC_INIT([xmltooling],[3.0.2],[https://issues.shibboleth.net/],[xmltooling])
 AC_CONFIG_SRCDIR(xmltooling)
 AC_CONFIG_AUX_DIR(build-aux)
 AC_CONFIG_MACRO_DIR(m4)
@@ -135,6 +135,9 @@ AX_PKG_CHECK_MODULES([log4shib],,[log4shib],
 AX_PKG_CHECK_MODULES([xerces],,[xerces-c >= 3.2],,,
     [XMLTOOLING_LITE_REQUIRES],[XMLTOOLING_LITE_REQUIRES_PRIVATE])
 
+AX_PKG_CHECK_MODULES([zlib],,[zlib],,,
+    [XMLTOOLING_LITE_REQUIRES],[XMLTOOLING_LITE_REQUIRES_PRIVATE])
+
 AC_ARG_WITH(xmlsec,
     AS_HELP_STRING([--with-xmlsec],
         [include signature/encryption support via Apache Santuario (XML Security) @<:@default=check@:>@]),,
@@ -151,7 +154,6 @@ AX_PKG_CHECK_MODULES([$1],,[$2],[$3],
 ])
 
 AS_IF([test "x$with_xmlsec" != xno],
-    [XMLSEC_PKG_CHECK([zlib],[zlib],
      [XMLSEC_PKG_CHECK([openssl],[openssl],
       [XMLSEC_PKG_CHECK([libcurl],[libcurl],
        [AX_SAVE_FLAGS
@@ -162,11 +164,10 @@ AS_IF([test "x$with_xmlsec" != xno],
         AC_CHECK_TYPE([curl_off_t],[AC_DEFINE([HAVE_CURL_OFF_T],[1],[Define to 1 if you have the 'curl_off_t' type.])],,[[#include <curl/curl.h>]])
         AX_RESTORE_FLAGS
         XMLSEC_PKG_CHECK([xml_security],[xml-security-c >= 2],
-	[AC_SUBST([XMLSEC_CFLAGS],["$xml_security_CFLAGS $libcurl_CFLAGS $openssl_CFLAGS $zlib_CFLAGS"])
-	 AC_SUBST([XMLSEC_LIBS],["$xml_security_LIBS $libcurl_LIBS $openssl_LIBS $zlib_LIBS"])
+	[AC_SUBST([XMLSEC_CFLAGS],["$xml_security_CFLAGS $libcurl_CFLAGS $openssl_CFLAGS"])
+	 AC_SUBST([XMLSEC_LIBS],["$xml_security_LIBS $libcurl_LIBS $openssl_LIBS"])
         ])
        ])
-      ])
      ])
     ])
 
