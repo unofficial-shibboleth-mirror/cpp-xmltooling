@@ -24,6 +24,8 @@
 
 #include <xmltooling/security/KeyInfoResolver.h>
 #include <xmltooling/security/Credential.h>
+#include <xmltooling/encryption/Encrypter.h>
+#include <xmltooling/encryption/Encryption.h>
 #include <xmltooling/signature/KeyInfo.h>
 
 #include <xsec/framework/XSECException.hpp>
@@ -32,8 +34,11 @@
 #include <xsec/utils/XSECPlatformUtils.hpp>
 #include <xsec/enc/XSECCryptoKeyRSA.hpp>
 #include <xsec/enc/XSECCryptoKey.hpp>
+#include <xsec/enc/XSECCryptoException.hpp>
 
 using namespace xmlsignature;
+using namespace xmlencryption;
+
 
 class BadKeyInfoTest : public CxxTest::TestSuite {
     KeyInfoResolver* m_resolver;
@@ -84,6 +89,20 @@ private:
         TSM_ASSERT("Expected null Private Key", xsecCred->getPrivateKey() == nullptr);
         TSM_ASSERT("Expected non-null Public Key", xsecCred->getPublicKey() != nullptr);
         TSM_ASSERT_EQUALS("Expected RSA key", xsecCred->getPublicKey()->getKeyType(), XSECCryptoKey::KEY_RSA_PUBLIC);
+
+        Encrypter encrypter;
+        Encrypter::EncryptionParams ep;
+        Encrypter::KeyEncryptionParams xsecKep(*xsecCred.get());
+        Encrypter::KeyEncryptionParams toolingKep(*toolingCred.get());
+        //
+        TSM_ASSERT_THROWS("Bad RSA key throws an assert", encrypter.encryptElement(doc->getDocumentElement(), ep, &xsecKep), EncryptionException);
+        /*    string xsecBuffer, toolingBuffer;
+        XMLHelper::serialize(xsecEncData->marshall(), xsecBuffer);
+        XMLHelper::serialize(toolingEncData->marshall(), toolingBuffer);
+        */
+        //        TSM_ASSERT_EQUALS("Encrytped Data differs", xsecBuffer, toolingBuffer);
+
+        TSM_ASSERT_THROWS("Bad RSA key throws an assert", encrypter.encryptElement(doc->getDocumentElement(), ep, &toolingKep), EncryptionException);
 
     }
 
