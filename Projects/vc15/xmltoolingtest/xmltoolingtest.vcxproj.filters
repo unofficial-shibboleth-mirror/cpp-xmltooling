@@ -74,9 +74,15 @@
     <ClCompile Include="DirectoryWalkerTest.cpp">
       <Filter>Generated Code</Filter>
     </ClCompile>
+    <ClCompile Include="BadKeyKeyInfoTest.cpp">
+      <Filter>Generated Code</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\XMLToolingTest\XMLObjectBaseTestCase.h">
+      <Filter>Unit Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\xmltoolingtest\BadKeyKeyInfoTest.h">
       <Filter>Unit Tests</Filter>
     </ClInclude>
   </ItemGroup>
