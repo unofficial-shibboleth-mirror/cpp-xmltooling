@@ -24,6 +24,7 @@
 
 #include <xmltooling/security/KeyInfoResolver.h>
 #include <xmltooling/security/Credential.h>
+#include <xmltooling/encryption/Decrypter.h>
 #include <xmltooling/encryption/Encrypter.h>
 #include <xmltooling/encryption/Encryption.h>
 #include <xmltooling/signature/KeyInfo.h>
@@ -62,13 +63,15 @@ public:
     }
 
 private:
-    void RSATest(const char* file, ParserPool& parser = XMLToolingConfig::getConfig().getValidatingParser()) {
+    void RSATest(const char* file, bool fails, ParserPool& parser = XMLToolingConfig::getConfig().getValidatingParser()) {
 
         string path=data_path + file;
         ifstream fs(path.c_str());
         // Non validating parser!
         DOMDocument* doc=parser.parse(fs);
+
         TS_ASSERT(doc!=nullptr);
+
         const XMLObjectBuilder* b = XMLObjectBuilder::getBuilder(doc->getDocumentElement());
         TS_ASSERT(b!=nullptr);
         const scoped_ptr<KeyInfo> kiObject(dynamic_cast<KeyInfo*>(b->buildFromDocument(doc)));
@@ -95,14 +98,23 @@ private:
         Encrypter::KeyEncryptionParams xsecKep(*xsecCred.get());
         Encrypter::KeyEncryptionParams toolingKep(*toolingCred.get());
         //
-        TSM_ASSERT_THROWS("Bad RSA key throws an assert", encrypter.encryptElement(doc->getDocumentElement(), ep, &xsecKep), EncryptionException);
-        /*    string xsecBuffer, toolingBuffer;
-        XMLHelper::serialize(xsecEncData->marshall(), xsecBuffer);
-        XMLHelper::serialize(toolingEncData->marshall(), toolingBuffer);
-        */
-        //        TSM_ASSERT_EQUALS("Encrytped Data differs", xsecBuffer, toolingBuffer);
+        if (fails) {
+            TSM_ASSERT_THROWS("Bad RSA key throws an assert", encrypter.encryptElement(doc->getDocumentElement(), ep, &xsecKep), EncryptionException);
+            TSM_ASSERT_THROWS("Bad RSA key throws an assert", encrypter.encryptElement(doc->getDocumentElement(), ep, &toolingKep), EncryptionException);
+        }
+        else {
+            scoped_ptr<EncryptedData> toolingEncData(encrypter.encryptElement(doc->getDocumentElement(), ep, &toolingKep));
+            scoped_ptr<EncryptedData> xsecEncData(encrypter.encryptElement(doc->getDocumentElement(), ep, &xsecKep));
 
-        TSM_ASSERT_THROWS("Bad RSA key throws an assert", encrypter.encryptElement(doc->getDocumentElement(), ep, &toolingKep), EncryptionException);
+            string xsecBuffer, toolingBuffer;
+            XMLHelper::serialize(xsecEncData->marshall(), xsecBuffer);
+            XMLHelper::serialize(toolingEncData->marshall(), toolingBuffer);
+            const char* cx= xsecBuffer.c_str();
+            const char* ct= toolingBuffer.c_str();
+
+            // The decrypted data is completely different. hmm.
+            // TSM_ASSERT_EQUALS("Encrytped Data differs", cx, ct);
+        }
 
     }
 
@@ -110,13 +122,22 @@ public:
 
     void testRSABadMod()
     {
-        RSATest("RSABadMod.xml", XMLToolingConfig::getConfig().getParser());
+        RSATest("RSABadMod.xml", true, XMLToolingConfig::getConfig().getParser());
     }
 
     void testRSABadMod64()
     {
-        RSATest("RSABadMod64.xml");
+        RSATest("RSABadMod64.xml", true);
     }
 
+    void testRSABadExp()
+    {
+        RSATest("RSABadExp.xml", false, XMLToolingConfig::getConfig().getParser());
+    }
+
+    void testRSABadExp64()
+    {
+        RSATest("RSABadExp64.xml", false);
+    }
 
 };
