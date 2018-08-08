@@ -63,7 +63,7 @@ public:
     }
 
 private:
-    void RSATest(const char* file, bool fails, ParserPool& parser = XMLToolingConfig::getConfig().getValidatingParser()) {
+    void RSATest(const char* file, bool fails, ParserPool& parser = XMLToolingConfig::getConfig().getValidatingParser(), bool nullKeys=false) {
 
         string path=data_path + file;
         ifstream fs(path.c_str());
@@ -80,16 +80,23 @@ private:
         const scoped_ptr<Credential> toolingCred(dynamic_cast<Credential*>(m_resolver->resolve(kiObject.get())));
         TSM_ASSERT("Unable to resolve KeyInfo into Credential.", toolingCred.get()!=nullptr);
         TSM_ASSERT("Expected null Private Key", toolingCred->getPrivateKey()==nullptr);
-        TSM_ASSERT("Expected non-null Public Key", toolingCred->getPublicKey()!=nullptr);
-        TSM_ASSERT_EQUALS("Expected RSA key", toolingCred->getPublicKey()->getKeyType(), XSECCryptoKey::KEY_RSA_PUBLIC);
-
         const scoped_ptr<const XSECEnv> env(new XSECEnv(doc));
         const scoped_ptr<DSIGKeyInfoList> xencKey(new DSIGKeyInfoList(env.get()));
+        if (nullKeys) {
+            TSM_ASSERT_EQUALS("Expected null Public Key", toolingCred->getPublicKey(), nullptr);
+            TSM_ASSERT_THROWS("Lack of data should make xsec throw", xencKey->loadListFromXML(doc->getDocumentElement()), XSECException);
+            return;
+        }
         xencKey->loadListFromXML(doc->getDocumentElement());
 
         const scoped_ptr<Credential> xsecCred(dynamic_cast<Credential*>(m_resolver->resolve(xencKey.get())));
         TSM_ASSERT("Unable to resolve DSIGKeyInfoList into Credential.", xsecCred.get() != nullptr);
         TSM_ASSERT("Expected null Private Key", xsecCred->getPrivateKey() == nullptr);
+
+
+        TSM_ASSERT("Expected non-null Public Key", toolingCred->getPublicKey()!=nullptr);
+        TSM_ASSERT_EQUALS("Expected RSA key", toolingCred->getPublicKey()->getKeyType(), XSECCryptoKey::KEY_RSA_PUBLIC);
+
         TSM_ASSERT("Expected non-null Public Key", xsecCred->getPublicKey() != nullptr);
         TSM_ASSERT_EQUALS("Expected RSA key", xsecCred->getPublicKey()->getKeyType(), XSECCryptoKey::KEY_RSA_PUBLIC);
 
@@ -140,4 +147,18 @@ public:
         RSATest("RSABadExp64.xml", false);
     }
 
+    void testRSANullMod()
+    {
+        RSATest("RSANullMod.xml", true, XMLToolingConfig::getConfig().getParser(), true);
+    }
+
+    void testRSANullExp()
+    {
+        RSATest("RSANullExp.xml", true, XMLToolingConfig::getConfig().getParser(), true);
+    }
+
+    void testRSANullBoth()
+    {
+        RSATest("RSANullBoth.xml", true, XMLToolingConfig::getConfig().getParser(), true);
+    }
 };

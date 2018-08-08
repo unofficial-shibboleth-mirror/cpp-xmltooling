@@ -1,0 +1,11 @@
+<ds:KeyInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://www.w3.org/2000/09/xmldsig# ../../schemas/xmldsig-core-schema.xsd"
+ xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+    <ds:KeyName>Public Key for CN=xmldap.org, OU=Domain Control Validated, O=xmldap.org</ds:KeyName>
+    <ds:KeyValue>
+        <ds:RSAKeyValue>
+            <ds:Modulus>ANCxWwHKKOzwCtsbZUhhzQjXcyKHA7zrl8UqoCyu7haKzrEmI7udl7B6L+zxgnmVRz4zsw1PJsVYUt9zG6ABC+P7Xtx46Tk/h5gO6hWL4XBzFUuKwsMRZ0RB0sAv6iQtz6TCyH47OBSJSN24h7e/viUQ0ZtKYsJo/r8BHrnoiJk1</ds:Modulus>
+            <ds:Exponent/>
+        </ds:RSAKeyValue>
+    </ds:KeyValue>
+</ds:KeyInfo>
