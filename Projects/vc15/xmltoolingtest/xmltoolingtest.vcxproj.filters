@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Generated Code">
@@ -74,15 +74,12 @@
     <ClCompile Include="DirectoryWalkerTest.cpp">
       <Filter>Generated Code</Filter>
     </ClCompile>
-    <ClCompile Include="BadKeyKeyInfoTest.cpp">
+    <ClCompile Include="BadKeyInfoTest.cpp">
       <Filter>Generated Code</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\XMLToolingTest\XMLObjectBaseTestCase.h">
-      <Filter>Unit Tests</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\xmltoolingtest\BadKeyKeyInfoTest.h">
       <Filter>Unit Tests</Filter>
     </ClInclude>
   </ItemGroup>
@@ -151,6 +148,9 @@
       <Filter>Unit Tests</Filter>
     </CustomBuild>
     <CustomBuild Include="..\..\..\xmltoolingtest\DirectoryWalkerTest.h">
+      <Filter>Unit Tests</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\..\..\xmltoolingtest\BadKeyInfoTest.h">
       <Filter>Unit Tests</Filter>
     </CustomBuild>
   </ItemGroup>

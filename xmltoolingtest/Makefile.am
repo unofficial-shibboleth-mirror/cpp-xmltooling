@@ -15,6 +15,7 @@ xmltoolingtest_LDADD += $(xerces_LIBS) $(log4shib_LIBS) $(log4cpp_LIBS)
 
 if BUILD_XMLSEC
 xmlsec_sources = \
+	BadKeyInfoTest.cpp \
 	DataSealerTest.cpp \
 	EncryptionTest.cpp \
 	FilesystemCredentialResolverTest.cpp \
@@ -29,6 +30,7 @@ xmlsec_sources = \
 endif
 
 xmltoolingtest_sources = \
+	CloneInputStreamTest.cpp \
 	ComplexXMLObjectTest.cpp \
 	DateTimeTest.cpp \
 	DirectoryWalkerTest.cpp \

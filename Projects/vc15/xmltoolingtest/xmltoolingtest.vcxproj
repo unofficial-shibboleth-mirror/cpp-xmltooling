@@ -188,7 +188,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="BadKeyKeyInfoTest.cpp" />
+    <ClCompile Include="BadKeyInfoTest.cpp" />
     <ClCompile Include="CloneInputStreamTest.cpp" />
     <ClCompile Include="ComplexXMLObjectTest.cpp" />
     <ClCompile Include="DataSealerTest.cpp" />
@@ -574,7 +574,7 @@
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Performing Custom Build Tools %(FileName)</Message>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Performing Custom Build Tools %(FileName)</Message>
     </CustomBuild>
-    <CustomBuild Include="..\..\..\xmltoolingtest\BadKeyKeyInfoTest.h">
+    <CustomBuild Include="..\..\..\xmltoolingtest\BadKeyInfoTest.h">
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Performing Custom Build Tools %(FileName)</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">perl.exe -w $(CxxTestRoot)\cxxtestgen.pl --part --have-eh --have-std --abort-on-fail -o "%(Filename)".cpp "%(FullPath)"</Command>
