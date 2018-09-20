@@ -24,6 +24,10 @@
 
 #include <xmltooling/security/KeyInfoResolver.h>
 #include <xmltooling/security/Credential.h>
+#include <xmltooling/security/X509Credential.h>
+#include <xmltooling/security/CredentialCriteria.h>
+#include <xmltooling/security/CredentialResolver.h>
+#include <xmltooling/signature/KeyInfo.h>
 #include <xmltooling/encryption/Decrypter.h>
 #include <xmltooling/encryption/Encrypter.h>
 #include <xmltooling/encryption/Encryption.h>
@@ -36,16 +40,33 @@
 #include <xsec/enc/XSECCryptoKeyRSA.hpp>
 #include <xsec/enc/XSECCryptoKey.hpp>
 #include <xsec/enc/XSECCryptoException.hpp>
+extern "C" {
+#include <openssl/opensslv.h>
+#if (OPENSSL_VERSION_NUMBER < 0x10100000L)
+#include <openssl/x509_vfy.h>
+#endif
+}
+#include <xsec/enc/OpenSSL/OpenSSLCryptoX509.hpp>
+#include <xsec/enc/OpenSSL/OpenSSLCryptoKeyDSA.hpp>
+#include <xsec/enc/OpenSSL/OpenSSLCryptoKeyEC.hpp>
+#include <xsec/enc/OpenSSL/OpenSSLCryptoKeyRSA.hpp>
 
 using namespace xmlsignature;
 using namespace xmlencryption;
 
 
 class BadKeyInfoTest : public CxxTest::TestSuite {
+private:
+#define SIGBUFFER_SIZE 1024
     KeyInfoResolver* m_resolver;
+    unsigned char m_toSign[23] = "Nibble A Happy WartHog";
+    char m_outSigDSA[SIGBUFFER_SIZE] = { 0 };
+    char m_outSigEC[SIGBUFFER_SIZE] = { 0 };
+    unsigned int m_sigLenDSA;
+    unsigned int m_sigLenEC;
 
 public:
-    BadKeyInfoTest() : m_resolver(nullptr) {}
+    BadKeyInfoTest() : m_resolver(nullptr), m_sigLenDSA(0), m_sigLenEC(0){}
 
     void setUp() {
         string config = data_path + "InlineKeyResolver.xml";
@@ -55,6 +76,45 @@ public:
         m_resolver=XMLToolingConfig::getConfig().KeyInfoResolverManager.newPlugin(
             INLINE_KEYINFO_RESOLVER, doc->getDocumentElement(), false
             );
+
+        if (m_sigLenEC == 0 || m_sigLenDSA == 0) {
+            // Resolver for DSA and RSA signatures
+            config = data_path + "FilesystemCredentialResolver.xml";
+            ifstream infc(config.c_str());
+            DOMDocument* cdoc = XMLToolingConfig::getConfig().getParser().parse(infc);
+            XercesJanitor<DOMDocument> cjanitor(cdoc);
+            const CredentialResolver* cresolver = XMLToolingConfig::getConfig().CredentialResolverManager.newPlugin(
+                CHAINING_CREDENTIAL_RESOLVER, cdoc->getDocumentElement(), false
+            );
+
+            if (m_sigLenDSA == 0) {
+                // Test sign for DSA
+                CredentialCriteria cc;
+                cc.setUsage(Credential::SIGNING_CREDENTIAL);
+                cc.setKeyAlgorithm("DSA");
+                const OpenSSLCryptoKeyDSA* fileResolverDSA = dynamic_cast<const OpenSSLCryptoKeyDSA*>(cresolver->resolve(&cc)->getPublicKey());
+                m_sigLenDSA = fileResolverDSA->signBase64Signature(m_toSign, 20, m_outSigDSA, SIGBUFFER_SIZE);
+                bool worked = fileResolverDSA->verifyBase64Signature(m_toSign, 20, m_outSigDSA, m_sigLenDSA);
+                TSM_ASSERT("Round trip file resolver DSA failed", worked);
+            }
+
+            if (m_sigLenEC == 0) {
+#ifdef XSEC_OPENSSL_HAVE_EC
+                // Test sign for EC
+                CredentialCriteria cc;
+                cc.setUsage(Credential::SIGNING_CREDENTIAL);
+                cc.setKeyAlgorithm("EC");
+                const OpenSSLCryptoKeyEC* fileResolverCryptoKeyEC = dynamic_cast<const OpenSSLCryptoKeyEC*>(cresolver->resolve(&cc)->getPublicKey());
+                m_sigLenEC = fileResolverCryptoKeyEC->signBase64SignatureDSA(m_toSign, 20, m_outSigEC, SIGBUFFER_SIZE);
+
+                bool worked = fileResolverCryptoKeyEC->verifyBase64SignatureDSA(m_toSign, 20, m_outSigEC, m_sigLenEC);
+                TSM_ASSERT("EC Round Trip SignatureFailed", worked);
+#else
+                m_m_sigLenEC = 1;
+#endif
+            }
+        }
+
     }
 
     void tearDown() {
@@ -67,7 +127,6 @@ private:
 
         string path=data_path + file;
         ifstream fs(path.c_str());
-        // Non validating parser!
         DOMDocument* doc=parser.parse(fs);
 
         TS_ASSERT(doc!=nullptr);
@@ -122,8 +181,56 @@ private:
             // The decrypted data is completely different. hmm.
             // TSM_ASSERT_EQUALS("Encrytped Data differs", cx, ct);
         }
+    }
+
+    void DSATest(const char* file, bool fails, ParserPool& parser = XMLToolingConfig::getConfig().getValidatingParser(), bool nullKeys = false) {
+
+        string path = data_path + file;
+        ifstream fs(path.c_str());
+        DOMDocument* doc = parser.parse(fs);
+
+        TS_ASSERT(doc != nullptr);
+
+        const XMLObjectBuilder* b = XMLObjectBuilder::getBuilder(doc->getDocumentElement());
+        TS_ASSERT(b != nullptr);
+        const scoped_ptr<KeyInfo> kiObject(dynamic_cast<KeyInfo*>(b->buildFromDocument(doc)));
+        TS_ASSERT(kiObject.get() != nullptr);
+
+        const scoped_ptr<X509Credential> toolingCred(dynamic_cast<X509Credential*>(m_resolver->resolve(kiObject.get())));
+        TSM_ASSERT("Unable to resolve KeyInfo into Credential.", toolingCred.get() != nullptr);
+        TSM_ASSERT("Expected null Private Key", toolingCred->getPrivateKey() == nullptr);
+
+        const scoped_ptr<const XSECEnv> env(new XSECEnv(doc));
+        const scoped_ptr<DSIGKeyInfoList> xencKey(new DSIGKeyInfoList(env.get()));
+        if (nullKeys) {
+            TSM_ASSERT_EQUALS("Expected null Public Key", toolingCred->getPublicKey(), nullptr);
+            TSM_ASSERT_THROWS("Lack of data should make xsec throw", xencKey->loadListFromXML(doc->getDocumentElement()), XSECException);
+            return;
+        }
+        xencKey->loadListFromXML(doc->getDocumentElement());
+
+        const scoped_ptr<X509Credential> xsecCred(dynamic_cast<X509Credential*>(m_resolver->resolve(xencKey.get())));
+        TSM_ASSERT("Unable to resolve DSIGKeyInfoList into Credential.", xsecCred.get() != nullptr);
+        TSM_ASSERT("Expected null Private Key", xsecCred->getPrivateKey() == nullptr);
+
+        TSM_ASSERT("Expected non-null Public Key", toolingCred->getPublicKey() != nullptr);
+        TSM_ASSERT_EQUALS("Expected DSA key", toolingCred->getPublicKey()->getKeyType(), XSECCryptoKey::KEY_DSA_PUBLIC);
+
+        TSM_ASSERT("Expected non-null Public Key", xsecCred->getPublicKey() != nullptr);
+        TSM_ASSERT_EQUALS("Expected DSA key", xsecCred->getPublicKey()->getKeyType(), XSECCryptoKey::KEY_DSA_PUBLIC);
+
+        const OpenSSLCryptoKeyDSA* toolingKeyInfoDSA = dynamic_cast<const OpenSSLCryptoKeyDSA*>(toolingCred->getPublicKey());
+        const OpenSSLCryptoKeyDSA* xsecKeyInfoDSA = dynamic_cast<const OpenSSLCryptoKeyDSA*>(xsecCred->getPublicKey());
+
+        bool worked = toolingKeyInfoDSA->verifyBase64Signature(m_toSign, 20, m_outSigDSA, m_sigLenDSA);
+        TSM_ASSERT("Round trip KeyInfo DSA failed", worked);
+
+
+        worked = toolingKeyInfoDSA->verifyBase64Signature(m_toSign, 20, m_outSigDSA, m_sigLenDSA);
+        TSM_ASSERT("Round trip KeyInfo DSA failed", worked);
 
     }
+
 
 public:
 
@@ -167,4 +274,9 @@ public:
         RSATest("RSAEmpty.xml", true, XMLToolingConfig::getConfig().getParser(), true);
     }
 
+
+    void testDSAGood()
+    {
+        DSATest("KeyInfoDSA.xml", false);
+    }
 };
