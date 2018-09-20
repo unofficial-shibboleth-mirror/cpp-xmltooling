@@ -161,4 +161,10 @@ public:
     {
         RSATest("RSANullBoth.xml", true, XMLToolingConfig::getConfig().getParser(), true);
     }
+
+    void testRSAEmpty()
+    {
+        RSATest("RSAEmpty.xml", true, XMLToolingConfig::getConfig().getParser(), true);
+    }
+
 };
