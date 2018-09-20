@@ -66,16 +66,16 @@ private:
     unsigned int m_sigLenEC;
 
 public:
-    BadKeyInfoTest() : m_resolver(nullptr), m_sigLenDSA(0), m_sigLenEC(0){}
+    BadKeyInfoTest() : m_resolver(nullptr), m_sigLenDSA(0), m_sigLenEC(0) {}
 
     void setUp() {
         string config = data_path + "InlineKeyResolver.xml";
         ifstream in(config.c_str());
-        DOMDocument* doc=XMLToolingConfig::getConfig().getParser().parse(in);
+        DOMDocument* doc = XMLToolingConfig::getConfig().getParser().parse(in);
         XercesJanitor<DOMDocument> janitor(doc);
-        m_resolver=XMLToolingConfig::getConfig().KeyInfoResolverManager.newPlugin(
+        m_resolver = XMLToolingConfig::getConfig().KeyInfoResolverManager.newPlugin(
             INLINE_KEYINFO_RESOLVER, doc->getDocumentElement(), false
-            );
+        );
 
         if (m_sigLenEC == 0 || m_sigLenDSA == 0) {
             // Resolver for DSA and RSA signatures
@@ -119,26 +119,26 @@ public:
 
     void tearDown() {
         delete m_resolver;
-        m_resolver=nullptr;
+        m_resolver = nullptr;
     }
 
 private:
-    void RSATest(const char* file, bool fails, ParserPool& parser = XMLToolingConfig::getConfig().getValidatingParser(), bool nullKeys=false) {
+    void RSATest(const char* file, bool fails, ParserPool& parser = XMLToolingConfig::getConfig().getValidatingParser(), bool nullKeys = false) {
 
-        string path=data_path + file;
+        string path = data_path + file;
         ifstream fs(path.c_str());
-        DOMDocument* doc=parser.parse(fs);
+        DOMDocument* doc = parser.parse(fs);
 
-        TS_ASSERT(doc!=nullptr);
+        TS_ASSERT(doc != nullptr);
 
         const XMLObjectBuilder* b = XMLObjectBuilder::getBuilder(doc->getDocumentElement());
-        TS_ASSERT(b!=nullptr);
+        TS_ASSERT(b != nullptr);
         const scoped_ptr<KeyInfo> kiObject(dynamic_cast<KeyInfo*>(b->buildFromDocument(doc)));
-        TS_ASSERT(kiObject.get()!=nullptr);
+        TS_ASSERT(kiObject.get() != nullptr);
 
         const scoped_ptr<Credential> toolingCred(dynamic_cast<Credential*>(m_resolver->resolve(kiObject.get())));
-        TSM_ASSERT("Unable to resolve KeyInfo into Credential.", toolingCred.get()!=nullptr);
-        TSM_ASSERT("Expected null Private Key", toolingCred->getPrivateKey()==nullptr);
+        TSM_ASSERT("Unable to resolve KeyInfo into Credential.", toolingCred.get() != nullptr);
+        TSM_ASSERT("Expected null Private Key", toolingCred->getPrivateKey() == nullptr);
         const scoped_ptr<const XSECEnv> env(new XSECEnv(doc));
         const scoped_ptr<DSIGKeyInfoList> xencKey(new DSIGKeyInfoList(env.get()));
         if (nullKeys) {
@@ -153,7 +153,7 @@ private:
         TSM_ASSERT("Expected null Private Key", xsecCred->getPrivateKey() == nullptr);
 
 
-        TSM_ASSERT("Expected non-null Public Key", toolingCred->getPublicKey()!=nullptr);
+        TSM_ASSERT("Expected non-null Public Key", toolingCred->getPublicKey() != nullptr);
         TSM_ASSERT_EQUALS("Expected RSA key", toolingCred->getPublicKey()->getKeyType(), XSECCryptoKey::KEY_RSA_PUBLIC);
 
         TSM_ASSERT("Expected non-null Public Key", xsecCred->getPublicKey() != nullptr);
@@ -175,8 +175,8 @@ private:
             string xsecBuffer, toolingBuffer;
             XMLHelper::serialize(xsecEncData->marshall(), xsecBuffer);
             XMLHelper::serialize(toolingEncData->marshall(), toolingBuffer);
-            const char* cx= xsecBuffer.c_str();
-            const char* ct= toolingBuffer.c_str();
+            const char* cx = xsecBuffer.c_str();
+            const char* ct = toolingBuffer.c_str();
 
             // The decrypted data is completely different. hmm.
             // TSM_ASSERT_EQUALS("Encrytped Data differs", cx, ct);
@@ -222,13 +222,16 @@ private:
         const OpenSSLCryptoKeyDSA* toolingKeyInfoDSA = dynamic_cast<const OpenSSLCryptoKeyDSA*>(toolingCred->getPublicKey());
         const OpenSSLCryptoKeyDSA* xsecKeyInfoDSA = dynamic_cast<const OpenSSLCryptoKeyDSA*>(xsecCred->getPublicKey());
 
-        bool worked = toolingKeyInfoDSA->verifyBase64Signature(m_toSign, 20, m_outSigDSA, m_sigLenDSA);
-        TSM_ASSERT("Round trip KeyInfo DSA failed", worked);
-
-
-        worked = toolingKeyInfoDSA->verifyBase64Signature(m_toSign, 20, m_outSigDSA, m_sigLenDSA);
-        TSM_ASSERT("Round trip KeyInfo DSA failed", worked);
-
+        bool toolingWorked = toolingKeyInfoDSA->verifyBase64Signature(m_toSign, 20, m_outSigDSA, m_sigLenDSA);
+        bool xsecWorked = xsecKeyInfoDSA->verifyBase64Signature(m_toSign, 20, m_outSigDSA, m_sigLenDSA);
+        if (fails) {
+            TSM_ASSERT("Round trip KeyInfo DSA worked (tooling)", !toolingWorked);
+            TSM_ASSERT("Round trip KeyInfo DSA worked (xsec)", !xsecWorked);
+        }
+        else {
+            TSM_ASSERT("Round trip KeyInfo DSA failed (tooling)", toolingWorked);
+            TSM_ASSERT("Round trip KeyInfo DSA failed (xsec)", xsecWorked);
+        }
     }
 
 
@@ -278,5 +281,15 @@ public:
     void testDSAGood()
     {
         DSATest("KeyInfoDSA.xml", false);
+    }
+
+    void testDSABadP()
+    {
+        DSATest("DSABadP.xml", true, XMLToolingConfig::getConfig().getParser());
+    }
+
+    void testDSABadP64()
+    {
+        DSATest("DSABadP64.xml", true);
     }
 };
