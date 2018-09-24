@@ -183,7 +183,7 @@ private:
         }
     }
 
-    void DSATest(const char* file, bool fails, ParserPool& parser = XMLToolingConfig::getConfig().getValidatingParser(), bool nullKeys = false) {
+    void DSATest(const char* file, bool fails, ParserPool& parser = XMLToolingConfig::getConfig().getValidatingParser(), bool nullTooling = false, bool nullXsec = false, bool badKey= false) {
 
         string path = data_path + file;
         ifstream fs(path.c_str());
@@ -196,41 +196,55 @@ private:
         const scoped_ptr<KeyInfo> kiObject(dynamic_cast<KeyInfo*>(b->buildFromDocument(doc)));
         TS_ASSERT(kiObject.get() != nullptr);
 
-        const scoped_ptr<X509Credential> toolingCred(dynamic_cast<X509Credential*>(m_resolver->resolve(kiObject.get())));
-        TSM_ASSERT("Unable to resolve KeyInfo into Credential.", toolingCred.get() != nullptr);
-        TSM_ASSERT("Expected null Private Key", toolingCred->getPrivateKey() == nullptr);
-
         const scoped_ptr<const XSECEnv> env(new XSECEnv(doc));
         const scoped_ptr<DSIGKeyInfoList> xencKey(new DSIGKeyInfoList(env.get()));
-        if (nullKeys) {
-            TSM_ASSERT_EQUALS("Expected null Public Key", toolingCred->getPublicKey(), nullptr);
-            TSM_ASSERT_THROWS("Lack of data should make xsec throw", xencKey->loadListFromXML(doc->getDocumentElement()), XSECException);
-            return;
-        }
         xencKey->loadListFromXML(doc->getDocumentElement());
 
+        const scoped_ptr<X509Credential> toolingCred(dynamic_cast<X509Credential*>(m_resolver->resolve(kiObject.get())));
+        TSM_ASSERT("Unable to resolve KeyInfo into Credential.", toolingCred.get() != nullptr);
+        if (!badKey) {
+            TSM_ASSERT("Expected null Private Key", toolingCred->getPrivateKey() == nullptr);
+        }
+ 
         const scoped_ptr<X509Credential> xsecCred(dynamic_cast<X509Credential*>(m_resolver->resolve(xencKey.get())));
-        TSM_ASSERT("Unable to resolve DSIGKeyInfoList into Credential.", xsecCred.get() != nullptr);
-        TSM_ASSERT("Expected null Private Key", xsecCred->getPrivateKey() == nullptr);
-
-        TSM_ASSERT("Expected non-null Public Key", toolingCred->getPublicKey() != nullptr);
-        TSM_ASSERT_EQUALS("Expected DSA key", toolingCred->getPublicKey()->getKeyType(), XSECCryptoKey::KEY_DSA_PUBLIC);
-
-        TSM_ASSERT("Expected non-null Public Key", xsecCred->getPublicKey() != nullptr);
-        TSM_ASSERT_EQUALS("Expected DSA key", xsecCred->getPublicKey()->getKeyType(), XSECCryptoKey::KEY_DSA_PUBLIC);
-
-        const OpenSSLCryptoKeyDSA* toolingKeyInfoDSA = dynamic_cast<const OpenSSLCryptoKeyDSA*>(toolingCred->getPublicKey());
-        const OpenSSLCryptoKeyDSA* xsecKeyInfoDSA = dynamic_cast<const OpenSSLCryptoKeyDSA*>(xsecCred->getPublicKey());
-
-        bool toolingWorked = toolingKeyInfoDSA->verifyBase64Signature(m_toSign, 20, m_outSigDSA, m_sigLenDSA);
-        bool xsecWorked = xsecKeyInfoDSA->verifyBase64Signature(m_toSign, 20, m_outSigDSA, m_sigLenDSA);
-        if (fails) {
-            TSM_ASSERT("Round trip KeyInfo DSA worked (tooling)", !toolingWorked);
-            TSM_ASSERT("Round trip KeyInfo DSA worked (xsec)", !xsecWorked);
+        if (nullTooling || badKey) {
+            TSM_ASSERT_EQUALS("Expected null Public Key (tooling)", toolingCred->getPublicKey(), nullptr);
         }
         else {
-            TSM_ASSERT("Round trip KeyInfo DSA failed (tooling)", toolingWorked);
-            TSM_ASSERT("Round trip KeyInfo DSA failed (xsec)", xsecWorked);
+            TSM_ASSERT("Expected non-null Public Key", toolingCred->getPublicKey() != nullptr);
+            TSM_ASSERT_EQUALS("Expected DSA key", toolingCred->getPublicKey()->getKeyType(), XSECCryptoKey::KEY_DSA_PUBLIC);
+            const OpenSSLCryptoKeyDSA* toolingKeyInfoDSA = dynamic_cast<const OpenSSLCryptoKeyDSA*>(toolingCred->getPublicKey());
+            bool toolingWorked = toolingKeyInfoDSA->verifyBase64Signature(m_toSign, 20, m_outSigDSA, m_sigLenDSA);
+            if (fails) {
+                TSM_ASSERT("Round trip KeyInfo DSA worked (tooling)", !toolingWorked);
+            }
+            else {
+                TSM_ASSERT("Round trip KeyInfo DSA failed (tooling)", toolingWorked);
+            }
+        }
+        if (nullXsec) {
+            if (xsecCred) {
+                TSM_ASSERT_EQUALS("Expected null xsec Cred or Public Key", xsecCred->getPublicKey(), nullptr);
+            }
+        }
+        else {
+            TSM_ASSERT("Unable to resolve DSIGKeyInfoList into Credential.", xsecCred.get() != nullptr);
+            TSM_ASSERT("Expected null Private Key", xsecCred->getPrivateKey() == nullptr);
+            TSM_ASSERT("Expected non-null Public Key", xsecCred->getPublicKey() != nullptr);
+            TSM_ASSERT_EQUALS("Expected DSA key", xsecCred->getPublicKey()->getKeyType(), XSECCryptoKey::KEY_DSA_PUBLIC);
+            const OpenSSLCryptoKeyDSA* xsecKeyInfoDSA = dynamic_cast<const OpenSSLCryptoKeyDSA*>(xsecCred->getPublicKey());
+            if (badKey) {
+                TSM_ASSERT_THROWS("Bad DSA key throws an assert", xsecKeyInfoDSA->verifyBase64Signature(m_toSign, 20, m_outSigDSA, m_sigLenDSA), XSECCryptoException);
+            }
+            else {
+                bool xsecWorked = xsecKeyInfoDSA->verifyBase64Signature(m_toSign, 20, m_outSigDSA, m_sigLenDSA);
+                if (fails) {
+                    TSM_ASSERT("Round trip KeyInfo DSA worked (xsec)", !xsecWorked);
+                }
+                else {
+                    TSM_ASSERT("Round trip KeyInfo DSA failed (xsec)", xsecWorked);
+                }
+            }
         }
     }
 
@@ -292,4 +306,15 @@ public:
     {
         DSATest("DSABadP64.xml", true);
     }
+
+    void testDSANoP()
+    {
+        DSATest("DSANoP.xml", true, XMLToolingConfig::getConfig().getParser(), true, false, true);
+    }
+
+    void testDSANullP()
+    {
+        DSATest("DSANullP.xml", true, XMLToolingConfig::getConfig().getParser(), true, false, true);
+    }
+
 };
