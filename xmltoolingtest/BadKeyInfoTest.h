@@ -258,41 +258,49 @@ public:
 
     void testRSABadMod()
     {
+        // Encryption Throws, but keys are present
         RSATest("RSABadMod.xml", true, false);
     }
 
     void testRSABadMod64()
     {
+        // Encryption Throws, but keys are present
         RSATest("RSABadMod64.xml", true, false);
     }
 
     void testRSABadExp()
     {
+        // Encryption "works", and keys are present
         RSATest("RSABadExp.xml", false, false);
     }
 
     void testRSABadExp64()
     {
+        // Encryption "works", and keys are present
         RSATest("RSABadExp64.xml", false, false);
     }
 
     void testRSANullMod()
     {
+        // Encryption throws, no keys
         RSATest("RSANullMod.xml", true, true);
     }
 
     void testRSANullExp()
     {
+        // Encryption throws, no keys
         RSATest("RSANullExp.xml", true, true);
     }
 
     void testRSANullBoth()
     {
+        // Encryption throws, no keys
         RSATest("RSANullBoth.xml", true, true);
     }
 
     void testRSAEmpty()
     {
+        // Encryption throws, no keys
         RSATest("RSAEmpty.xml", true, true);
     }
 
@@ -300,58 +308,70 @@ public:
 
     void testDSAGood()
     {
+        // Round trip work, XmlTooling returns a public key, Santuario returns a public key, verifyBase64Signature doesn't throw (both cases)
         DSATest("KeyInfoDSA.xml", false, false, false, false);
     }
 
     // P: tests
+    // In all these cases the round trip fails.
     void testDSABadP()
     {
+        // Round trip fails, XmlTooling returns a public key, Santuario returns a public key, verifyBase64Signature doesn't throw (both cases)
         DSATest("DSABadP.xml", true, false, false, false);
     }
 
     void testDSABadP64()
     {
+        // Round trip fails, XmlTooling returns a public key, Santuario returns a public key, verifyBase64Signature doesn't throw (both cases)
         DSATest("DSABadP64.xml", true, false, false, false);
     }
 
     void testDSANoP()
     {
+        // Round trip fails, XmlTooling returns NO public key, Santuario returns a public key, verifyBase64Signature throws (xsec)
         DSATest("DSANoP.xml", true, true, false, true);
     }
 
     void testDSANullP()
     {
+        // Round trip fails, XmlTooling returns NO public key, Santuario returns a public key, verifyBase64Signature throws (xsec)
         DSATest("DSANullP.xml", true, true, false, true);
     }
 
     // Q: Tests
     void testDSABadQ()
     {
+        // Round trip fails, XmlTooling returns a public key, Santuario returns a public key, verifyBase64Signature throws (xsec & tooling)
         DSATest("DSABadQ.xml", true, false, false, true);
     }
 
     void testDSABadQ64()
     {
+        // Round trip fails, XmlTooling returns a public key, Santuario returns a public key, verifyBase64Signature throws (xsec & tooling)
         DSATest("DSABadQ64.xml", true, false, false, true);
     }
 
     void testDSANoQ()
     {
+        // Round trip fails, XmlTooling returns NO public key, Santuario returns a public key, verifyBase64Signature throws (xsec)
         DSATest("DSANoQ.xml", true, true, false, true);
     }
 
     void testDSANoPQ()
     {
+        // Round trip fails, XmlTooling returns NO public key, Santuario returns a public key, verifyBase64Signature throws (xsec)
         DSATest("DSANoQP.xml", true, false, false, true);
     }
 
     void testDSANullQ()
     {
+        // Round trip fails, XmlTooling returns NO public key, Santuario returns a public key, verifyBase64Signature throws (xsec)
         DSATest("DSANullQ.xml", true, true, false, true);
     }
 
     void testDSANullPQ()
     {
+        // Round trip fails, XmlTooling returns NO public key, Santuario returns a public key, verifyBase64Signature throws (xsec)
         DSATest("DSANullQP.xml", true, true, false, true);
     }
 
