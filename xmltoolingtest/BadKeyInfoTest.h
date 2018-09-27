@@ -183,7 +183,7 @@ private:
         }
     }
 
-    void DSATest(const char* file, bool fails, ParserPool& parser = XMLToolingConfig::getConfig().getValidatingParser(), bool nullTooling = false, bool nullXsec = false, bool badKey= false) {
+    void DSATest(const char* file, bool fails, ParserPool& parser = XMLToolingConfig::getConfig().getValidatingParser(), bool nullTooling = false, bool nullXsec = false, bool verifyThrows= false) {
 
         string path = data_path + file;
         ifstream fs(path.c_str());
@@ -202,24 +202,29 @@ private:
 
         const scoped_ptr<X509Credential> toolingCred(dynamic_cast<X509Credential*>(m_resolver->resolve(kiObject.get())));
         TSM_ASSERT("Unable to resolve KeyInfo into Credential.", toolingCred.get() != nullptr);
-        if (!badKey) {
+//        if (!verifyThrows) {//@@@
             TSM_ASSERT("Expected null Private Key", toolingCred->getPrivateKey() == nullptr);
-        }
+//        }
  
         const scoped_ptr<X509Credential> xsecCred(dynamic_cast<X509Credential*>(m_resolver->resolve(xencKey.get())));
-        if (nullTooling || badKey) {
+        if (nullTooling ) {
             TSM_ASSERT_EQUALS("Expected null Public Key (tooling)", toolingCred->getPublicKey(), nullptr);
         }
         else {
             TSM_ASSERT("Expected non-null Public Key", toolingCred->getPublicKey() != nullptr);
             TSM_ASSERT_EQUALS("Expected DSA key", toolingCred->getPublicKey()->getKeyType(), XSECCryptoKey::KEY_DSA_PUBLIC);
             const OpenSSLCryptoKeyDSA* toolingKeyInfoDSA = dynamic_cast<const OpenSSLCryptoKeyDSA*>(toolingCred->getPublicKey());
-            bool toolingWorked = toolingKeyInfoDSA->verifyBase64Signature(m_toSign, 20, m_outSigDSA, m_sigLenDSA);
-            if (fails) {
-                TSM_ASSERT("Round trip KeyInfo DSA worked (tooling)", !toolingWorked);
+            if (verifyThrows) {
+                TSM_ASSERT_THROWS("Bad DSA key throws an assert", toolingKeyInfoDSA->verifyBase64Signature(m_toSign, 20, m_outSigDSA, m_sigLenDSA), XSECCryptoException);
             }
             else {
-                TSM_ASSERT("Round trip KeyInfo DSA failed (tooling)", toolingWorked);
+                bool toolingWorked = toolingKeyInfoDSA->verifyBase64Signature(m_toSign, 20, m_outSigDSA, m_sigLenDSA);
+                if (fails) {
+                    TSM_ASSERT("Round trip KeyInfo DSA worked (tooling)", !toolingWorked);
+                }
+                else {
+                    TSM_ASSERT("Round trip KeyInfo DSA failed (tooling)", toolingWorked);
+                }
             }
         }
         if (nullXsec) {
@@ -233,7 +238,7 @@ private:
             TSM_ASSERT("Expected non-null Public Key", xsecCred->getPublicKey() != nullptr);
             TSM_ASSERT_EQUALS("Expected DSA key", xsecCred->getPublicKey()->getKeyType(), XSECCryptoKey::KEY_DSA_PUBLIC);
             const OpenSSLCryptoKeyDSA* xsecKeyInfoDSA = dynamic_cast<const OpenSSLCryptoKeyDSA*>(xsecCred->getPublicKey());
-            if (badKey) {
+            if (verifyThrows) {
                 TSM_ASSERT_THROWS("Bad DSA key throws an assert", xsecKeyInfoDSA->verifyBase64Signature(m_toSign, 20, m_outSigDSA, m_sigLenDSA), XSECCryptoException);
             }
             else {
@@ -291,12 +296,14 @@ public:
         RSATest("RSAEmpty.xml", true, XMLToolingConfig::getConfig().getParser(), true);
     }
 
+    // DSA
 
     void testDSAGood()
     {
         DSATest("KeyInfoDSA.xml", false);
     }
 
+    // P: tests
     void testDSABadP()
     {
         DSATest("DSABadP.xml", true, XMLToolingConfig::getConfig().getParser());
@@ -315,6 +322,37 @@ public:
     void testDSANullP()
     {
         DSATest("DSANullP.xml", true, XMLToolingConfig::getConfig().getParser(), true, false, true);
+    }
+
+    // Q: TEsts
+    void testDSABadQ()
+    {
+        DSATest("DSABadQ.xml", true, XMLToolingConfig::getConfig().getParser(), false, false, true);
+    }
+
+    void testDSABadQ64()
+    {
+        DSATest("DSABadQ64.xml", true, XMLToolingConfig::getConfig().getParser(), false, false, true);
+    }
+
+    void testDSANoQ()
+    {
+        DSATest("DSANoQ.xml", true, XMLToolingConfig::getConfig().getParser(), true, false, true);
+    }
+
+    void testDSANoPQ()
+    {
+        DSATest("DSANoQP.xml", true, XMLToolingConfig::getConfig().getParser(), false, false, true);
+    }
+
+    void testDSANullQ()
+    {
+        DSATest("DSANullQ.xml", true, XMLToolingConfig::getConfig().getParser(), true, false, true);
+    }
+
+    void testDSANullPQ()
+    {
+        DSATest("DSANullQP.xml", true, XMLToolingConfig::getConfig().getParser(), true, false, true);
     }
 
 };
