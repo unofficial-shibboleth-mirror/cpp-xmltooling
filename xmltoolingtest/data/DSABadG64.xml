@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+    <ds:KeyName>Foo</ds:KeyName>
+    <ds:KeyName>Bar</ds:KeyName>
+    <ds:KeyValue>
+        <ds:DSAKeyValue>
+            <ds:P>ANVGAtN1Mxr3ZkxKcQqZaMxw2Qbre4jG8G+KFhcPYJQNjhpYH2O+DVWx02vV4H9ypCnPaANktCitKuQSiDA9l1U=
+</ds:P>
+            <ds:Q>AK/apfGsK5pA4iia1j9qAR0Tdaw1
+</ds:Q>
+            <ds:G>RG1FUW9vK1lBVk5UVUdva2N5MWtpMDFXZ01mVEJzdlBxWWpSRHpjbUY3cDRvSjhuZVZDbjBCOTkwanY5Vzh2OGdwdnhyK3c1WnBRa0p5Ym5nSkZBanc9PQ==</ds:G>
+            <ds:Y>AMJPFxCB9Kp6ekdM90H23zv4JNEhkm1qXNix44Xdl6IABgE896kpNzGQDCKf6iecO7oX+eTJl3KwT3oNE+8EQxk=
+</ds:Y>
+        </ds:DSAKeyValue>
+    </ds:KeyValue> 
+</ds:KeyInfo>

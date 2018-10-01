@@ -375,4 +375,31 @@ public:
         DSATest("DSANullQP.xml", true, true, false, true);
     }
 
+    // G:
+    void testDSABadG()
+    {
+        // Round trip fails, XmlTooling returns a public key, Santuario returns a public key, verifyBase64Signature throws doesn't throw (both cases)
+        DSATest("DSABadG.xml", true, false, false, false);
+    }
+
+    void testDSABadG64()
+    {
+        // Round trip fails, XmlTooling returns a public key, Santuario returns a public key, verifyBase64Signature throws doesn't throw (both cases)
+        DSATest("DSABadG64.xml", true, false, false, false);
+    }
+
+    void testDSANoG()
+    {
+        // Round trip fails, XmlTooling returns a public key, Santuario returns a public key, verifyBase64Signature throws (xsec)
+        DSATest("DSANoG.xml", true, false, false, true);
+    }
+
+    void testDSANullG()
+    {
+        // Round trip fails, XmlTooling returns NO public key, Santuario returns a public key, verifyBase64Signature throws (xsec)
+        DSATest("DSANullG.xml", true, true, false, true);
+    }
+
+
+
 };
