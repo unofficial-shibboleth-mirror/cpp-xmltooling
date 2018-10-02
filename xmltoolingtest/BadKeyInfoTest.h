@@ -184,7 +184,7 @@ private:
         }
     }
 
-    void DSATest(const char* file, bool roundTripFails, bool nullTooling, bool nullXsec, bool verifyThrows) {
+    void DSATest(const char* file, bool roundTripFails, bool nullTooling, bool nullXsec, bool verifyThrows, bool keyTypeNone = false) {
 
         string path = data_path + file;
         ifstream fs(path.c_str());
@@ -202,11 +202,11 @@ private:
         const scoped_ptr<DSIGKeyInfoList> xencKey(new DSIGKeyInfoList(env.get()));
         xencKey->loadListFromXML(doc->getDocumentElement());
 
-        const scoped_ptr<X509Credential> toolingCred(dynamic_cast<X509Credential*>(m_resolver->resolve(kiObject.get())));
+        const scoped_ptr<Credential> toolingCred(dynamic_cast<Credential*>(m_resolver->resolve(kiObject.get())));
         TSM_ASSERT("Unable to resolve KeyInfo into Credential.", toolingCred.get() != nullptr);
         TSM_ASSERT("Expected null Private Key", toolingCred->getPrivateKey() == nullptr);
  
-        const scoped_ptr<X509Credential> xsecCred(dynamic_cast<X509Credential*>(m_resolver->resolve(xencKey.get())));
+        const scoped_ptr<Credential> xsecCred(dynamic_cast<Credential*>(m_resolver->resolve(xencKey.get())));
         if (nullTooling ) {
             TSM_ASSERT_EQUALS("Expected null Public Key (tooling)", toolingCred->getPublicKey(), nullptr);
         }
@@ -237,7 +237,7 @@ private:
 
             TSM_ASSERT("Expected null Private Key", xsecCred->getPrivateKey() == nullptr);
             TSM_ASSERT("Expected non-null Public Key", xsecCred->getPublicKey() != nullptr);
-            TSM_ASSERT_EQUALS("Expected DSA key", xsecCred->getPublicKey()->getKeyType(), XSECCryptoKey::KEY_DSA_PUBLIC);
+            TSM_ASSERT_EQUALS("Expected DSA key", xsecCred->getPublicKey()->getKeyType(), keyTypeNone? XSECCryptoKey::KEY_NONE : XSECCryptoKey::KEY_DSA_PUBLIC);
             const OpenSSLCryptoKeyDSA* xsecKeyInfoDSA = dynamic_cast<const OpenSSLCryptoKeyDSA*>(xsecCred->getPublicKey());
             if (verifyThrows) {
                 TSM_ASSERT_THROWS("Bad DSA key throws an assert", xsecKeyInfoDSA->verifyBase64Signature(m_toSign, 20, m_outSigDSA, m_sigLenDSA), XSECCryptoException);
@@ -474,6 +474,31 @@ public:
     {
         // Round trip works, Keys returned nothing throws
         DSATest("DSABadJ64.xml", false, false, false, false);
+	}
+
+    // Y:
+    void testDSABadY()
+    {
+        // Round trip fails, XmlTooling returns a public key, Santuario returns a public key, verifyBase64Signature throws doesn't throw (both cases)
+        DSATest("DSABadY.xml", true, false, false, false);
+    }
+
+    void testDSABadY64()
+    {
+        // Round trip fails, XmlTooling returns a public key, Santuario returns a public key, verifyBase64Signature throws doesn't throw (both cases)
+        DSATest("DSABadY64.xml", true, false, false, false);
+    }
+
+    void testDSANoY()
+    {
+        // Round trip fails, XmlTooling returns NO public key, Santuario returns NO public key
+        DSATest("DSANoY.xml", true, true, true, true, true);
+    }
+
+    void testDSANullY()
+    {
+        // Round trip fails, XmlTooling returns NO public key, Santuario returns NO public key
+        DSATest("DSANullY.xml", true, true, true, true, true);
     }
 
     void testDSANullJ()
