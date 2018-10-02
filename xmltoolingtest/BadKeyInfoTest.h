@@ -234,6 +234,7 @@ private:
         }
         else {
             TSM_ASSERT("Unable to resolve DSIGKeyInfoList into Credential.", xsecCred.get() != nullptr);
+
             TSM_ASSERT("Expected null Private Key", xsecCred->getPrivateKey() == nullptr);
             TSM_ASSERT("Expected non-null Public Key", xsecCred->getPublicKey() != nullptr);
             TSM_ASSERT_EQUALS("Expected DSA key", xsecCred->getPublicKey()->getKeyType(), XSECCryptoKey::KEY_DSA_PUBLIC);
@@ -400,6 +401,23 @@ public:
         DSATest("DSANullG.xml", true, true, false, true);
     }
 
+    // J:
+    void testDSABadJ()
+    {
+        // Round trip works, Keys returned nothing throws
+        DSATest("DSABadJ.xml", false, false, false, false);
+    }
 
+    void testDSABadJ64()
+    {
+        // Round trip works, Keys returned nothing throws
+        DSATest("DSABadJ64.xml", false, false, false, false);
+    }
+
+    void testDSANullJ()
+    {
+        // Round trip works (xsec), XmlTooling returns NO public key, Santuario returns a public key, verifyBase64Signature doesn't throw (xsec)
+        DSATest("DSANullJ.xml", false, true, false, false);
+    }
 
 };
