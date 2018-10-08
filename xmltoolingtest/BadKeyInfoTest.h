@@ -419,5 +419,59 @@ public:
         // Round trip works (xsec), XmlTooling returns NO public key, Santuario returns a public key, verifyBase64Signature doesn't throw (xsec)
         DSATest("DSANullJ.xml", false, true, false, false);
     }
+    
+    // Seed: counter
+    void testDSASeedCounter()
+    {
+	// Works
+	DSATest("DSASeedCounter.xml", false , false, false, false);
+    }
 
+    void testDSABadSeedCounter()
+    {
+	// Works
+	DSATest("DSABadSeedCounter.xml", false, false, false, false);
+    }
+
+    void testDSABadSeedCounter64()
+    {
+	// Works
+	DSATest("DSABadSeedCounter64.xml", false, false, false, false);
+    }
+
+    void testDSABadSeed()
+    {
+	// Works
+	DSATest("DSABadSeed.xml", false, false, false, false);
+    }
+
+    void testDSANoSeed()
+    {
+	// Works
+	DSATest("DSANoSeed.xml", false, true, false, false);
+    }
+
+    void testDSANullSeed()
+    {
+	// Works
+	DSATest("DSANullSeed.xml", false, true, false, false);
+    }
+
+    void testDSABadCounter()
+    {
+	// Works
+	DSATest("DSABadCounter.xml", false, false, false, false);
+    }
+
+    void testDSANoCounter()
+    {
+	// Works xsec, No XMLTooling Key
+	DSATest("DSANoCounter.xml", false, true, false, false);
+    }
+
+    void testDSANullCounter()
+    {
+	// Works xsec, No XMLTooling Key
+	DSATest("DSANullCounter.xml", false, true, false, false);
+    }
 };
