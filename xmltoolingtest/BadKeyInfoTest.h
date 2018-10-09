@@ -254,57 +254,119 @@ private:
         }
     }
 
+#ifdef XSEC_OPENSSL_HAVE_EC
+
+    void ECTest(const char* file, bool roundTripFails, bool xsecLoadThrows, bool resolveFails)
+    {
+
+        string path = data_path + file;
+        ifstream fs(path.c_str());
+        ParserPool& parser = XMLToolingConfig::getConfig().getParser();
+        DOMDocument* doc = parser.parse(fs);
+
+        TS_ASSERT(doc != nullptr);
+
+        const XMLObjectBuilder* b = XMLObjectBuilder::getBuilder(doc->getDocumentElement());
+        TS_ASSERT(b != nullptr);
+        const scoped_ptr<KeyInfo> kiObject(dynamic_cast<KeyInfo*>(b->buildFromDocument(doc)));
+        TS_ASSERT(kiObject.get() != nullptr);
+
+        const scoped_ptr<const XSECEnv> env(new XSECEnv(doc));
+        const scoped_ptr<DSIGKeyInfoList> xencKey(new DSIGKeyInfoList(env.get()));
+        if (xsecLoadThrows) {
+            TSM_ASSERT_THROWS("Bad EC key throws during load", xencKey->loadListFromXML(doc->getDocumentElement()), XSECException);
+        }
+        else {
+            xencKey->loadListFromXML(doc->getDocumentElement());
+            const scoped_ptr<X509Credential> xsecCred(dynamic_cast<X509Credential*>(m_resolver->resolve(xencKey.get())));
+            if (resolveFails) {
+                TSM_ASSERT("XsecCred was non null", xsecCred.get() == nullptr)
+            }
+            else {
+                TSM_ASSERT("Unable to resolve DSIGKeyInfoList into Credential.", xsecCred.get() != nullptr);
+
+                TSM_ASSERT("Expected null Private Key", xsecCred->getPrivateKey() == nullptr);
+                TSM_ASSERT("Expected non-null Public Key", xsecCred->getPublicKey() != nullptr);
+                TSM_ASSERT_EQUALS("Expected EC key", xsecCred->getPublicKey()->getKeyType(), XSECCryptoKey::KEY_EC_PUBLIC);
+                const OpenSSLCryptoKeyEC* xsecKeyInfoEC = dynamic_cast<const OpenSSLCryptoKeyEC*>(xsecCred->getPublicKey());
+                bool xsecWorked = xsecKeyInfoEC->verifyBase64SignatureDSA(m_toSign, 20, m_outSigEC, m_sigLenEC);
+                if (roundTripFails) {
+                    TSM_ASSERT("Round trip KeyInfo EC worked (xsec)", !xsecWorked);
+                }
+                else {
+                    TSM_ASSERT("Round trip KeyInfo EC failed (xsec)", xsecWorked);
+                }
+            }
+        }
+        const scoped_ptr<X509Credential> toolingCred(dynamic_cast<X509Credential*>(m_resolver->resolve(kiObject.get())));
+        if (resolveFails) {
+            TSM_ASSERT("ToolCred was non null", toolingCred.get() == nullptr)
+        }
+        else {
+            TSM_ASSERT("Unable to resolve KeyInfo into Credential.", toolingCred.get() != nullptr);
+            TSM_ASSERT("Expected null Private Key", toolingCred->getPrivateKey() == nullptr);
+            TSM_ASSERT("Expected non-null Public Key", toolingCred->getPublicKey() != nullptr);
+            TSM_ASSERT_EQUALS("Expected EC key", toolingCred->getPublicKey()->getKeyType(), XSECCryptoKey::KEY_EC_PUBLIC);
+            const OpenSSLCryptoKeyEC* toolingKeyInfoEC = dynamic_cast<const OpenSSLCryptoKeyEC*>(toolingCred->getPublicKey());
+            bool toolingWorked = toolingKeyInfoEC->verifyBase64SignatureDSA(m_toSign, 20, m_outSigEC, m_sigLenEC);
+            if (roundTripFails) {
+                TSM_ASSERT("Round trip KeyInfo EC worked (tooling)", !toolingWorked);
+            }
+            else {
+                TSM_ASSERT("Round trip KeyInfo EC failed (tooling)", toolingWorked);
+            }
+        }
+    }
+#endif
 
 public:
-
     void testRSABadMod()
     {
-        // Encryption Throws, but keys are present
-        RSATest("RSABadMod.xml", true, false);
+	// Encryption Throws, but keys are present
+	RSATest("RSABadMod.xml", true, false);
     }
 
     void testRSABadMod64()
     {
-        // Encryption Throws, but keys are present
-        RSATest("RSABadMod64.xml", true, false);
+	// Encryption Throws, but keys are present
+	RSATest("RSABadMod64.xml", true, false);
     }
 
     void testRSABadExp()
     {
-        // Encryption "works", and keys are present
-        RSATest("RSABadExp.xml", false, false);
+	// Encryption "works", and keys are present
+	RSATest("RSABadExp.xml", false, false);
     }
 
     void testRSABadExp64()
     {
-        // Encryption "works", and keys are present
-        RSATest("RSABadExp64.xml", false, false);
+	// Encryption "works", and keys are present
+	RSATest("RSABadExp64.xml", false, false);
     }
 
     void testRSANullMod()
     {
-        // Encryption throws, no keys
-        RSATest("RSANullMod.xml", true, true);
+	// Encryption throws, no keys
+	RSATest("RSANullMod.xml", true, true);
     }
 
     void testRSANullExp()
     {
-        // Encryption throws, no keys
-        RSATest("RSANullExp.xml", true, true);
+	// Encryption throws, no keys
+	RSATest("RSANullExp.xml", true, true);
     }
 
     void testRSANullBoth()
     {
-        // Encryption throws, no keys
-        RSATest("RSANullBoth.xml", true, true);
+	// Encryption throws, no keys
+	RSATest("RSANullBoth.xml", true, true);
     }
 
     void testRSAEmpty()
     {
-        // Encryption throws, no keys
-        RSATest("RSAEmpty.xml", true, true);
+	// Encryption throws, no keys
+	RSATest("RSAEmpty.xml", true, true);
     }
-
     // DSA
 
     void testDSAGood()
@@ -474,4 +536,55 @@ public:
 	// Works xsec, No XMLTooling Key
 	DSATest("DSANullCounter.xml", false, true, false, false);
     }
+
+#ifdef XSEC_OPENSSL_HAVE_EC
+    void testECGood()
+    {
+        // Works !  All keys available, no exceptions, no failures
+        ECTest("KeyInfoEC.xml", false, false, false);
+    }
+
+    void testECBadKey()
+    {
+        // Fails, No exception from santuario Load, but resolve fails
+        ECTest("ECBadKey.xml", false, false, true);
+    }
+
+    void testECBadKey64()
+    {
+        // Fails, No exception from santuario Load, but resolve fails
+        ECTest("ECBadKey.xml", false, false, true);
+    }
+
+    void testECNullKey()
+    {
+        // Fails, Exception from santuario Load and Shib resolve fails
+        ECTest("ECNullKey.xml", false, true, true);
+    }
+
+    void testECNoKey()
+    {
+        // Fails, Exception from santuario Load and Shib resolve fails
+        ECTest("ECNoKey.xml", false, true, true);
+    }
+
+    void testECBadCurve()
+    {
+        // Fails, No exception from santuario Load, but resolve fails
+        ECTest("ECBadCurve.xml", false, false, true);
+    }
+
+    void testECNullCurve()
+    {
+        // Fails, No exception from santuario Load, but resolve fails
+        ECTest("ECNullCurve.xml", false, false, true);
+    }
+
+    void testECNoCurve()
+    {
+        // Fails, Exception from santuario Load and Shib resolve fails
+        ECTest("ECNoCurve.xml", false, true, true);
+    }
+
+#endif
 };
