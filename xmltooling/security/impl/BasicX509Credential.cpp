@@ -220,93 +220,118 @@ unsigned int BasicX509Credential::getUsage() const
 
 const char* BasicX509Credential::getAlgorithm() const
 {
-    if (m_key) {
-        switch (m_key->getKeyType()) {
-            case XSECCryptoKey::KEY_RSA_PRIVATE:
-            case XSECCryptoKey::KEY_RSA_PUBLIC:
-            case XSECCryptoKey::KEY_RSA_PAIR:
-                return "RSA";
+    XSECCryptoKey::KeyType type = m_key ? m_key->getKeyType() : XSECCryptoKey::KEY_NONE;
 
-            case XSECCryptoKey::KEY_DSA_PRIVATE:
-            case XSECCryptoKey::KEY_DSA_PUBLIC:
-            case XSECCryptoKey::KEY_DSA_PAIR:
-                return "DSA";
+    switch (type) {
+        case XSECCryptoKey::KEY_RSA_PRIVATE:
+        case XSECCryptoKey::KEY_RSA_PUBLIC:
+        case XSECCryptoKey::KEY_RSA_PAIR:
+            return "RSA";
 
-            case XSECCryptoKey::KEY_EC_PRIVATE:
-            case XSECCryptoKey::KEY_EC_PUBLIC:
-            case XSECCryptoKey::KEY_EC_PAIR:
-                return "EC";
+        case XSECCryptoKey::KEY_DSA_PRIVATE:
+        case XSECCryptoKey::KEY_DSA_PUBLIC:
+        case XSECCryptoKey::KEY_DSA_PAIR:
+            return "DSA";
 
-            case XSECCryptoKey::KEY_HMAC:
-                return "HMAC";
+        case XSECCryptoKey::KEY_EC_PRIVATE:
+        case XSECCryptoKey::KEY_EC_PUBLIC:
+        case XSECCryptoKey::KEY_EC_PAIR:
+            return "EC";
 
-            case XSECCryptoKey::KEY_SYMMETRIC: {
-                switch (static_cast<XSECCryptoSymmetricKey*>(m_key.get())->getSymmetricKeyType()) {
-                    case XSECCryptoSymmetricKey::KEY_3DES_192:
-                        return "DESede";
-                    case XSECCryptoSymmetricKey::KEY_AES_128:
-                        return "AES";
-                    case XSECCryptoSymmetricKey::KEY_AES_192:
-                        return "AES";
-                    case XSECCryptoSymmetricKey::KEY_AES_256:
-                        return "AES";
-                }
+        case XSECCryptoKey::KEY_HMAC:
+            return "HMAC";
+
+        case XSECCryptoKey::KEY_SYMMETRIC:
+        {
+            switch (static_cast<XSECCryptoSymmetricKey*>(m_key.get())->getSymmetricKeyType()) {
+                case XSECCryptoSymmetricKey::KEY_3DES_192:
+                    return "DESede";
+                case XSECCryptoSymmetricKey::KEY_AES_128:
+                    return "AES";
+                case XSECCryptoSymmetricKey::KEY_AES_192:
+                    return "AES";
+                case XSECCryptoSymmetricKey::KEY_AES_256:
+                    return "AES";
+
+                default:
+                    return nullptr;
             }
         }
+
+        default:
+            return nullptr;
     }
-    return nullptr;
 }
 
 unsigned int BasicX509Credential::getKeySize() const
 {
-    if (m_key) {
-        switch (m_key->getKeyType()) {
-            case XSECCryptoKey::KEY_RSA_PRIVATE:
-            case XSECCryptoKey::KEY_RSA_PUBLIC:
-            case XSECCryptoKey::KEY_RSA_PAIR: {
-                XSECCryptoKeyRSA* rkey = static_cast<XSECCryptoKeyRSA*>(m_key.get());
-                return 8 * rkey->getLength();
-            }
+    XSECCryptoKey::KeyType type = m_key ? m_key->getKeyType() : XSECCryptoKey::KEY_NONE;
 
-            case XSECCryptoKey::KEY_SYMMETRIC: {
-                switch (static_cast<XSECCryptoSymmetricKey*>(m_key.get())->getSymmetricKeyType()) {
-                    case XSECCryptoSymmetricKey::KEY_3DES_192:
-                        return 192;
-                    case XSECCryptoSymmetricKey::KEY_AES_128:
-                        return 128;
-                    case XSECCryptoSymmetricKey::KEY_AES_192:
-                        return 192;
-                    case XSECCryptoSymmetricKey::KEY_AES_256:
-                        return 256;
-                }
+    switch (type) {
+        case XSECCryptoKey::KEY_RSA_PRIVATE:
+        case XSECCryptoKey::KEY_RSA_PUBLIC:
+        case XSECCryptoKey::KEY_RSA_PAIR:
+        {
+            XSECCryptoKeyRSA* rkey = static_cast<XSECCryptoKeyRSA*>(m_key.get());
+            return 8 * rkey->getLength();
+        }
+
+        case XSECCryptoKey::KEY_SYMMETRIC:
+        {
+            switch (static_cast<XSECCryptoSymmetricKey*>(m_key.get())->getSymmetricKeyType()) {
+                case XSECCryptoSymmetricKey::KEY_3DES_192:
+                    return 192;
+                case XSECCryptoSymmetricKey::KEY_AES_128:
+                    return 128;
+                case XSECCryptoSymmetricKey::KEY_AES_192:
+                    return 192;
+                case XSECCryptoSymmetricKey::KEY_AES_256:
+                    return 256;
+
+                default:
+                    return 0;
             }
         }
+
+        default:
+            return 0;
     }
-    return 0;
 }
 
 const XSECCryptoKey* BasicX509Credential::getPrivateKey() const
 {
-    if (m_key) {
-        XSECCryptoKey::KeyType type = m_key->getKeyType();
-        if (type != XSECCryptoKey::KEY_RSA_PUBLIC
-            && type != XSECCryptoKey::KEY_DSA_PUBLIC
-            && type != XSECCryptoKey::KEY_EC_PUBLIC)
+    XSECCryptoKey::KeyType type = m_key ? m_key->getKeyType() : XSECCryptoKey::KEY_NONE;
+
+    switch(type) {
+        case XSECCryptoKey::KEY_RSA_PRIVATE:
+        case XSECCryptoKey::KEY_DSA_PRIVATE:
+        case XSECCryptoKey::KEY_EC_PRIVATE:
+        case XSECCryptoKey::KEY_RSA_PAIR:
+        case XSECCryptoKey::KEY_DSA_PAIR:
+        case XSECCryptoKey::KEY_EC_PAIR:
             return m_key.get();
+
+        default:
+            return nullptr;
     }
-    return nullptr;
 }
 
 const XSECCryptoKey* BasicX509Credential::getPublicKey() const
 {
-    if (m_key) {
-        XSECCryptoKey::KeyType type = m_key->getKeyType();
-        if (type != XSECCryptoKey::KEY_RSA_PRIVATE
-            && type != XSECCryptoKey::KEY_DSA_PRIVATE
-            && type != XSECCryptoKey::KEY_EC_PRIVATE)
+    XSECCryptoKey::KeyType type = m_key ? m_key->getKeyType() : XSECCryptoKey::KEY_NONE;
+
+    switch(type) {
+        case XSECCryptoKey::KEY_RSA_PUBLIC:
+        case XSECCryptoKey::KEY_DSA_PUBLIC:
+        case XSECCryptoKey::KEY_EC_PUBLIC:
+        case XSECCryptoKey::KEY_RSA_PAIR:
+        case XSECCryptoKey::KEY_DSA_PAIR:
+        case XSECCryptoKey::KEY_EC_PAIR:
             return m_key.get();
+
+        default:
+            return nullptr;
     }
-    return nullptr;
 }
 
 const set<string>& BasicX509Credential::getKeyNames() const
