@@ -5,8 +5,6 @@ AC_CONFIG_SRCDIR(xmltooling)
 AC_CONFIG_AUX_DIR(build-aux)
 AC_CONFIG_MACRO_DIR(m4)
 AM_INIT_AUTOMAKE([foreign dist-bzip2 dist-zip subdir-objects nostdinc])
-AC_DISABLE_STATIC
-AC_PROG_LIBTOOL
 PKG_INSTALLDIR
 
 # Doxygen features
@@ -22,15 +20,12 @@ DX_PS_FEATURE(OFF)
 DX_INIT_DOXYGEN(xmltooling, doxygen.cfg, doc/api)
 
 AC_ARG_ENABLE(debug,
-    AS_HELP_STRING([--enable-debug],[Have GCC compile with symbols (Default = no)]),
+    AS_HELP_STRING([--enable-debug],[Produce debug variant (Default = no)]),
     enable_debug=$enableval, enable_debug=no)
 
 if test "$enable_debug" = "yes" ; then
-    GCC_CFLAGS="$CFLAGS -g -D_DEBUG"
-    GCC_CXXFLAGS="$CXXFLAGS -g -D_DEBUG"
-else
-    GCC_CFLAGS="$CFLAGS -O2 -DNDEBUG"
-    GCC_CXXFLAGS="$CXXFLAGS -O2 -DNDEBUG"
+    AM_CFLAGS="-D_DEBUG"
+    AM_CXXFLAGS="-D_DEBUG"
 fi
 
 AC_CONFIG_HEADERS([config.h xmltooling/config_pub.h])
@@ -39,31 +34,16 @@ AC_CONFIG_FILES([Makefile xmltooling/Makefile xmltoolingtest/Makefile schemas/Ma
 
 AC_PROG_CC([gcc gcc3 cc])
 AC_PROG_CXX([g++ g++3 c++ CC])
-AC_CANONICAL_HOST
 
 if test "$GCC" = "yes" ; then
-#    AC_HAVE_GCC_VERSION(4,0,0,0,
-#        [
-#        AC_DEFINE(GCC_HASCLASSVISIBILITY,1,
-#            [Define to enable class visibility control in gcc.])
-#        GCC_CFLAGS="$GCC_CFLAGS -fvisibility=hidden -fvisibility-inlines-hidden"
-#        GCC_CXXFLAGS="$GCC_CXXFLAGS -fvisibility=hidden -fvisibility-inlines-hidden"
-#        ])
-    CFLAGS="-Wall $GCC_CFLAGS"
-    CXXFLAGS="-Wall $GCC_CXXFLAGS"
+    AM_CFLAGS="$AM_CFLAGS -Wall -W"
+    AM_CXXFLAGS="$AM_CXXFLAGS -Wall -W"
 fi
 
-# Fix for Sun Workshop compiler in debug mode, may be Sun case #6360993
-# Also enables POSIX semantics for some functions.
-case "${host_cpu}-${host_os}" in
-    *solaris*)
-	CFLAGS="$CFLAGS -D_POSIX_PTHREAD_SEMANTICS"
-	CXXFLAGS="$CXXFLAGS -D_POSIX_PTHREAD_SEMANTICS"
-	if test "$CXX" = "CC" ; then
-		CXXFLAGS="$CXXFLAGS -Qoption ccfe -stabs=no%dfltlit+no%dflthlp"
-	fi
-    ;;
-esac
+AC_SUBST([AM_CFLAGS])
+AC_SUBST([AM_CXXFLAGS])
+
+LT_INIT([disable-static])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
