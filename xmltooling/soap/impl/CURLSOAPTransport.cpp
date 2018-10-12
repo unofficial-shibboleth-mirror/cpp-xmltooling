@@ -731,7 +731,6 @@ int xmltooling::verify_callback(X509_STORE_CTX* x509_ctx, void* arg)
     }
 
     if (!success) {
-        log.error("supplied TrustEngine failed to validate SSL/TLS server certificate");
         if (X509_STORE_CTX_get0_cert(x509_ctx)) {
             BIO* b = BIO_new(BIO_s_mem());
             X509_print(b, X509_STORE_CTX_get0_cert(x509_ctx));
@@ -739,10 +738,14 @@ int xmltooling::verify_callback(X509_STORE_CTX* x509_ctx, void* arg)
             BIO_get_mem_ptr(b, &bptr);
             if (bptr && bptr->length > 0) {
                 string s(bptr->data, bptr->length);
-                if (ctx->m_mandatory)
+                if (ctx->m_mandatory) {
+                    log.error("supplied TrustEngine failed to validate SSL/TLS server certificate");
                     log.error(s);
-                else
+                }
+                else {
+                    log.debug("supplied TrustEngine failed to validate SSL/TLS server certificate");
                     log.debug(s);
+                }
             }
             BIO_free(b);
         }
