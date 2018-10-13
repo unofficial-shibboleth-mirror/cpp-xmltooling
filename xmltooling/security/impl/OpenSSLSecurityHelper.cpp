@@ -50,7 +50,7 @@ bool OpenSSLSecurityHelper::matchesPublic(const RSA* rsa, const XSECCryptoKey& k
         return false;
 
     const RSA* rsa1 = static_cast<const OpenSSLCryptoKeyRSA&>(key).getOpenSSLRSA();
-    return (rsa1 && rsa && BN_cmp(RSA_get0_n(rsa1), RSA_get0_n(rsa)) == 0 && BN_cmp(RSA_get0_e(rsa1), RSA_get0_e(rsa)) == 0);
+    return (rsa1 && rsa && BN_cmp(xmltooling::RSA_get0_n(rsa1), xmltooling::RSA_get0_n(rsa)) == 0 && BN_cmp(xmltooling::RSA_get0_e(rsa1), xmltooling::RSA_get0_e(rsa)) == 0);
 }
 bool OpenSSLSecurityHelper::matchesPrivate(const RSA* rsa, const XSECCryptoKey& key)
 {
@@ -59,7 +59,7 @@ bool OpenSSLSecurityHelper::matchesPrivate(const RSA* rsa, const XSECCryptoKey& 
         return false;
 
     const RSA* rsa2 = static_cast<const OpenSSLCryptoKeyRSA&>(key).getOpenSSLRSA();
-    return (rsa && rsa2 && BN_cmp(RSA_get0_n(rsa), RSA_get0_n(rsa2)) == 0 && BN_cmp(RSA_get0_d(rsa), RSA_get0_d(rsa2)) == 0);
+    return (rsa && rsa2 && BN_cmp(xmltooling::RSA_get0_n(rsa), xmltooling::RSA_get0_n(rsa2)) == 0 && BN_cmp(xmltooling::RSA_get0_d(rsa), xmltooling::RSA_get0_d(rsa2)) == 0);
 }
 bool OpenSSLSecurityHelper::matchesPublic(const DSA* dsa, const XSECCryptoKey& key)
 {

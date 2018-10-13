@@ -73,10 +73,12 @@ const BIGNUM *xmltooling::DSA_get0_pubkey(const DSA *dsa)
 {
 #if (OPENSSL_VERSION_NUMBER < 0x10100000L)
     return dsa->pub_key;
-#else
+#elif (OPENSSL_VERSION_NUMBER  < 0x10101000L)
     const BIGNUM *result;
     DSA_get0_key(dsa, &result, NULL);
     return result;
+#else
+    return ::DSA_get0_pub_key(dsa);
 #endif
 }
 
@@ -84,10 +86,12 @@ const BIGNUM *xmltooling::DSA_get0_privkey(const DSA *dsa)
 {
 #if (OPENSSL_VERSION_NUMBER < 0x10100000L)
     return dsa->priv_key;
-#else
+#elif (OPENSSL_VERSION_NUMBER  < 0x10101000L)
     const BIGNUM *result;
     DSA_get0_key(dsa, NULL, &result);
     return result;
+#else
+    return ::DSA_get0_priv_key(dsa);
 #endif
 }
 
@@ -95,10 +99,12 @@ const BIGNUM *xmltooling::RSA_get0_n(const RSA *rsa)
 {
 #if (OPENSSL_VERSION_NUMBER < 0x10100000L)
     return rsa->n;
-#else
+#elif (OPENSSL_VERSION_NUMBER  < 0x10101000L)
     const BIGNUM *result;
     RSA_get0_key(rsa, &result, NULL, NULL);
     return result;
+#else
+    return ::RSA_get0_n(rsa);
 #endif
 }
 
@@ -106,10 +112,12 @@ const BIGNUM *xmltooling::RSA_get0_e(const RSA *rsa)
 {
 #if (OPENSSL_VERSION_NUMBER < 0x10100000L)
     return rsa->e;
-#else
+#elif (OPENSSL_VERSION_NUMBER  < 0x10101000L)
     const BIGNUM *result;
     RSA_get0_key(rsa, NULL, &result, NULL);
     return result;
+#else
+    return ::RSA_get0_e(rsa);
 #endif
 }
 
@@ -117,9 +125,11 @@ const BIGNUM *xmltooling::RSA_get0_d(const RSA *rsa)
 {
 #if (OPENSSL_VERSION_NUMBER < 0x10100000L)
     return rsa->d;
-#else
+#elif (OPENSSL_VERSION_NUMBER  < 0x10101000L)
     const BIGNUM *result;
     RSA_get0_key(rsa, NULL, NULL, &result);
     return result;
+#else
+    return ::RSA_get0_d(rsa);
 #endif
 }
