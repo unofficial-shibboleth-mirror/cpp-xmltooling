@@ -319,6 +319,35 @@ private:
     }
 #endif
 
+    void DERTest(const char* file, bool xsecLoadThrows)
+    {
+
+	string path = data_path + file;
+	ifstream fs(path.c_str());
+	ParserPool& parser = XMLToolingConfig::getConfig().getParser();
+	DOMDocument* doc = parser.parse(fs);
+
+	TS_ASSERT(doc != nullptr);
+
+	const XMLObjectBuilder* b = XMLObjectBuilder::getBuilder(doc->getDocumentElement());
+	TS_ASSERT(b != nullptr);
+	const scoped_ptr<KeyInfo> kiObject(dynamic_cast<KeyInfo*>(b->buildFromDocument(doc)));
+	TS_ASSERT(kiObject.get() != nullptr);
+
+	const scoped_ptr<const XSECEnv> env(new XSECEnv(doc));
+	const scoped_ptr<DSIGKeyInfoList> xencKey(new DSIGKeyInfoList(env.get()));
+	if (xsecLoadThrows) {
+	    TSM_ASSERT_THROWS("Bad EC key throws during load", xencKey->loadListFromXML(doc->getDocumentElement()), XSECException);
+	}
+	else {
+	    xencKey->loadListFromXML(doc->getDocumentElement());
+	    const scoped_ptr<X509Credential> xsecCred(dynamic_cast<X509Credential*>(m_resolver->resolve(xencKey.get())));
+	    TSM_ASSERT("XsecCred was non null", xsecCred.get() == nullptr)
+	}
+	const scoped_ptr<X509Credential> toolingCred(dynamic_cast<X509Credential*>(m_resolver->resolve(kiObject.get())));
+	TSM_ASSERT("ToolCred was non null", toolingCred.get() == nullptr)
+    }
+
 public:
     void testRSABadMod()
     {
@@ -612,4 +641,19 @@ public:
     }
 
 #endif
+
+    void testDERBad()
+    {
+	DERTest("DERValueBad.xml", false);
+    }
+
+    void testDERBad64()
+    {
+	DERTest("DERValueBad64.xml", false);
+    }
+
+    void testDERNull()
+    {
+	DERTest("DERValueNull.xml", true);
+    }
 };

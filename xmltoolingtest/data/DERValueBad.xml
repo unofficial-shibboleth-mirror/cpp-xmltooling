@@ -1,0 +1,3 @@
+<ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:ds11="http://www.w3.org/2009/xmldsig11#">
+  <ds11:DEREncodedKeyValue>INVALID</ds11:DEREncodedKeyValue>
+</ds:KeyInfo>
