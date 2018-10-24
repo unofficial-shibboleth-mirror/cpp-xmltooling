@@ -316,8 +316,31 @@ private:
             }
         }
     }
+
+    void ECTestParam(const char* file)
+    {
+	string path = data_path + file;
+	ifstream fs(path.c_str());
+	ParserPool& parser = XMLToolingConfig::getConfig().getValidatingParser();
+	DOMDocument* doc = parser.parse(fs);
+
+	TS_ASSERT(doc != nullptr);
+
+	const XMLObjectBuilder* b = XMLObjectBuilder::getBuilder(doc->getDocumentElement());
+	TS_ASSERT(b != nullptr);
+	const scoped_ptr<KeyInfo> kiObject(dynamic_cast<KeyInfo*>(b->buildFromDocument(doc)));
+	TS_ASSERT(kiObject.get() != nullptr);
+
+	const scoped_ptr<const XSECEnv> env(new XSECEnv(doc));
+	const scoped_ptr<DSIGKeyInfoList> xencKey(new DSIGKeyInfoList(env.get()));
+	TSM_ASSERT_THROWS("Bad EC key throws during load", xencKey->loadListFromXML(doc->getDocumentElement()), XSECException);
+	const scoped_ptr<X509Credential> toolingCred(dynamic_cast<X509Credential*>(m_resolver->resolve(kiObject.get())));
+	TSM_ASSERT("ToolCred was non null", toolingCred.get() == nullptr)
+    }
+
 #else
-#define ECTest(msg, a, b, c) return
+#define ECTest(file, a, b, c) return
+#define ECTestParam(file) return
 #endif
 
     void DERTest(const char* file, bool xsecLoadThrows)
@@ -325,7 +348,7 @@ private:
 
 	string path = data_path + file;
 	ifstream fs(path.c_str());
-	ParserPool& parser = XMLToolingConfig::getConfig().getParser();
+	ParserPool& parser = XMLToolingConfig::getConfig().getValidatingParser();
 	DOMDocument* doc = parser.parse(fs);
 
 	TS_ASSERT(doc != nullptr);
@@ -638,6 +661,32 @@ public:
     {
         // Fails, Exception from santuario Load and Shib resolve fails
         ECTest("ECNoCurve.xml", false, true, true);
+    }
+
+    void testECParamPrime()
+    {
+	ECTestParam("ECParamPrime.xml");
+    }
+
+    void testECParamNone()
+    {
+	ECTestParam("ECParamNone.xml");
+    }
+
+
+    void testECParamPnB()
+    {
+	ECTestParam("ECParamPnB.xml");
+    }
+
+    void testECParamTnb()
+    {
+	ECTestParam("ECParamTnB.xml");
+    }
+
+    void testECParamGnB()
+    {
+	ECTestParam("ECParamGnB.xml");
     }
 
     void testDERBad()

@@ -1,0 +1,25 @@
+<ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:ds11="http://www.w3.org/2009/xmldsig11#">
+    <ds:KeyValue>
+        <ds11:ECKeyValue>
+            <ds11:ECParameters>
+              <ds11:FieldID>
+                <ds11:Prime>
+                  <ds11:P>BAYIncGnewJiUxZdqjsBiRpzGGnXTQWSZFUxkVPmPr25FH1ckqX+2xiYsA==</ds11:P>
+                </ds11:Prime>
+              </ds11:FieldID>
+              <ds11:Curve>
+                <ds11:A>0</ds11:A>
+                <ds11:B>7</ds11:B>
+              </ds11:Curve>
+              <ds11:Base>BAYIncGnewJiUxZdqjsBiRpzGGnXTQWSZFUxkVPmPr25FH1ckqX+2xiYsA==</ds11:Base>
+              <ds11:Order>BAYIncGnewJiUxZdqjsBiRpzGGnXTQWSZFUxkVPmPr25FH1ckqX+2xiYsA==</ds11:Order>
+              <ds11:CoFactor>3</ds11:CoFactor>
+              <ds11:ValidationData hashAlgorithm="https://example.org">
+                <ds11:seed>123</ds11:seed>
+              </ds11:ValidationData>
+            </ds11:ECParameters>
+            <ds11:PublicKey>BAYIncGnewJiUxZdqjsBiRpzGGnXTQWSZFUxkVPmPr25FH1ckqX+2xiYsA==
+            </ds11:PublicKey>
+        </ds11:ECKeyValue>
+    </ds:KeyValue>
+</ds:KeyInfo>

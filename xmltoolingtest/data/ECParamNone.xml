@@ -1,0 +1,9 @@
+<ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:ds11="http://www.w3.org/2009/xmldsig11#">
+    <ds:KeyValue>
+        <ds11:ECKeyValue>
+            <ds11:ECParameters/>
+            <ds11:PublicKey>BAYIncGnewJiUxZdqjsBiRpzGGnXTQWSZFUxkVPmPr25FH1ckqX+2xiYsA==
+            </ds11:PublicKey>
+        </ds11:ECKeyValue>
+    </ds:KeyValue>
+</ds:KeyInfo>
