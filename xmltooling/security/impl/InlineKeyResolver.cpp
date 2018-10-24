@@ -71,6 +71,9 @@ namespace xmltooling {
         }
 
         KeyInfo* getKeyInfo(bool compact=false) const {
+            if (!m_credctx)
+                return nullptr;
+
             KeyInfo* ret = m_credctx->getKeyInfo() ? m_credctx->getKeyInfo()->cloneKeyInfo() : nullptr;
             if (ret) {
                 ret->setId(nullptr);
