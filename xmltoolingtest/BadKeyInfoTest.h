@@ -54,7 +54,6 @@ extern "C" {
 using namespace xmlsignature;
 using namespace xmlencryption;
 
-
 class BadKeyInfoTest : public CxxTest::TestSuite {
 private:
 #define SIGBUFFER_SIZE 1024
@@ -110,7 +109,7 @@ public:
                 bool worked = fileResolverCryptoKeyEC->verifyBase64SignatureDSA(m_toSign, 20, m_outSigEC, m_sigLenEC);
                 TSM_ASSERT("EC Round Trip SignatureFailed", worked);
 #else
-                m_m_sigLenEC = 1;
+                m_sigLenEC = 1;
 #endif
             }
         }
@@ -317,6 +316,8 @@ private:
             }
         }
     }
+#else
+#define ECTest(msg, a, b, c) return
 #endif
 
     void DERTest(const char* file, bool xsecLoadThrows)
@@ -591,7 +592,6 @@ public:
 	DSATest("DSANullCounter.xml", false, true, false, false);
     }
 
-#ifdef XSEC_OPENSSL_HAVE_EC
     void testECGood()
     {
         // Works !  All keys available, no exceptions, no failures
@@ -639,8 +639,6 @@ public:
         // Fails, Exception from santuario Load and Shib resolve fails
         ECTest("ECNoCurve.xml", false, true, true);
     }
-
-#endif
 
     void testDERBad()
     {
