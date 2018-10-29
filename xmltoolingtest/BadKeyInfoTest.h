@@ -63,11 +63,13 @@ private:
     char m_outSigEC[SIGBUFFER_SIZE] = { 0 };
     unsigned int m_sigLenDSA;
     unsigned int m_sigLenEC;
+    string keyInfoPath;
 
 public:
     BadKeyInfoTest() : m_resolver(nullptr), m_sigLenDSA(0), m_sigLenEC(0) {}
 
     void setUp() {
+	keyInfoPath = data_path + "BadKeyInfo/";
         string config = data_path + "InlineKeyResolver.xml";
         ifstream in(config.c_str());
         DOMDocument* doc = XMLToolingConfig::getConfig().getParser().parse(in);
@@ -124,7 +126,7 @@ public:
 private:
     void RSATest(const char* file, bool encryptionThrows, bool nullKeys) {
 
-        string path = data_path + file;
+        string path = keyInfoPath + file;
         ifstream fs(path.c_str());
         ParserPool& parser = XMLToolingConfig::getConfig().getParser();
         DOMDocument* doc = parser.parse(fs);
@@ -185,7 +187,7 @@ private:
 
     void DSATest(const char* file, bool roundTripFails, bool nullTooling, bool nullXsec, bool verifyThrows, bool keyTypeNone = false) {
 
-        string path = data_path + file;
+        string path = keyInfoPath + file;
         ifstream fs(path.c_str());
         ParserPool& parser = XMLToolingConfig::getConfig().getParser();
         DOMDocument* doc = parser.parse(fs);
@@ -258,7 +260,7 @@ private:
     void ECTest(const char* file, bool roundTripFails, bool xsecLoadThrows, bool resolveFails)
     {
 
-        string path = data_path + file;
+        string path = keyInfoPath + file;
         ifstream fs(path.c_str());
         ParserPool& parser = XMLToolingConfig::getConfig().getParser();
         DOMDocument* doc = parser.parse(fs);
@@ -319,7 +321,7 @@ private:
 
     void ECTestParam(const char* file)
     {
-	string path = data_path + file;
+	string path = keyInfoPath + file;
 	ifstream fs(path.c_str());
 	ParserPool& parser = XMLToolingConfig::getConfig().getValidatingParser();
 	DOMDocument* doc = parser.parse(fs);
@@ -346,7 +348,7 @@ private:
     void DERTest(const char* file, bool xsecLoadThrows)
     {
 
-	string path = data_path + file;
+	string path = keyInfoPath + file;
 	ifstream fs(path.c_str());
 	ParserPool& parser = XMLToolingConfig::getConfig().getValidatingParser();
 	DOMDocument* doc = parser.parse(fs);
@@ -425,7 +427,7 @@ public:
     void testDSAGood()
     {
         // Round trip work, XmlTooling returns a public key, Santuario returns a public key, verifyBase64Signature doesn't throw (both cases)
-        DSATest("KeyInfoDSA.xml", false, false, false, false);
+        DSATest("../KeyInfoDSA.xml", false, false, false, false);
     }
 
     // P: tests
@@ -618,7 +620,7 @@ public:
     void testECGood()
     {
         // Works !  All keys available, no exceptions, no failures
-        ECTest("KeyInfoEC.xml", false, false, false);
+        ECTest("../KeyInfoEC.xml", false, false, false);
     }
 
     void testECBadKey()
