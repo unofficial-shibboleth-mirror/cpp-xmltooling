@@ -1,0 +1,9 @@
+<ds:KeyInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://www.w3.org/2000/09/xmldsig# ../../schemas/xmldsig-core-schema.xsd"
+ xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+    <ds:KeyName>Public Key for CN=xmldap.org, OU=Domain Control Validated, O=xmldap.org</ds:KeyName>
+    <ds:X509Data>
+        <ds:X509Certificate/>
+    </ds:X509Data>
+
+</ds:KeyInfo>

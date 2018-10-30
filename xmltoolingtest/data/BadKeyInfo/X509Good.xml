@@ -1,0 +1,23 @@
+<ds:KeyInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://www.w3.org/2000/09/xmldsig# ../../schemas/xmldsig-core-schema.xsd"
+ xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+    <ds:KeyName>Public Key for CN=xmldap.org, OU=Domain Control Validated, O=xmldap.org</ds:KeyName>
+    <ds:X509Data>
+        <ds:X509Certificate>MIIClDCCAlGgAwIBAgIJALnyJ1BTkPBhMAsGCWCGSAFlAwQDAjAxMQswCQYDVQQG
+EwJVSzETMBEGA1UECBMKU29tZS1TdGF0ZTENMAsGA1UEChMEdGVzdDAgFw0xNjEw
+MjQxNTU5NDZaGA8zMDE2MDIyNTE1NTk0NlowMTELMAkGA1UEBhMCVUsxEzARBgNV
+BAgTClNvbWUtU3RhdGUxDTALBgNVBAoTBHRlc3QwgfEwgagGByqGSM44BAEwgZwC
+QQDVRgLTdTMa92ZMSnEKmWjMcNkG63uIxvBvihYXD2CUDY4aWB9jvg1VsdNr1eB/
+cqQpz2gDZLQorSrkEogwPZdVAhUAr9ql8awrmkDiKJrWP2oBHRN1rDUCQA5hEKKP
+mAFTU1BqJHMtZItNVoDH0wbLz6mI0Q83Jhe6eKCfJ3lQp9AffdI7/VvL/IKb8a/s
+OWaUJCcm54CRQI8DRAACQQDCTxcQgfSqenpHTPdB9t87+CTRIZJtalzYseOF3Zei
+AAYBPPepKTcxkAwin+onnDu6F/nkyZdysE96DRPvBEMZo4G1MIGyMB0GA1UdDgQW
+BBSy0QAHIB9quPNjOHpxHhHexNRTWzBhBgNVHSMEWjBYgBSy0QAHIB9quPNjOHpx
+HhHexNRTW6E1pDMwMTELMAkGA1UEBhMCVUsxEzARBgNVBAgTClNvbWUtU3RhdGUx
+DTALBgNVBAoTBHRlc3SCCQC58idQU5DwYTALBgNVHQ8EBAMCBeAwEwYDVR0lBAww
+CgYIKwYBBQUHAwEwDAYDVR0TBAUwAwEB/zALBglghkgBZQMEAwIDMAAwLQIUfPKR
+rqQ3+6LKO7rzK5EX3eps/NoCFQCUJnFAWt1brsfWj/w15nqBYWm7WA==</ds:X509Certificate>
+        <ds:X509CRL/>
+    </ds:X509Data>
+
+</ds:KeyInfo>
