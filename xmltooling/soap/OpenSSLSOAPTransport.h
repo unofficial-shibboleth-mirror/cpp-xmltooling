@@ -58,6 +58,8 @@ namespace xmltooling {
         /**
          * Set an expression identifying the cipher suites to enable using OpenSSL syntax.
          *
+         * <p>Note this does not include TLS 1.3 ciphers.</p>
+         *
          * @param cipherlist cipher suite expression/list
          * @return true iff the ciphers were set
          */
