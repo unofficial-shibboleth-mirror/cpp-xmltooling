@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ds:KeyInfo Id="SOMESTUFF" xmlns:conf="urn:mace:shibboleth:3.0:native:sp:config" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:ex="http://example.org/"  xmlns:ds11="http://www.w3.org/2009/xmldsig11#">
+  <ds11:KeyInfoReference URI="#SOMESTUFF"/>
+</ds:KeyInfo>

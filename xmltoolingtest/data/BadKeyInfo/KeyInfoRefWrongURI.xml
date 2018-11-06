@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:ds11="http://www.w3.org/2009/xmldsig11#" xmlns:test="http://www.example.org/testObjects">
+  <ds11:KeyInfoReference URI="#SOMEOtherSTUFF"/>
+  <test:SimpleElement>
+    <ds:KeyInfo Id="SOMESTUFF">
+      <ds:KeyValue>
+        <ds:DSAKeyValue>
+          <ds:P>ANVGAtN1Mxr3ZkxKcQqZaMxw2Qbre4jG8G+KFhcPYJQNjhpYH2O+DVWx02vV4H9ypCnPaANktCitKuQSiDA9l1U=
+          </ds:P>
+          <ds:Q>AK/apfGsK5pA4iia1j9qAR0Tdaw1
+          </ds:Q>
+          <ds:G>DmEQoo+YAVNTUGokcy1ki01WgMfTBsvPqYjRDzcmF7p4oJ8neVCn0B990jv9W8v8gpvxr+w5ZpQkJybngJFAjw==
+          </ds:G>
+          <ds:Y>AMJPFxCB9Kp6ekdM90H23zv4JNEhkm1qXNix44Xdl6IABgE896kpNzGQDCKf6iecO7oX+eTJl3KwT3oNE+8EQxk=
+          </ds:Y>
+        </ds:DSAKeyValue>
+      </ds:KeyValue>
+    </ds:KeyInfo>
+  </test:SimpleElement>
+</ds:KeyInfo>

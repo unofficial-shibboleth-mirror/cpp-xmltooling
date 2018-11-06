@@ -40,7 +40,8 @@
 
 #ifndef XMLTOOLING_NO_XMLSEC
     #include <xmltooling/signature/Signature.h>
-    using namespace xmlsignature;
+    #include <xmltooling/signature/KeyInfo.h>
+using namespace xmlsignature;
 #endif
 
 #include <boost/scoped_ptr.hpp>
@@ -156,9 +157,12 @@ protected:
             setSignature(sig);
             return;
         }
+        KeyInfo *keyInfo = dynamic_cast<KeyInfo*>(childXMLObject);
+        if (keyInfo)
+            m_children.push_back(childXMLObject);
+        else
 #endif
-
-        throw UnmarshallingException("Unknown child element cannot be added to parent object.");
+            throw UnmarshallingException("Unknown child element cannot be added to parent object.");
     }
 
     void processAttribute(const xercesc::DOMAttr* attribute) {

@@ -16,7 +16,7 @@ $(LocalDebuggerEnvironment)</LocalDebuggerEnvironment>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LocalDebuggerEnvironment>PATH=$(PATH);$(Shibrunpath)
-XMLTOOLING_LOG_CONFIG=DEBUG
+XMLTOOLING_LOG_CONFIG=WARN
 $(LocalDebuggerEnvironment)</LocalDebuggerEnvironment>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerWorkingDirectory>$(ProjectDir)\..\..\..\xmltoolingtest</LocalDebuggerWorkingDirectory>

@@ -59,28 +59,33 @@ private:
 #define SIGBUFFER_SIZE 1024
     KeyInfoResolver* m_resolver;
     unsigned char m_toSign[23] = "Nibble A Happy WartHog";
-    char m_outSigDSA[SIGBUFFER_SIZE] = { 0 };
-    char m_outSigEC[SIGBUFFER_SIZE] = { 0 };
+    char m_outSigDSA[SIGBUFFER_SIZE] ={ 0 };
+    char m_outSigEC[SIGBUFFER_SIZE] ={ 0 };
     unsigned int m_sigLenDSA;
     unsigned int m_sigLenEC;
-    string keyInfoPath;
+    string m_keyInfoPath;
+
+    KeyInfoResolver* getResolver(string fileName) {
+        string config = data_path + fileName;
+        ifstream in(config.c_str());
+        DOMDocument* doc = XMLToolingConfig::getConfig().getParser().parse(in);
+        XercesJanitor<DOMDocument> janitor(doc);
+
+        return XMLToolingConfig::getConfig().KeyInfoResolverManager.newPlugin(
+                        INLINE_KEYINFO_RESOLVER, doc->getDocumentElement(), false
+        );
+    }
 
 public:
     BadKeyInfoTest() : m_resolver(nullptr), m_sigLenDSA(0), m_sigLenEC(0) {}
 
     void setUp() {
-	keyInfoPath = data_path + "BadKeyInfo/";
-        string config = data_path + "InlineKeyResolver.xml";
-        ifstream in(config.c_str());
-        DOMDocument* doc = XMLToolingConfig::getConfig().getParser().parse(in);
-        XercesJanitor<DOMDocument> janitor(doc);
-        m_resolver = XMLToolingConfig::getConfig().KeyInfoResolverManager.newPlugin(
-            INLINE_KEYINFO_RESOLVER, doc->getDocumentElement(), false
-        );
+        m_keyInfoPath = data_path + "BadKeyInfo/";
+        m_resolver = getResolver("InlineKeyResolver.xml");
 
         if (m_sigLenEC == 0 || m_sigLenDSA == 0) {
             // Resolver for DSA and RSA signatures
-            config = data_path + "FilesystemCredentialResolver.xml";
+            const string config = data_path + "FilesystemCredentialResolver.xml";
             ifstream infc(config.c_str());
             DOMDocument* cdoc = XMLToolingConfig::getConfig().getParser().parse(infc);
             XercesJanitor<DOMDocument> cjanitor(cdoc);
@@ -115,18 +120,27 @@ public:
 #endif
             }
         }
-
+        // Marshalling  Setup
+        xmltooling::QName qname(SimpleXMLObject::NAMESPACE, SimpleXMLObject::LOCAL_NAME);
+        xmltooling::QName qtype(SimpleXMLObject::NAMESPACE, SimpleXMLObject::TYPE_NAME);
+        XMLObjectBuilder::registerBuilder(qname, new SimpleXMLObjectBuilder());
+        XMLObjectBuilder::registerBuilder(qtype, new SimpleXMLObjectBuilder());
     }
 
     void tearDown() {
         delete m_resolver;
         m_resolver = nullptr;
+
+
+        xmltooling::QName qname(SimpleXMLObject::NAMESPACE, SimpleXMLObject::LOCAL_NAME);
+        xmltooling::QName qtype(SimpleXMLObject::NAMESPACE, SimpleXMLObject::TYPE_NAME);
+        XMLObjectBuilder::deregisterBuilder(qname);
     }
 
 private:
     void RSATest(const char* file, bool encryptionThrows, bool nullKeys) {
 
-        string path = keyInfoPath + file;
+        string path = m_keyInfoPath + file;
         ifstream fs(path.c_str());
         ParserPool& parser = XMLToolingConfig::getConfig().getParser();
         DOMDocument* doc = parser.parse(fs);
@@ -187,7 +201,7 @@ private:
 
     void DSATest(const char* file, bool roundTripFails, bool nullTooling, bool nullXsec, bool verifyOrLoadThrows) {
 
-        string path = keyInfoPath + file;
+        string path = m_keyInfoPath + file;
         ifstream fs(path.c_str());
         ParserPool& parser = XMLToolingConfig::getConfig().getParser();
         DOMDocument* doc = parser.parse(fs);
@@ -204,8 +218,8 @@ private:
         const scoped_ptr<Credential> toolingCred(dynamic_cast<Credential*>(m_resolver->resolve(kiObject.get())));
         TSM_ASSERT("Unable to resolve KeyInfo into Credential.", toolingCred.get() != nullptr);
         TSM_ASSERT("Expected null Private Key", toolingCred->getPrivateKey() == nullptr);
- 
-        if (nullTooling ) {
+
+        if (nullTooling) {
             TSM_ASSERT_EQUALS("Expected null Public Key (tooling)", toolingCred->getPublicKey(), nullptr);
         }
         else {
@@ -226,48 +240,85 @@ private:
             }
         }
 
-	const scoped_ptr<DSIGKeyInfoList> xsecKey(new DSIGKeyInfoList(env.get()));
-	if (nullXsec && verifyOrLoadThrows) {
-	    TSM_ASSERT_THROWS("Bad DSA key throws an assert during Load", xsecKey->loadListFromXML(doc->getDocumentElement()), XSECCryptoException);
-	}
-	else {
-	    xsecKey->loadListFromXML(doc->getDocumentElement());
-	    const scoped_ptr<Credential> xsecCred(dynamic_cast<Credential*>(m_resolver->resolve(xsecKey.get())));
+        const scoped_ptr<DSIGKeyInfoList> xsecKey(new DSIGKeyInfoList(env.get()));
+        if (nullXsec && verifyOrLoadThrows) {
+            TSM_ASSERT_THROWS("Bad DSA key throws an assert during Load", xsecKey->loadListFromXML(doc->getDocumentElement()), XSECCryptoException);
+        }
+        else {
+            xsecKey->loadListFromXML(doc->getDocumentElement());
+            const scoped_ptr<Credential> xsecCred(dynamic_cast<Credential*>(m_resolver->resolve(xsecKey.get())));
 
-	    if (nullXsec) {
-		if (xsecCred) {
-		    TSM_ASSERT_EQUALS("Expected null xsec Cred or Public Key", xsecCred->getPublicKey(), nullptr);
-		}
-	    }
-	    else {
-		TSM_ASSERT("Unable to resolve DSIGKeyInfoList into Credential.", xsecCred.get() != nullptr);
+            if (nullXsec) {
+                if (xsecCred) {
+                    TSM_ASSERT_EQUALS("Expected null xsec Cred or Public Key", xsecCred->getPublicKey(), nullptr);
+                }
+            }
+            else {
+                TSM_ASSERT("Unable to resolve DSIGKeyInfoList into Credential.", xsecCred.get() != nullptr);
 
-		TSM_ASSERT("Expected null Private Key", xsecCred->getPrivateKey() == nullptr);
-		TSM_ASSERT("Expected non-null Public Key", xsecCred->getPublicKey() != nullptr);
-		TSM_ASSERT_EQUALS("Expected DSA key", xsecCred->getPublicKey()->getKeyType(), XSECCryptoKey::KEY_DSA_PUBLIC);
-		const OpenSSLCryptoKeyDSA* xsecKeyInfoDSA = dynamic_cast<const OpenSSLCryptoKeyDSA*>(xsecCred->getPublicKey());
-		if (verifyOrLoadThrows) {
-		    TSM_ASSERT_THROWS("Bad DSA key throws an assert", xsecKeyInfoDSA->verifyBase64Signature(m_toSign, 20, m_outSigDSA, m_sigLenDSA), XSECCryptoException);
-		}
-		else {
-		    bool xsecWorked = xsecKeyInfoDSA->verifyBase64Signature(m_toSign, 20, m_outSigDSA, m_sigLenDSA);
-		    if (roundTripFails) {
-			TSM_ASSERT("Round trip KeyInfo DSA worked (xsec)", !xsecWorked);
-		    }
-		    else {
-			TSM_ASSERT("Round trip KeyInfo DSA failed (xsec)", xsecWorked);
-		    }
-		}
-	    }
-	}
+                TSM_ASSERT("Expected null Private Key", xsecCred->getPrivateKey() == nullptr);
+                TSM_ASSERT("Expected non-null Public Key", xsecCred->getPublicKey() != nullptr);
+                TSM_ASSERT_EQUALS("Expected DSA key", xsecCred->getPublicKey()->getKeyType(), XSECCryptoKey::KEY_DSA_PUBLIC);
+                const OpenSSLCryptoKeyDSA* xsecKeyInfoDSA = dynamic_cast<const OpenSSLCryptoKeyDSA*>(xsecCred->getPublicKey());
+                if (verifyOrLoadThrows) {
+                    TSM_ASSERT_THROWS("Bad DSA key throws an assert", xsecKeyInfoDSA->verifyBase64Signature(m_toSign, 20, m_outSigDSA, m_sigLenDSA), XSECCryptoException);
+                }
+                else {
+                    bool xsecWorked = xsecKeyInfoDSA->verifyBase64Signature(m_toSign, 20, m_outSigDSA, m_sigLenDSA);
+                    if (roundTripFails) {
+                        TSM_ASSERT("Round trip KeyInfo DSA worked (xsec)", !xsecWorked);
+                    }
+                    else {
+                        TSM_ASSERT("Round trip KeyInfo DSA failed (xsec)", xsecWorked);
+                    }
+                }
+            }
+        }
+    }
+
+    void KeyRefTest(const char* file, bool works) {
+        const scoped_ptr<KeyInfoResolver> resolver(getResolver("BadKeyInfo/ResolverRefs.xml"));
+
+        const string path = m_keyInfoPath + file;
+        ifstream fs(path.c_str());
+        ParserPool& parser = XMLToolingConfig::getConfig().getParser();
+        DOMDocument* doc = parser.parse(fs);
+        TS_ASSERT(doc != nullptr);
+
+        // XSEC - no support
+        const scoped_ptr<const XSECEnv> env(new XSECEnv(doc));
+        const scoped_ptr<DSIGKeyInfoList> xsecKey(new DSIGKeyInfoList(env.get()));
+        xsecKey->loadListFromXML(doc->getDocumentElement());
+        const scoped_ptr<Credential> xsecCred(dynamic_cast<Credential*>(resolver->resolve(xsecKey.get())));
+        TS_ASSERT(xsecCred.get() == nullptr);
+
+        const XMLObjectBuilder* b = XMLObjectBuilder::getBuilder(doc->getDocumentElement());
+        TS_ASSERT(b != nullptr);
+        const scoped_ptr<KeyInfo> kiObject(dynamic_cast<KeyInfo*>(b->buildFromDocument(doc)));
+        TS_ASSERT(kiObject.get() != nullptr);
+
+        const scoped_ptr<Credential> toolingCred(dynamic_cast<Credential*>(resolver->resolve(kiObject.get())));
+        if (!works) {
+            TS_ASSERT(toolingCred.get() == nullptr);
+            return;
+        }
+
+        TSM_ASSERT("Unable to resolve KeyInfo into Credential.", toolingCred.get() != nullptr);
+        TSM_ASSERT("Expected null Private Key", toolingCred->getPrivateKey() == nullptr);
+
+        TSM_ASSERT("Expected non-null Public Key", toolingCred->getPublicKey() != nullptr);
+        TSM_ASSERT_EQUALS("Expected DSA key", toolingCred->getPublicKey()->getKeyType(), XSECCryptoKey::KEY_DSA_PUBLIC);
+        const OpenSSLCryptoKeyDSA* toolingKeyInfoDSA = dynamic_cast<const OpenSSLCryptoKeyDSA*>(toolingCred->getPublicKey());
+        bool toolingWorked = toolingKeyInfoDSA->verifyBase64Signature(m_toSign, 20, m_outSigDSA, m_sigLenDSA);
+        TSM_ASSERT("Round trip KeyInfo DSA failed (tooling)", toolingWorked);
+
     }
 
 #ifdef XSEC_OPENSSL_HAVE_EC
 
-    void ECTest(const char* file, bool roundTripFails, bool xsecLoadThrows, bool resolveFails)
-    {
+    void ECTest(const char* file, bool roundTripFails, bool xsecLoadThrows, bool resolveFails) {
 
-        string path = keyInfoPath + file;
+        const string path = m_keyInfoPath + file;
         ifstream fs(path.c_str());
         ParserPool& parser = XMLToolingConfig::getConfig().getParser();
         DOMDocument* doc = parser.parse(fs);
@@ -326,25 +377,24 @@ private:
         }
     }
 
-    void ECTestParam(const char* file)
-    {
-	string path = keyInfoPath + file;
-	ifstream fs(path.c_str());
-	ParserPool& parser = XMLToolingConfig::getConfig().getValidatingParser();
-	DOMDocument* doc = parser.parse(fs);
+    void ECTestParam(const char* file) {
+        const string path = m_keyInfoPath + file;
+        ifstream fs(path.c_str());
+        ParserPool& parser = XMLToolingConfig::getConfig().getValidatingParser();
+        DOMDocument* doc = parser.parse(fs);
 
-	TS_ASSERT(doc != nullptr);
+        TS_ASSERT(doc != nullptr);
 
-	const XMLObjectBuilder* b = XMLObjectBuilder::getBuilder(doc->getDocumentElement());
-	TS_ASSERT(b != nullptr);
-	const scoped_ptr<KeyInfo> kiObject(dynamic_cast<KeyInfo*>(b->buildFromDocument(doc)));
-	TS_ASSERT(kiObject.get() != nullptr);
+        const XMLObjectBuilder* b = XMLObjectBuilder::getBuilder(doc->getDocumentElement());
+        TS_ASSERT(b != nullptr);
+        const scoped_ptr<KeyInfo> kiObject(dynamic_cast<KeyInfo*>(b->buildFromDocument(doc)));
+        TS_ASSERT(kiObject.get() != nullptr);
 
-	const scoped_ptr<const XSECEnv> env(new XSECEnv(doc));
-	const scoped_ptr<DSIGKeyInfoList> xencKey(new DSIGKeyInfoList(env.get()));
-	TSM_ASSERT_THROWS("Bad EC key throws during load", xencKey->loadListFromXML(doc->getDocumentElement()), XSECException);
-	const scoped_ptr<X509Credential> toolingCred(dynamic_cast<X509Credential*>(m_resolver->resolve(kiObject.get())));
-	TSM_ASSERT("ToolCred was non null", toolingCred.get() == nullptr)
+        const scoped_ptr<const XSECEnv> env(new XSECEnv(doc));
+        const scoped_ptr<DSIGKeyInfoList> xencKey(new DSIGKeyInfoList(env.get()));
+        TSM_ASSERT_THROWS("Bad EC key throws during load", xencKey->loadListFromXML(doc->getDocumentElement()), XSECException);
+        const scoped_ptr<X509Credential> toolingCred(dynamic_cast<X509Credential*>(m_resolver->resolve(kiObject.get())));
+        TSM_ASSERT("ToolCred was non null", toolingCred.get() == nullptr)
     }
 
 #else
@@ -352,82 +402,81 @@ private:
 #define ECTestParam(file) return
 #endif
 
-    void DERTest(const char* file, bool xsecLoadThrows)
-    {
+    void DERTest(const char* file, bool xsecLoadThrows) {
 
-	string path = keyInfoPath + file;
-	ifstream fs(path.c_str());
-	ParserPool& parser = XMLToolingConfig::getConfig().getValidatingParser();
-	DOMDocument* doc = parser.parse(fs);
+        const string path = m_keyInfoPath + file;
+        ifstream fs(path.c_str());
+        ParserPool& parser = XMLToolingConfig::getConfig().getValidatingParser();
+        DOMDocument* doc = parser.parse(fs);
 
-	TS_ASSERT(doc != nullptr);
+        TS_ASSERT(doc != nullptr);
 
-	const XMLObjectBuilder* b = XMLObjectBuilder::getBuilder(doc->getDocumentElement());
-	TS_ASSERT(b != nullptr);
-	const scoped_ptr<KeyInfo> kiObject(dynamic_cast<KeyInfo*>(b->buildFromDocument(doc)));
-	TS_ASSERT(kiObject.get() != nullptr);
+        const XMLObjectBuilder* b = XMLObjectBuilder::getBuilder(doc->getDocumentElement());
+        TS_ASSERT(b != nullptr);
+        const scoped_ptr<KeyInfo> kiObject(dynamic_cast<KeyInfo*>(b->buildFromDocument(doc)));
+        TS_ASSERT(kiObject.get() != nullptr);
 
-	const scoped_ptr<const XSECEnv> env(new XSECEnv(doc));
-	const scoped_ptr<DSIGKeyInfoList> xencKey(new DSIGKeyInfoList(env.get()));
-	if (xsecLoadThrows) {
-	    TSM_ASSERT_THROWS("Bad EC key throws during load", xencKey->loadListFromXML(doc->getDocumentElement()), XSECException);
-	}
-	else {
-	    xencKey->loadListFromXML(doc->getDocumentElement());
-	    const scoped_ptr<X509Credential> xsecCred(dynamic_cast<X509Credential*>(m_resolver->resolve(xencKey.get())));
-	    TSM_ASSERT("XsecCred was non null", xsecCred.get() == nullptr)
-	}
-	const scoped_ptr<X509Credential> toolingCred(dynamic_cast<X509Credential*>(m_resolver->resolve(kiObject.get())));
-	TSM_ASSERT("ToolCred was non null", toolingCred.get() == nullptr)
+        const scoped_ptr<const XSECEnv> env(new XSECEnv(doc));
+        const scoped_ptr<DSIGKeyInfoList> xencKey(new DSIGKeyInfoList(env.get()));
+        if (xsecLoadThrows) {
+            TSM_ASSERT_THROWS("Bad EC key throws during load", xencKey->loadListFromXML(doc->getDocumentElement()), XSECException);
+        }
+        else {
+            xencKey->loadListFromXML(doc->getDocumentElement());
+            const scoped_ptr<X509Credential> xsecCred(dynamic_cast<X509Credential*>(m_resolver->resolve(xencKey.get())));
+            TSM_ASSERT("XsecCred was non null", xsecCred.get() == nullptr)
+        }
+        const scoped_ptr<X509Credential> toolingCred(dynamic_cast<X509Credential*>(m_resolver->resolve(kiObject.get())));
+        TSM_ASSERT("ToolCred was non null", toolingCred.get() == nullptr)
     }
 
 public:
     void testRSABadMod()
     {
-	// Encryption Throws, but keys are present
-	RSATest("RSABadMod.xml", true, false);
+        // Encryption Throws, but keys are present
+        RSATest("RSABadMod.xml", true, false);
     }
 
     void testRSABadMod64()
     {
-	// Encryption Throws, but keys are present
-	RSATest("RSABadMod64.xml", true, false);
+        // Encryption Throws, but keys are present
+        RSATest("RSABadMod64.xml", true, false);
     }
 
     void testRSABadExp()
     {
-	// Encryption "works", and keys are present
-	RSATest("RSABadExp.xml", false, false);
+        // Encryption "works", and keys are present
+        RSATest("RSABadExp.xml", false, false);
     }
 
     void testRSABadExp64()
     {
-	// Encryption "works", and keys are present
-	RSATest("RSABadExp64.xml", false, false);
+        // Encryption "works", and keys are present
+        RSATest("RSABadExp64.xml", false, false);
     }
 
     void testRSANullMod()
     {
-	// Encryption throws, no keys
-	RSATest("RSANullMod.xml", true, true);
+        // Encryption throws, no keys
+        RSATest("RSANullMod.xml", true, true);
     }
 
     void testRSANullExp()
     {
-	// Encryption throws, no keys
-	RSATest("RSANullExp.xml", true, true);
+        // Encryption throws, no keys
+        RSATest("RSANullExp.xml", true, true);
     }
 
     void testRSANullBoth()
     {
-	// Encryption throws, no keys
-	RSATest("RSANullBoth.xml", true, true);
+        // Encryption throws, no keys
+        RSATest("RSANullBoth.xml", true, true);
     }
 
     void testRSAEmpty()
     {
-	// Encryption throws, no keys
-	RSATest("RSAEmpty.xml", true, true);
+        // Encryption throws, no keys
+        RSATest("RSAEmpty.xml", true, true);
     }
     // DSA
 
@@ -536,7 +585,7 @@ public:
     {
         // Round trip works, Keys returned nothing throws
         DSATest("DSABadJ64.xml", false, false, false, false);
-	}
+    }
 
     // Y:
     void testDSABadY()
@@ -554,7 +603,7 @@ public:
     void testDSANoY()
     {
         // Round trip fails, XmlTooling returns NO public key, Santuario returns NO public key
-	DSATest("DSANoY.xml", true, true, true, false);
+        DSATest("DSANoY.xml", true, true, true, false);
     }
 
     void testDSANullY()
@@ -568,60 +617,60 @@ public:
         // Round trip works (xsec), XmlTooling returns NO public key, Santuario returns a public key, verifyBase64Signature doesn't throw (xsec)
         DSATest("DSANullJ.xml", false, true, false, false);
     }
-    
+
     // Seed: counter
     void testDSASeedCounter()
     {
-	// Works
-	DSATest("DSASeedCounter.xml", false , false, false, false);
+        // Works
+        DSATest("DSASeedCounter.xml", false, false, false, false);
     }
 
     void testDSABadSeedCounter()
     {
-	// Works
-	DSATest("DSABadSeedCounter.xml", false, false, false, false);
+        // Works
+        DSATest("DSABadSeedCounter.xml", false, false, false, false);
     }
 
     void testDSABadSeedCounter64()
     {
-	// Works
-	DSATest("DSABadSeedCounter64.xml", false, false, false, false);
+        // Works
+        DSATest("DSABadSeedCounter64.xml", false, false, false, false);
     }
 
     void testDSABadSeed()
     {
-	// Works
-	DSATest("DSABadSeed.xml", false, false, false, false);
+        // Works
+        DSATest("DSABadSeed.xml", false, false, false, false);
     }
 
     void testDSANoSeed()
     {
-	// Works
-	DSATest("DSANoSeed.xml", false, true, false, false);
+        // Works
+        DSATest("DSANoSeed.xml", false, true, false, false);
     }
 
     void testDSANullSeed()
     {
-	// Works
-	DSATest("DSANullSeed.xml", false, true, false, false);
+        // Works
+        DSATest("DSANullSeed.xml", false, true, false, false);
     }
 
     void testDSABadCounter()
     {
-	// Works
-	DSATest("DSABadCounter.xml", false, false, false, false);
+        // Works
+        DSATest("DSABadCounter.xml", false, false, false, false);
     }
 
     void testDSANoCounter()
     {
-	// Works xsec, No XMLTooling Key
-	DSATest("DSANoCounter.xml", false, true, false, false);
+        // Works xsec, No XMLTooling Key
+        DSATest("DSANoCounter.xml", false, true, false, false);
     }
 
     void testDSANullCounter()
     {
-	// Works xsec, No XMLTooling Key
-	DSATest("DSANullCounter.xml", false, true, false, false);
+        // Works xsec, No XMLTooling Key
+        DSATest("DSANullCounter.xml", false, true, false, false);
     }
 
     void testECGood()
@@ -674,73 +723,94 @@ public:
 
     void testECParamPrime()
     {
-	ECTestParam("ECParamPrime.xml");
+        ECTestParam("ECParamPrime.xml");
     }
 
     void testECParamNone()
     {
-	ECTestParam("ECParamNone.xml");
+        ECTestParam("ECParamNone.xml");
     }
 
 
     void testECParamPnB()
     {
-	ECTestParam("ECParamPnB.xml");
+        ECTestParam("ECParamPnB.xml");
     }
 
     void testECParamTnb()
     {
-	ECTestParam("ECParamTnB.xml");
+        ECTestParam("ECParamTnB.xml");
     }
 
     void testECParamGnB()
     {
-	ECTestParam("ECParamGnB.xml");
+        ECTestParam("ECParamGnB.xml");
     }
 
     void testDERBad()
     {
-	DERTest("DERValueBad.xml", false);
+        DERTest("DERValueBad.xml", false);
     }
 
     void testDERBad64()
     {
-	DERTest("DERValueBad64.xml", false);
+        DERTest("DERValueBad64.xml", false);
     }
 
     void testDERNull()
     {
-	DERTest("DERValueNull.xml", true);
+        DERTest("DERValueNull.xml", true);
     }
 
     // X509Data
     void testX509Good()
     {
-	// Round trip work, XmlTooling returns a public key, Santuario returns a public key, verifyBase64Signature doesn't throw (both cases)
-	DSATest("X509Good.xml", false, false, false, false);
+        // Round trip work, XmlTooling returns a public key, Santuario returns a public key, verifyBase64Signature doesn't throw (both cases)
+        DSATest("X509Good.xml", false, false, false, false);
     }
 
     void testX509Bad()
     {
-	// Round trip fails, XmlTooling returns NO public key, Santuario returns no public key because it throws
-	DSATest("X509Bad.xml", true, true, true, true);
+        // Round trip fails, XmlTooling returns NO public key, Santuario returns no public key because it throws
+        DSATest("X509Bad.xml", true, true, true, true);
     }
 
     void testX509Bad64()
     {
-	// Round trip fails, XmlTooling returns NO public key, Santuario returns no public key because it throws
-	DSATest("X509Bad64.xml", true, true, true, true);
+        // Round trip fails, XmlTooling returns NO public key, Santuario returns no public key because it throws
+        DSATest("X509Bad64.xml", true, true, true, true);
     }
 
     void testX509Null()
     {
-	// Round trip fails, XmlTooling returns NO public key, Santuario returns NO public key
-	DSATest("X509Null.xml", true, true, true, false);
+        // Round trip fails, XmlTooling returns NO public key, Santuario returns NO public key
+        DSATest("X509Null.xml", true, true, true, false);
     }
 
     void testX509None()
     {
-	// Round trip fails, XmlTooling returns NO public key, Santuario returns NO public key
-	DSATest("X509None.xml", true, true, true, false);
+        // Round trip fails, XmlTooling returns NO public key, Santuario returns NO public key
+        DSATest("X509None.xml", true, true, true, false);
+    }
+
+    // KeyInfoReference
+    void testRefRecursive()
+    {
+       KeyRefTest("KeyInfoRefRecursive.xml", false);
+    }
+
+    void testRefWrongURI()
+    {
+        KeyRefTest("KeyInfoRefWrongURI.xml", false);
+    }
+
+    void testRefMissing()
+    {
+        KeyRefTest("KeyInfoRefMissing.xml", false);
+    }
+
+    void testRefChild()
+    {
+        KeyRefTest("KeyInfoRefChild.xml", true);
     }
 };
