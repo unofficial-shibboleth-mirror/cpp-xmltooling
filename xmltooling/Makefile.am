@@ -221,7 +221,7 @@ common_CXXFLAGS = \
 	$(log4cpp_CFLAGS) \
 	$(PTHREAD_CFLAGS) \
 	$(BOOST_CPPFLAGS)
-common_LIBADD =
+common_LIBADD = \
 	$(xerces_LIBS) \
 	$(zlib_LIBS) \
 	$(log4shib_LIBS) \
