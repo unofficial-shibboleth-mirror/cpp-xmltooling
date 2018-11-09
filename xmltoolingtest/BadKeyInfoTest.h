@@ -58,9 +58,9 @@ class BadKeyInfoTest : public CxxTest::TestSuite {
 private:
 #define SIGBUFFER_SIZE 1024
     KeyInfoResolver* m_resolver;
-    unsigned char m_toSign[23] = "Nibble A Happy WartHog";
-    char m_outSigDSA[SIGBUFFER_SIZE] ={ 0 };
-    char m_outSigEC[SIGBUFFER_SIZE] ={ 0 };
+    unsigned char m_toSign[23];
+    char m_outSigDSA[SIGBUFFER_SIZE];
+    char m_outSigEC[SIGBUFFER_SIZE];
     unsigned int m_sigLenDSA;
     unsigned int m_sigLenEC;
     string m_keyInfoPath;
@@ -77,7 +77,11 @@ private:
     }
 
 public:
-    BadKeyInfoTest() : m_resolver(nullptr), m_sigLenDSA(0), m_sigLenEC(0) {}
+    BadKeyInfoTest() : m_resolver(nullptr), m_sigLenDSA(0), m_sigLenEC(0) {
+        memset(m_outSigDSA, 0, SIGBUFFER_SIZE);
+        memset(m_outSigEC, 0, SIGBUFFER_SIZE);
+        strcpy((char*)m_toSign, "Nibble A Happy WartHog");
+    }
 
     void setUp() {
         m_keyInfoPath = data_path + "BadKeyInfo/";

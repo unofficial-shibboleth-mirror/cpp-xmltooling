@@ -144,7 +144,7 @@ protected:
         marshallExtensionAttributes(domElement);
     }
 
-    void processChildElement(XMLObject* childXMLObject, const xercesc::DOMElement* root) {
+    void processChildElement(XMLObject* childXMLObject, const xercesc::DOMElement*) {
         SimpleXMLObject* simple=dynamic_cast<SimpleXMLObject*>(childXMLObject);
         if (simple) {
             getSimpleXMLObjects().push_back(simple);
