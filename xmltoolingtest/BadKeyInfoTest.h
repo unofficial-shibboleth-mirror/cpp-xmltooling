@@ -84,6 +84,8 @@ public:
     }
 
     void setUp() {
+        XMLObjectBuilder::registerDefaultBuilder(new UnknownElementBuilder());
+
         m_keyInfoPath = data_path + "BadKeyInfo/";
         m_resolver = getResolver("InlineKeyResolver.xml");
 
@@ -135,10 +137,11 @@ public:
         delete m_resolver;
         m_resolver = nullptr;
 
-
         xmltooling::QName qname(SimpleXMLObject::NAMESPACE, SimpleXMLObject::LOCAL_NAME);
         xmltooling::QName qtype(SimpleXMLObject::NAMESPACE, SimpleXMLObject::TYPE_NAME);
         XMLObjectBuilder::deregisterBuilder(qname);
+
+        XMLObjectBuilder::deregisterDefaultBuilder();
     }
 
 private:
