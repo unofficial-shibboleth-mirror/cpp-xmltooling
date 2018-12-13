@@ -35,6 +35,7 @@ using std::set;
 
 using xercesc::XMLString;
 using xercesc::XMLDateTime;
+using xercesc::XMLException;
 
 XMLObject::XMLObject()
 {
@@ -244,39 +245,79 @@ XMLDateTime* AbstractXMLObject::prepareForAssignment(XMLDateTime* oldValue, cons
     if (!oldValue) {
         if (newValue) {
             releaseThisandParentDOM();
-            return new XMLDateTime(*newValue);
+            try {
+                return new XMLDateTime(*newValue);
+            }
+            catch (const XMLException& e) {
+                auto_ptr_char temp(e.getMessage());
+                throw XMLObjectException(temp.get() ? temp.get() : "XMLException duplicating XMLDateTime object");
+            }
         }
         return nullptr;
     }
 
-    delete oldValue;
     releaseThisandParentDOM();
-    return newValue ? new XMLDateTime(*newValue) : nullptr;
+
+    // Avoid deleting existing object until new one is safely created.
+    XMLDateTime* ret = nullptr;
+    try {
+        if (newValue)
+            ret = new XMLDateTime(*newValue);
+    }
+    catch (const XMLException& e) {
+        auto_ptr_char temp(e.getMessage());
+        throw XMLObjectException(temp.get() ? temp.get() : "XMLException duplicating XMLDateTime object");
+    }
+
+    delete oldValue;
+    return ret;
 }
 
 XMLDateTime* AbstractXMLObject::prepareForAssignment(XMLDateTime* oldValue, time_t newValue, bool duration)
 {
+    // Avoid deleting existing object until new one is safely created.
+    XMLDateTime* ret = nullptr;
+    try {
+        ret = new XMLDateTime(newValue, duration);
+        if (duration)
+            ret->parseDuration();
+        else
+            ret->parseDateTime();
+    }
+    catch (const XMLException& e) {
+        auto_ptr_char temp(e.getMessage());
+        throw XMLObjectException(temp.get() ? temp.get() : "XMLException creating XMLDateTime object");
+    }
+
     delete oldValue;
     releaseThisandParentDOM();
-    XMLDateTime* ret = new XMLDateTime(newValue, duration);
-    if (duration)
-        ret->parseDuration();
-    else
-        ret->parseDateTime();
     return ret;
 }
 
 XMLDateTime* AbstractXMLObject::prepareForAssignment(XMLDateTime* oldValue, const XMLCh* newValue, bool duration)
 {
+    if (!newValue || !*newValue) {
+        delete oldValue;
+        releaseThisandParentDOM();
+        return nullptr;
+    }
+
+    // Avoid deleting existing object until new one is safely created.
+    XMLDateTime* ret = nullptr;
+    try {
+        ret = new XMLDateTime(newValue);
+        if (duration)
+            ret->parseDuration();
+        else
+            ret->parseDateTime();
+    }
+    catch (const XMLException& e) {
+        auto_ptr_char temp(e.getMessage());
+        throw XMLObjectException(temp.get() ? temp.get() : "XMLException creating XMLDateTime object");
+    }
+
     delete oldValue;
     releaseThisandParentDOM();
-    if (!newValue || !*newValue)
-        return nullptr;
-    XMLDateTime* ret = new XMLDateTime(newValue);
-    if (duration)
-        ret->parseDuration();
-    else
-        ret->parseDateTime();
     return ret;
 }
 
