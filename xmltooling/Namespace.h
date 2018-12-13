@@ -78,13 +78,13 @@ namespace xmltooling {
          * Returns true iff the namespace should always be declared regardless of in-scope declarations
          * @return the alwaysDeclared setting
          */
-        const bool alwaysDeclare() const { return m_pinned; }
+        bool alwaysDeclare() const { return m_pinned; }
 
         /**
          * Returns the usage of the namespace by an XMLObject
          * @return the usage setting
          */
-        const namespace_usage_t usage() const { return m_usage; }
+        namespace_usage_t usage() const { return m_usage; }
 
         /**
          * Sets the namespace prefix
