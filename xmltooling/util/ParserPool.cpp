@@ -234,8 +234,11 @@ bool ParserPool::loadCatalogs(const char* pathnames)
     trim(temp);
     vector<string> catpaths;
     split(catpaths, temp, is_any_of(PATH_SEPARATOR_STR), algorithm::token_compress_on);
-    static bool (ParserPool::* lc)(const char*) = &ParserPool::loadCatalog;
-    for_each(catpaths.begin(), catpaths.end(), boost::bind(lc, this, boost::bind(&string::c_str, _1)));
+
+    for (vector<string>::const_iterator i = catpaths.begin(); i != catpaths.end(); ++i) {
+        loadCatalog(i->c_str());
+    }
+
     return !catpaths.empty();
 }
 
