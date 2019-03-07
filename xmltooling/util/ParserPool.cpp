@@ -148,14 +148,28 @@ DOMDocument* ParserPool::parse(DOMLSInput& domsrc)
         checkinBuilder(janitor.release());
         return doc;
     }
-    catch (XMLException& ex) {
+    catch (const DOMException& ex) {
+        parser->getDomConfig()->setParameter(XMLUni::fgDOMErrorHandler, (void*)nullptr);
+        parser->getDomConfig()->setParameter(XMLUni::fgXercesUserAdoptsDOMDocument, true);
+        checkinBuilder(janitor.release());
+        auto_ptr_char temp(ex.getMessage());
+        throw XMLParserException(string("DOM error during parsing: ") + (temp.get() ? temp.get() : "no message"));
+    }
+    catch (const SAXException& ex) {
+        parser->getDomConfig()->setParameter(XMLUni::fgDOMErrorHandler, (void*)nullptr);
+        parser->getDomConfig()->setParameter(XMLUni::fgXercesUserAdoptsDOMDocument, true);
+        checkinBuilder(janitor.release());
+        auto_ptr_char temp(ex.getMessage());
+        throw XMLParserException(string("SAX error during parsing: ") + (temp.get() ? temp.get() : "no message"));
+    }
+    catch (const XMLException& ex) {
         parser->getDomConfig()->setParameter(XMLUni::fgDOMErrorHandler, (void*)nullptr);
         parser->getDomConfig()->setParameter(XMLUni::fgXercesUserAdoptsDOMDocument, true);
         checkinBuilder(janitor.release());
         auto_ptr_char temp(ex.getMessage());
         throw XMLParserException(string("Xerces error during parsing: ") + (temp.get() ? temp.get() : "no message"));
     }
-    catch (XMLToolingException&) {
+    catch (const XMLToolingException&) {
         parser->getDomConfig()->setParameter(XMLUni::fgDOMErrorHandler, (void*)nullptr);
         parser->getDomConfig()->setParameter(XMLUni::fgXercesUserAdoptsDOMDocument, true);
         checkinBuilder(janitor.release());
