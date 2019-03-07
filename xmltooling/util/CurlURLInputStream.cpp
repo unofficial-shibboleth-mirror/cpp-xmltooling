@@ -305,6 +305,8 @@ void CurlURLInputStream::init(const DOMElement* e)
         " libcurl/" + LIBCURL_VERSION + ' ' + OPENSSL_VERSION_TEXT;
     fHeaders = curl_slist_append(fHeaders, ua.c_str());
 
+    fHeaders = curl_slist_append(fHeaders, "Expect:");
+
     // Add User-Agent and cache headers.
     curl_easy_setopt(fEasy, CURLOPT_HTTPHEADER, fHeaders);
 

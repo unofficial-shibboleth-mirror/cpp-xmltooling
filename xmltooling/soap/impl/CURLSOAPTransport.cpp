@@ -90,7 +90,8 @@ namespace xmltooling {
             curl_easy_setopt(m_handle,CURLOPT_USERPWD,0);
             curl_easy_setopt(m_handle,CURLOPT_SSL_VERIFYHOST,2);
             curl_easy_setopt(m_handle,CURLOPT_HEADERDATA,this);
-            m_headers=curl_slist_append(m_headers,"Content-Type: text/xml");
+            m_headers = curl_slist_append(m_headers, "Content-Type: text/xml");
+            m_headers = curl_slist_append(m_headers, "Expect:");
         }
 
         virtual ~CURLSOAPTransport() {
