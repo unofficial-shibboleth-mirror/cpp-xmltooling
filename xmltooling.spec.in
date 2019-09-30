@@ -13,7 +13,7 @@ BuildRequires:  libxml-security-c-devel >= 2.0.0
 %{?_with_log4cpp:BuildRequires: liblog4cpp-devel >= 1.0}
 %{!?_with_log4cpp:BuildRequires: liblog4shib-devel >= 1.0.4}
 BuildRequires: gcc-c++, pkgconfig, zlib-devel, openssl-devel, boost-devel >= 1.32.0
-%if 0%{?rhel} >= 6 || 0%{?centos_version} >= 600 || 0%{?amzn} >= 1
+%if 0%{?rhel} == 6 && 0%{?rhel} == 7 || 0%{?amzn} >= 1
 BuildRequires: libcurl-openssl-devel >= 7.21.7
 Requires: libcurl-openssl >= 7.21.7
 %else
@@ -24,6 +24,10 @@ BuildRequires: curl-devel >= 7.10.6
 BuildRequires: redhat-rpm-config
 %endif
 
+%if 0%{?rhel} == 8
+BuildRequires: gdb
+%endif
+
 %if "%{_vendor}" == "suse"
 %define pkgdocdir %{_docdir}/%{name}
 %else
@@ -31,7 +35,7 @@ BuildRequires: redhat-rpm-config
 %endif
 
 # Prevent the RHEL/etc 6+ package from requiring a vanilla libcurl.
-%if 0%{?rhel} >= 6 || 0%{?centos_version} >= 600 || 0%{?amzn} >= 1
+%if 0%{?rhel} == 6 && 0%{?rhel} == 7 || 0%{?amzn} >= 1
 %filter_from_requires /libcurl\.so\..*/d
 %filter_setup
 %endif
@@ -48,7 +52,7 @@ Summary:    OpenSAML XMLTooling library
 Group:      Development/Libraries/C and C++
 Provides:   @PACKAGE_NAME@ = %{version}-%{release}
 Obsoletes:  @PACKAGE_NAME@ < %{version}-%{release}
-%if 0%{?rhel} >= 6 || 0%{?centos_version} >= 600 || 0%{?amzn} >= 1
+%if 0%{?rhel} == 6 && 0%{?rhel} == 7 || 0%{?amzn} >= 1
 Requires: libcurl-openssl >= 7.21.7
 %endif
 
@@ -72,7 +76,7 @@ Requires: libxml-security-c-devel >= 2.0.0
 %{?_with_log4cpp:Requires: liblog4cpp-devel >= 1.0}
 %{!?_with_log4cpp:Requires: liblog4shib-devel >= 1.0.4}
 Requires: openssl-devel, boost-devel >= 1.32.0
-%if 0%{?rhel} >= 6 || 0%{?centos_version} >= 600 || 0%{?amzn} >= 1
+%if 0%{?rhel} == 6 && 0%{?rhel} == 7 || 0%{?amzn} >= 1
 Requires: libcurl-openssl-devel >= 7.21.7
 %else
 Requires: curl-devel >= 7.10.6
@@ -104,7 +108,7 @@ This package includes XML schemas and related files.
 %setup -q
 
 %build
-%if 0%{?rhel} >= 6 || 0%{?centos_version} >= 600 || 0%{?amzn} >= 1
+%if 0%{?rhel} == 6 && 0%{?rhel} == 7 || 0%{?amzn} >= 1
 %configure %{?@PACKAGE_NAME@_options} %{!?_without_xmlsec: --with-xmlsec} PKG_CONFIG_PATH=/opt/shibboleth/%{_lib}/pkgconfig
 %else
 %configure %{?@PACKAGE_NAME@_options} %{!?_without_xmlsec: --with-xmlsec}
@@ -122,13 +126,9 @@ This package includes XML schemas and related files.
 %clean
 [ "$RPM_BUILD_ROOT" != "/" ] && %{__rm} -rf $RPM_BUILD_ROOT
 
-%ifnos solaris2.8 solaris2.9 solaris2.10
 %post -n lib@PACKAGE_NAME@8 -p /sbin/ldconfig
-%endif
 
-%ifnos solaris2.8 solaris2.9 solaris2.10
 %postun -n lib@PACKAGE_NAME@8 -p /sbin/ldconfig
-%endif
 
 %files -n lib@PACKAGE_NAME@8
 %defattr(-,root,root,-)
@@ -149,6 +149,9 @@ This package includes XML schemas and related files.
 %doc %{pkgdocdir}
 
 %changelog
+* Mon Sep 30 2019 Scott Cantor <cantor.2@osu.edu> - 3.0.4-1
+- CentOS 8 cleanup
+
 * Tue Nov 21 2017 Scott Cantor <cantor.2@osu.edu> - 3.0.0-1
 - Update soname
 - Require Xerces 3.2 as shipped by me on all platforms
