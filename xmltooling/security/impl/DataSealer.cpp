@@ -156,8 +156,10 @@ string DataSealer::wrap(const char* s, time_t exp) const
 
     safeBuffer ciphertext;
     try {
+        // Keys are not threadsafe, use a clone to encrypt.
+        scoped_ptr<XSECCryptoKey> clonedKey(defaultKey.second->clone());
         scoped_ptr<XENCEncryptionMethod> method(XENCEncryptionMethod::create(env.get(), algorithm));
-        if (!handler->encryptToSafeBuffer(&tx, method.get(), defaultKey.second, dummydoc, ciphertext)) {
+        if (!handler->encryptToSafeBuffer(&tx, method.get(), clonedKey.get(), dummydoc, ciphertext)) {
             throw XMLSecurityException("Data encryption failed.");
         }
     }
@@ -235,8 +237,10 @@ string DataSealer::unwrap(const char* s) const
     unsigned int len = 0;
     safeBuffer plaintext;
     try {
+        // Keys are not threadsafe, use a clone to decrypt.
+        scoped_ptr<XSECCryptoKey> clonedKey(requiredKey.second->clone());
         scoped_ptr<XENCEncryptionMethod> method(XENCEncryptionMethod::create(env.get(), algorithm));
-        len = handler->decryptToSafeBuffer(&tx, method.get(), requiredKey.second, dummydoc, plaintext);
+        len = handler->decryptToSafeBuffer(&tx, method.get(), clonedKey.get(), dummydoc, plaintext);
     }
     catch (const XSECException& ex) {
         auto_ptr_char msg(ex.getMsg());
