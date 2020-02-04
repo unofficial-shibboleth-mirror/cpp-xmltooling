@@ -95,6 +95,10 @@ void HTTPResponse::setCookie(const char* name, const char* value, samesite_t sam
         switch (sameSiteValue) {
             case SAMESITE_NONE:
                 ssCookie.append("None");
+                if (sameSiteFallback) {
+                    string hackedName(name);
+                    setResponseHeader("Set-Cookie", hackedName.append("_fgwars=").append(value).c_str());
+                }
                 break;
             case SAMESITE_LAX:
                 ssCookie.append("Lax");
@@ -106,11 +110,6 @@ void HTTPResponse::setCookie(const char* name, const char* value, samesite_t sam
                 throw IOException("Invalid SameSite value supplied");
         }
         setResponseHeader("Set-Cookie", ssCookie.c_str());
-
-        if (sameSiteFallback) {
-            string hackedName(name);
-            setResponseHeader("Set-Cookie", hackedName.append("_fgwars=").append(value).c_str());
-        }
     }
     else {
         string cookie(name);
