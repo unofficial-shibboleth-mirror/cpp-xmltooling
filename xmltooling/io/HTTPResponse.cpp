@@ -86,11 +86,36 @@ void HTTPResponse::setContentType(const char* type)
     setResponseHeader("Content-Type", type);
 }
 
-void HTTPResponse::setCookie(const char* name, const char* value)
+void HTTPResponse::setCookie(const char* name, const char* value, samesite_t sameSiteValue, bool sameSiteFallback)
 {
-    string cookie(name);
-    cookie = cookie + '=' + value;
-    setResponseHeader("Set-Cookie", cookie.c_str());
+    if (sameSiteValue != SAMESITE_ABSENT) {
+        // Add SameSite to the primary cookie and optionally set a fallback cookie without SameSite.
+        string ssCookie(name);
+        ssCookie.append("=").append(value).append("; SameSite=");
+        switch (sameSiteValue) {
+            case SAMESITE_NONE:
+                ssCookie.append("None");
+                break;
+            case SAMESITE_LAX:
+                ssCookie.append("Lax");
+                break;
+            case SAMESITE_STRICT:
+                ssCookie.append("Strict");
+                break;
+            default:
+                throw IOException("Invalid SameSite value supplied");
+        }
+        setResponseHeader("Set-Cookie", ssCookie.c_str());
+
+        if (sameSiteFallback) {
+            string hackedName(name);
+            setResponseHeader("Set-Cookie", hackedName.append("_fgwars=").append(value).c_str());
+        }
+    }
+    else {
+        string cookie(name);
+        setResponseHeader("Set-Cookie", cookie.append("=").append(value).c_str());
+    }
 }
 
 void HTTPResponse::setResponseHeader(const char* name, const char* value, bool replace)

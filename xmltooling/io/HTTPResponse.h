@@ -65,13 +65,28 @@ namespace xmltooling {
          */
         virtual void setResponseHeader(const char* name, const char* value, bool replace = false);
 
+        /** Cookie SameSite values. */
+        enum samesite_t {
+            SAMESITE_ABSENT = 0,
+            SAMESITE_NONE = 1,
+            SAMESITE_LAX = 2,
+            SAMESITE_STRICT = 3
+        };
+
         /**
          * Sets a client cookie.
          * 
+         * The boolean flag enables the workaround for older clients with
+         * broken SameSite support by setting a second cookie with
+         * a decorated name that would not carry the SameSite flag.
+         *
          * @param name  cookie name
          * @param value value to set, or nullptr to clear
+         * @param sameSiteValue the SameSite value to apply to the cookie
+         * @param sameSiteFallback enables setting of a fallback cookie
          */
-        virtual void setCookie(const char* name, const char* value);
+        virtual void setCookie(const char* name, const char* value,
+            samesite_t sameSiteValue = SAMESITE_ABSENT, bool sameSiteFallback = false);
         
         /**
          * Redirect the client to the specified URL and complete the response.

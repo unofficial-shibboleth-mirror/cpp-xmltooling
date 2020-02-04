@@ -239,8 +239,18 @@ const map<string,string>& HTTPRequest::getCookies() const
     return m_cookieMap;
 }
 
-const char* HTTPRequest::getCookie(const char* name) const
+const char* HTTPRequest::getCookie(const char* name, bool sameSiteFallback) const
 {
     map<string,string>::const_iterator lookup = getCookies().find(name);
-    return (lookup==m_cookieMap.end()) ? nullptr : lookup->second.c_str();
+    if (lookup != m_cookieMap.end()) {
+        return lookup->second.c_str();
+    } else if (sameSiteFallback) {
+        string hackeryName(name);
+        lookup = getCookies().find(hackeryName.append("_fgwars"));
+        if (lookup != m_cookieMap.end()) {
+            return lookup->second.c_str();
+        }
+    }
+
+    return nullptr;
 }

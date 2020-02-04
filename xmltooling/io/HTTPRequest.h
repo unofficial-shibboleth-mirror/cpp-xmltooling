@@ -95,11 +95,16 @@ namespace xmltooling {
 
         /**
          * Get a cookie value supplied by the client.
+         *
+         * The boolean flag enables the workaround for older clients with
+         * broken SameSite support by looking for a second cookie with
+         * a decorated name that would not carry the SameSite flag.
          * 
          * @param name  name of cookie
+         * @param sameSiteFallback enables lookaside to fallback cookie name
          * @return  cookie value or nullptr
          */
-        virtual const char* getCookie(const char* name) const;
+        virtual const char* getCookie(const char* name, bool sameSiteFallback=false) const;
 
         /**
          * Gets all the cookies supplied by the client.
