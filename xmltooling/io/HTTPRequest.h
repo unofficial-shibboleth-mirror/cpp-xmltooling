@@ -94,6 +94,14 @@ namespace xmltooling {
         virtual std::string getHeader(const char* name) const=0;
 
         /**
+        * Get a cookie value supplied by the client.
+        * 
+        * @param name  name of cookie
+        * @return  cookie value or nullptr
+        */
+        virtual const char* getCookie(const char* name) const;
+
+        /**
          * Get a cookie value supplied by the client.
          *
          * The boolean flag enables the workaround for older clients with
@@ -104,7 +112,7 @@ namespace xmltooling {
          * @param sameSiteFallback enables lookaside to fallback cookie name
          * @return  cookie value or nullptr
          */
-        virtual const char* getCookie(const char* name, bool sameSiteFallback=false) const;
+        virtual const char* getCookie(const char* name, bool sameSiteFallback) const;
 
         /**
          * Gets all the cookies supplied by the client.

@@ -86,34 +86,58 @@ void HTTPResponse::setContentType(const char* type)
     setResponseHeader("Content-Type", type);
 }
 
-void HTTPResponse::setCookie(const char* name, const char* value, samesite_t sameSiteValue, bool sameSiteFallback)
+void HTTPResponse::setCookie(const char* name, const char* value, time_t expires, samesite_t sameSiteValue)
 {
+    setCookie(name, value, expires, sameSiteValue, false);
+}
+
+void HTTPResponse::setCookie(const char* name, const char* value, time_t expires, samesite_t sameSiteValue, bool sameSiteFallback)
+{
+    string decoratedValue;
+    if (!value) {
+        decoratedValue += "; expires=Mon, 01 Jan 2001 00:00:00 GMT";
+    }
+    else {
+        decoratedValue = value;
+        if (expires > 0) {
+            expires += time(nullptr);
+#ifndef HAVE_GMTIME_R
+            struct tm* ptime = gmtime(&expires);
+#else
+            struct tm res;
+            struct tm* ptime = gmtime_r(&expires, &res);
+#endif
+            char cookietimebuf[64];
+            strftime(cookietimebuf, 64, "; expires=%a, %d %b %Y %H:%M:%S GMT", ptime);
+            decoratedValue.append(cookietimebuf);
+        }
+    }
+
     if (sameSiteValue != SAMESITE_ABSENT) {
         // Add SameSite to the primary cookie and optionally set a fallback cookie without SameSite.
-        string ssCookie(name);
-        ssCookie.append("=").append(value).append("; SameSite=");
         switch (sameSiteValue) {
             case SAMESITE_NONE:
-                ssCookie.append("None");
                 if (sameSiteFallback) {
                     string hackedName(name);
-                    setResponseHeader("Set-Cookie", hackedName.append("_fgwars=").append(value).c_str());
+                    setResponseHeader("Set-Cookie", hackedName.append("_fgwars=").append(decoratedValue).c_str());
                 }
+                decoratedValue.append("; SameSite=None");
                 break;
             case SAMESITE_LAX:
-                ssCookie.append("Lax");
+                decoratedValue.append("; SameSite=Lax");
                 break;
             case SAMESITE_STRICT:
-                ssCookie.append("Strict");
+                decoratedValue.append("; SameSite=Strict");
                 break;
             default:
                 throw IOException("Invalid SameSite value supplied");
         }
-        setResponseHeader("Set-Cookie", ssCookie.c_str());
+        string header(name);
+        setResponseHeader("Set-Cookie", header.append("=").append(decoratedValue).c_str());
     }
     else {
-        string cookie(name);
-        setResponseHeader("Set-Cookie", cookie.append("=").append(value).c_str());
+        string header(name);
+        setResponseHeader("Set-Cookie", header.append("=").append(decoratedValue).c_str());
     }
 }
 

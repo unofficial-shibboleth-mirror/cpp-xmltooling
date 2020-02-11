@@ -239,6 +239,11 @@ const map<string,string>& HTTPRequest::getCookies() const
     return m_cookieMap;
 }
 
+const char* HTTPRequest::getCookie(const char* name) const
+{
+    return getCookie(name, false);
+}
+
 const char* HTTPRequest::getCookie(const char* name, bool sameSiteFallback) const
 {
     map<string,string>::const_iterator lookup = getCookies().find(name);
