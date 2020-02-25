@@ -223,6 +223,9 @@ namespace {
         split(nvpair, s, is_any_of("="));
         if (nvpair.size() == 2) {
             trim(nvpair[0]);
+            if (ends_with(nvpair[0], "_fgwars")) {
+                nvpair[0].erase(nvpair[0].cend() - 7, nvpair[0].cend());
+            }
             cookieMap[nvpair[0]] = nvpair[1];
         }
     }
@@ -234,7 +237,8 @@ const map<string,string>& HTTPRequest::getCookies() const
         string cookies=getHeader("Cookie");
         vector<string> nvpair;
         tokenizer< char_separator<char> > nvpairs(cookies, char_separator<char>(";"));
-        for_each(nvpairs.begin(), nvpairs.end(), boost::bind(handle_cookie_fn, boost::ref(m_cookieMap), boost::ref(nvpair), _1));
+        for_each(nvpairs.begin(), nvpairs.end(),
+            boost::bind(handle_cookie_fn, boost::ref(m_cookieMap), boost::ref(nvpair), _1));
     }
     return m_cookieMap;
 }
@@ -246,15 +250,12 @@ const char* HTTPRequest::getCookie(const char* name) const
 
 const char* HTTPRequest::getCookie(const char* name, bool sameSiteFallback) const
 {
+    // The fallback support is implemented via the getCookies() load above
+    // so we ignore it here.
+
     map<string,string>::const_iterator lookup = getCookies().find(name);
     if (lookup != m_cookieMap.end()) {
         return lookup->second.c_str();
-    } else if (sameSiteFallback) {
-        string hackeryName(name);
-        lookup = getCookies().find(hackeryName.append("_fgwars"));
-        if (lookup != m_cookieMap.end()) {
-            return lookup->second.c_str();
-        }
     }
 
     return nullptr;
