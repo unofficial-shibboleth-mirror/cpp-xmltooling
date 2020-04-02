@@ -47,7 +47,7 @@ for declaring element- and type-specific API and implementation
 classes to add value around the DOM, as well as signing and encryption
 support.
 
-%package -n lib@PACKAGE_NAME@8
+%package -n lib@PACKAGE_NAME@9
 Summary:    OpenSAML XMLTooling library
 Group:      Development/Libraries/C and C++
 Provides:   @PACKAGE_NAME@ = %{version}-%{release}
