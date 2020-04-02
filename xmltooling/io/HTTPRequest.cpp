@@ -224,7 +224,7 @@ namespace {
         if (nvpair.size() == 2) {
             trim(nvpair[0]);
             if (ends_with(nvpair[0], "_fgwars")) {
-                nvpair[0].erase(nvpair[0].cend() - 7, nvpair[0].cend());
+                nvpair[0].erase(nvpair[0].end() - 7, nvpair[0].end());
             }
             cookieMap[nvpair[0]] = nvpair[1];
         }
@@ -248,7 +248,7 @@ const char* HTTPRequest::getCookie(const char* name) const
     return getCookie(name, false);
 }
 
-const char* HTTPRequest::getCookie(const char* name, bool sameSiteFallback) const
+const char* HTTPRequest::getCookie(const char* name, bool) const
 {
     // The fallback support is implemented via the getCookies() load above
     // so we ignore it here.
