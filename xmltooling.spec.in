@@ -47,7 +47,7 @@ for declaring element- and type-specific API and implementation
 classes to add value around the DOM, as well as signing and encryption
 support.
 
-%package -n lib@PACKAGE_NAME@9
+%package -n lib@PACKAGE_NAME@10
 Summary:    OpenSAML XMLTooling library
 Group:      Development/Libraries/C and C++
 Provides:   @PACKAGE_NAME@ = %{version}-%{release}
@@ -56,7 +56,7 @@ Obsoletes:  @PACKAGE_NAME@ < %{version}-%{release}
 Requires: libcurl-openssl >= 7.21.7
 %endif
 
-%description -n lib@PACKAGE_NAME@9
+%description -n lib@PACKAGE_NAME@10
 The XMLTooling library contains generic XML parsing and processing
 classes based on the Xerces-C DOM. It adds more powerful facilities
 for declaring element- and type-specific API and implementation
@@ -68,7 +68,7 @@ This package contains just the shared library.
 %package -n lib@PACKAGE_NAME@-devel
 Summary:	XMLTooling development Headers
 Group:		Development/Libraries/C and C++
-Requires:	lib@PACKAGE_NAME@9 = %{version}-%{release}
+Requires:	lib@PACKAGE_NAME@10 = %{version}-%{release}
 Provides:	@PACKAGE_NAME@-devel = %{version}-%{release}
 Obsoletes:	@PACKAGE_NAME@-devel < %{version}-%{release}
 Requires:  libxerces-c-devel >= 3.2
@@ -126,11 +126,11 @@ This package includes XML schemas and related files.
 %clean
 [ "$RPM_BUILD_ROOT" != "/" ] && %{__rm} -rf $RPM_BUILD_ROOT
 
-%post -n lib@PACKAGE_NAME@9 -p /sbin/ldconfig
+%post -n lib@PACKAGE_NAME@10 -p /sbin/ldconfig
 
-%postun -n lib@PACKAGE_NAME@9 -p /sbin/ldconfig
+%postun -n lib@PACKAGE_NAME@10 -p /sbin/ldconfig
 
-%files -n lib@PACKAGE_NAME@9
+%files -n lib@PACKAGE_NAME@10
 %defattr(-,root,root,-)
 %{_libdir}/*.so.*
 %exclude %{_libdir}/*.la
