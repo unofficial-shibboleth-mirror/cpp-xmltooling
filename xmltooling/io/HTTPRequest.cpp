@@ -30,6 +30,7 @@
 
 #include <cstring>
 #include <boost/algorithm/string.hpp>
+#define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/bind.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/tokenizer.hpp>

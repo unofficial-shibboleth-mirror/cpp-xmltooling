@@ -28,6 +28,7 @@
 #include "HTTPResponse.h"
 
 #include <boost/algorithm/string/predicate.hpp>
+#define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/bind.hpp>
 
 using namespace xmltooling;
