@@ -70,13 +70,13 @@ public:
     void testKeysFromURLs() {
         skipNetworked();
         string pathname = data_path + "key.pem.bak";
-        scoped_ptr<SOAPTransport> t1(getTransport("https://wiki.shibboleth.net/confluence/download/attachments/3277026/key.pem"));
+        scoped_ptr<SOAPTransport> t1(getTransport("https://test.shibboleth.net/git/view/?p=cpp-xmltooling.git&a=blob_plain&hb=HEAD&f=xmltoolingtest/data/key.pem"));
         scoped_ptr<XSECCryptoKey> key1(SecurityHelper::loadKeyFromURL(*t1.get(), pathname.c_str()));
         pathname = data_path + "key.der.bak";
-        scoped_ptr<SOAPTransport> t2(getTransport("https://wiki.shibboleth.net/confluence/download/attachments/3277026/key.der"));
+        scoped_ptr<SOAPTransport> t2(getTransport("https://test.shibboleth.net/git/view/?p=cpp-xmltooling.git&a=blob_plain&hb=HEAD&f=xmltoolingtest/data/key.der"));
         scoped_ptr<XSECCryptoKey> key2(SecurityHelper::loadKeyFromURL(*t2.get(), pathname.c_str()));
         pathname = data_path + "test.pfx.bak";
-        scoped_ptr<SOAPTransport> t3(getTransport("https://wiki.shibboleth.net/confluence/download/attachments/3277026/test.pfx"));
+        scoped_ptr<SOAPTransport> t3(getTransport("https://test.shibboleth.net/git/view/?p=cpp-xmltooling.git&a=blob_plain&hb=HEAD&f=xmltoolingtest/data/test.pfx"));
         scoped_ptr<XSECCryptoKey> key3(SecurityHelper::loadKeyFromURL(*t3.get(), pathname.c_str(), nullptr, "password"));
 
         TSM_ASSERT("PEM/DER keys did not match", SecurityHelper::matches(*key1.get(), *key2.get()));
@@ -122,13 +122,13 @@ public:
     void testCertificatesFromURLs() {
         skipNetworked();
         string pathname = data_path + "cert.pem.bak";
-        scoped_ptr<SOAPTransport> t1(getTransport("https://wiki.shibboleth.net/confluence/download/attachments/3277026/cert.pem"));
+        scoped_ptr<SOAPTransport> t1(getTransport("https://test.shibboleth.net/git/view/?p=cpp-xmltooling.git&a=blob_plain&hb=HEAD&f=xmltoolingtest/data/cert.pem"));
         SecurityHelper::loadCertificatesFromURL(certs, *t1.get(), pathname.c_str());
         pathname = data_path + "cert.der.bak";
-        scoped_ptr<SOAPTransport> t2(getTransport("https://wiki.shibboleth.net/confluence/download/attachments/3277026/cert.der"));
+        scoped_ptr<SOAPTransport> t2(getTransport("https://test.shibboleth.net/git/view/?p=cpp-xmltooling.git&a=blob_plain&hb=HEAD&f=xmltoolingtest/data/cert.der"));
         SecurityHelper::loadCertificatesFromURL(certs, *t2.get(), pathname.c_str());
         pathname = data_path + "test.pfx.bak";
-        scoped_ptr<SOAPTransport> t3(getTransport("https://wiki.shibboleth.net/confluence/download/attachments/3277026/test.pfx"));
+        scoped_ptr<SOAPTransport> t3(getTransport("https://test.shibboleth.net/git/view/?p=cpp-xmltooling.git&a=blob_plain&hb=HEAD&f=xmltoolingtest/data/test.pfx"));
         SecurityHelper::loadCertificatesFromURL(certs, *t3.get(), pathname.c_str(), nullptr, "password");
 
         TSM_ASSERT_EQUALS("Wrong certificate count", certs.size(), 3);
