@@ -28,8 +28,8 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,2,0,1
- PRODUCTVERSION 3,2,0,1
+ FILEVERSION 3,2,1,0
+ PRODUCTVERSION 3,2,1,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -51,7 +51,7 @@ BEGIN
 #else
             VALUE "FileDescription", "OpenSAML XMLTooling Library\0"
 #endif
-            VALUE "FileVersion", "3, 2, 0, 1\0"
+            VALUE "FileVersion", "3, 2, 1, 0\0"
 #ifdef XMLTOOLING_LITE
 #ifdef _DEBUG
             VALUE "InternalName", "xmltooling-lite3_2D\0"
@@ -65,7 +65,7 @@ BEGIN
             VALUE "InternalName", "xmltooling3_2\0"
 #endif
 #endif
-            VALUE "LegalCopyright", "Copyright 2020 Various\0"
+            VALUE "LegalCopyright", "Copyright 2021 Various\0"
             VALUE "LegalTrademarks", "\0"
 #ifdef XMLTOOLING_LITE
 #ifdef _DEBUG
@@ -81,8 +81,8 @@ BEGIN
 #endif
 #endif
             VALUE "PrivateBuild", "\0"
-            VALUE "ProductName", "OpenSAML 3.2.0\0"
-            VALUE "ProductVersion", "3, 2, 0, 1\0"
+            VALUE "ProductName", "OpenSAML 3.2.1\0"
+            VALUE "ProductVersion", "3, 2, 1, 0\0"
             VALUE "SpecialBuild", "\0"
         END
     END
