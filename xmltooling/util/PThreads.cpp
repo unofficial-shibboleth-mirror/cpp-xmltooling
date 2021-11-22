@@ -294,7 +294,7 @@ void Thread::exit(void* return_val)
 
 void Thread::sleep(int seconds)
 {
-    sleep(seconds);
+    ::sleep(seconds);
 }
 
 void Thread::mask_all_signals(void)
