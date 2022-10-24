@@ -33,6 +33,8 @@
 #include "security/CredentialCriteria.h"
 #include "security/CredentialResolver.h"
 
+#include <xmltooling/security/SecurityHelper.h>
+
 #include <xsec/enc/XSECCryptoException.hpp>
 #include <xsec/framework/XSECException.hpp>
 #include <xsec/framework/XSECAlgorithmMapper.hpp>
@@ -151,7 +153,13 @@ DOMDocumentFragment* Decrypter::decryptData(const EncryptedData& encryptedData, 
             key = (*cred)->getPrivateKey();
             if (!key)
                 continue;
-            return decryptData(encryptedData, key);
+            DOMDocumentFragment* retval = decryptData(encryptedData, key);
+            if ((*cred)->getPublicKey()) {
+                std::string message = "encrypted with public key with SHA-1 fingerprint: " +
+                    SecurityHelper::getDEREncoding(*((*cred)->getPublicKey()), "SHA1");
+                logging::Category::getInstance(XMLTOOLING_LOGCAT ".Decrypter").debug(message.c_str());
+            }
+            return retval;
         }
         catch(const DecryptionException& ex) {
             logging::Category::getInstance(XMLTOOLING_LOGCAT ".Decrypter").warn(ex.what());
@@ -354,6 +362,12 @@ XSECCryptoKey* Decrypter::decryptKey(const EncryptedKey& encryptedKey, const XML
                 int keySize = m_cipher->decryptKey(encryptedKey.getDOM(), buffer, 1024);
                 if (keySize<=0)
                     throw DecryptionException("Unable to decrypt key.");
+
+                if ((*cred)->getPublicKey()) {
+                    std::string message = "encrypted with pubkey sha1:" +
+                        SecurityHelper::getDEREncoding(*((*cred)->getPublicKey()), "SHA1");
+                    logging::Category::getInstance(XMLTOOLING_LOGCAT ".Decrypter").debug(message.c_str());
+                }
         
                 // Try to wrap the key.
                 return handler->createKeyForURI(algorithm, buffer, keySize);
