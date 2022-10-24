@@ -229,7 +229,7 @@ common_LIBADD = \
 	$(PTHREAD_LIBS) \
 	$(dlopen_LIBS)
 
-AM_LDFLAGS = -version-info 10:1:0
+AM_LDFLAGS = -version-info 10:2:0
 
 libxmltooling_lite_la_SOURCES = \
 	${common_sources}

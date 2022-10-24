@@ -1,6 +1,6 @@
 # Process this file with autoreconf
 AC_PREREQ([2.50])
-AC_INIT([xmltooling],[3.2.1],[https://shibboleth.atlassian.net/jira],[xmltooling])
+AC_INIT([xmltooling],[3.2.2],[https://shibboleth.atlassian.net/jira],[xmltooling])
 AC_CONFIG_SRCDIR(xmltooling)
 AC_CONFIG_AUX_DIR(build-aux)
 AC_CONFIG_MACRO_DIR(m4)
