@@ -13,7 +13,7 @@ BuildRequires:  libxml-security-c-devel >= 2.0.0
 %{?_with_log4cpp:BuildRequires: liblog4cpp-devel >= 1.0}
 %{!?_with_log4cpp:BuildRequires: liblog4shib-devel >= 1.0.4}
 BuildRequires: gcc-c++, pkgconfig, zlib-devel, openssl-devel, boost-devel >= 1.32.0
-%if 0%{?rhel} == 6 || 0%{?rhel} == 7 || 0%{?amzn} >= 1
+%if 0%{?rhel} == 6 || 0%{?rhel} == 7 || 0%{?amzn} == 1 || 0%{?amzn} == 2
 BuildRequires: libcurl-openssl-devel >= 7.21.7
 Requires: libcurl-openssl >= 7.21.7
 %else
@@ -35,7 +35,7 @@ BuildRequires: gdb
 %endif
 
 # Prevent the RHEL/etc 6+ package from requiring a vanilla libcurl.
-%if 0%{?rhel} == 6 || 0%{?rhel} == 7 || 0%{?amzn} >= 1
+%if 0%{?rhel} == 6 || 0%{?rhel} == 7 || 0%{?amzn} == 1 || 0%{?amzn} == 2
 %filter_from_requires /libcurl\.so\..*/d
 %filter_setup
 %endif
@@ -52,7 +52,7 @@ Summary:    OpenSAML XMLTooling library
 Group:      Development/Libraries/C and C++
 Provides:   @PACKAGE_NAME@ = %{version}-%{release}
 Obsoletes:  @PACKAGE_NAME@ < %{version}-%{release}
-%if 0%{?rhel} == 6 || 0%{?rhel} == 7 || 0%{?amzn} >= 1
+%if 0%{?rhel} == 6 || 0%{?rhel} == 7 || 0%{?amzn} == 1 || 0%{?amzn} == 2
 Requires: libcurl-openssl >= 7.21.7
 %endif
 
@@ -76,7 +76,7 @@ Requires: libxml-security-c-devel >= 2.0.0
 %{?_with_log4cpp:Requires: liblog4cpp-devel >= 1.0}
 %{!?_with_log4cpp:Requires: liblog4shib-devel >= 1.0.4}
 Requires: openssl-devel, boost-devel >= 1.32.0
-%if 0%{?rhel} == 6 || 0%{?rhel} == 7 || 0%{?amzn} >= 1
+%if 0%{?rhel} == 6 || 0%{?rhel} == 7 || 0%{?amzn} == 1 || 0%{?amzn} == 2
 Requires: libcurl-openssl-devel >= 7.21.7
 %else
 Requires: curl-devel >= 7.10.6
@@ -108,7 +108,7 @@ This package includes XML schemas and related files.
 %setup -q
 
 %build
-%if 0%{?rhel} == 6 || 0%{?rhel} == 7 || 0%{?amzn} >= 1
+%if 0%{?rhel} == 6 || 0%{?rhel} == 7 || 0%{?amzn} == 1 || 0%{?amzn} == 2
 %configure %{?@PACKAGE_NAME@_options} %{!?_without_xmlsec: --with-xmlsec} PKG_CONFIG_PATH=/opt/shibboleth/%{_lib}/pkgconfig
 %else
 %configure %{?@PACKAGE_NAME@_options} %{!?_without_xmlsec: --with-xmlsec}
@@ -149,7 +149,10 @@ This package includes XML schemas and related files.
 %doc %{pkgdocdir}
 
 %changelog
-* Tue Dec 2 2020 Scott Cantor <cantor.2@osu.edu> - 3.2.0-1
+* Wed Nov 2 2022 Scott Cantor <cantor.2@osu.edu> - 3.2.2-1
+- Version bump
+
+* Wed Dec 2 2020 Scott Cantor <cantor.2@osu.edu> - 3.2.0-1
 - Version bump
 
 * Mon Feb 3 2020 Scott Cantor <cantor.2@osu.edu> - 3.1.0-1
